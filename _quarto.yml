@@ -1,0 +1,24 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "ITSC 2214 - Data Structures and Algorithms - Summer 2023"
+  date: "5/22/2023"
+  chapters:
+    - index.qmd
+    - 01_on_computers_and_computing.qmd
+    - 09_graphs.qmd
+    - 10_hashing.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+website: 
+  open-graph: true
