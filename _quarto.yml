@@ -16,10 +16,10 @@ book:
         - 03_algorithmic_analysis.md
     - part: "Graphs"
       chapters:
-        - 09_graphs.md
+        - 09_graphs.qmd
     - part: "Hashing, HashMaps and HashTables"
       chapters:
-        - 10_hashing.md
+        - 10_hashing.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -30,5 +30,5 @@ format:
   pdf:
     documentclass: scrreprt
 
-website: 
+website:
   open-graph: true
