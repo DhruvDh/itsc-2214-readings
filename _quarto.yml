@@ -7,9 +7,19 @@ book:
   date: "5/22/2023"
   chapters:
     - index.qmd
-    - 01_on_computers_and_computing.qmd
-    - 09_graphs.qmd
-    - 10_hashing.qmd
+    - part: "On Computers and Computing"
+      chapters:
+        - 01_intro_to_cs_dsa.md
+        - 02_general_purpose_computers.md
+    - part: "Algorithmic Analysis"
+      chapters:
+        - 03_algorithmic_analysis.md
+    - part: "Graphs"
+      chapters:
+        - 09_graphs.md
+    - part: "Hashing, HashMaps and HashTables"
+      chapters:
+        - 10_hashing.md
     - references.qmd
 
 bibliography: references.bib
