@@ -174,11 +174,57 @@ public int sumOfList(List<int> l)
 
 Big-O notation is a way of expressing the worst-case time complexity of an algorithm. It describes how the running time of an algorithm changes as the size of its input grows. The most common Big-O complexities are:
 
-- $O(1)$: Constant time. The algorithm takes a fixed amount of time to finish, regardless of the input size. This is the best possible complexity.
-- $O(log(n))$: Logarithmic time. The algorithm takes a time that is proportional to the logarithm of the input size. This means that the running time increases slowly as the input size grows. This is a very good complexity.
-- $O(n)$: Linear time. The algorithm takes a time that is proportional to the input size. This means that the running time increases at the same rate as the input size grows. This is a common and acceptable complexity.
-- $O(n^2)$: Quadratic time. The algorithm takes a time that is proportional to the square of the input size. This means that the running time increases rapidly as the input size grows. This is a common and often undesirable complexity.
-- $O(2^n)$: Exponential time. The algorithm takes a time that is proportional to $2^n$ of the input size. This means that the running time increases exponentially as the input size grows. This is a very bad complexity and should be avoided if possible.
+### Constant Complexity and Growth
+
+Constant complexity, often represented as $O(1)$, occurs when the running time of an algorithm or the amount of work needed does not change with the size of the input ($N$). This means the algorithm takes a fixed amount of time, regardless of how many elements it is processing.
+
+For example, accessing an element in an array by its index is an operation of constant complexity. This is because it takes roughly the same amount of time, regardless of the size of the array:
+
+- $f(n) = 1$ for all $n$
+
+In this case, no matter how large or small our input size is, the amount of work we have to do remains the same. This is the most efficient complexity an algorithm can have.
+
+### Linear Complexity and Growth
+
+Linear complexity, often represented as $O(n)$, occurs when the running time of an algorithm or the amount of work needed scales proportionally with the size of the input ($N$). For every additional element in the input, a fixed amount of work is added.
+
+For example, finding an element in an unsorted list is an operation of linear complexity, as the algorithm might need to look at every element once:
+
+- $f(n) = n$
+
+In this case, if we add one more element to our input size, we add one more unit of work. This is because every additional element requires the same amount of work.
+
+### Quadratic Complexity and Growth
+
+Quadratic complexity, often represented as $O(n^2)$, occurs when the running time of an algorithm or the amount of work needed scales with the square of the size of the input ($N$). For every additional element in the input, the work increases by a factor of $n$.
+
+For example, a simple nested loop for comparing pairs of elements in a list has quadratic complexity. This is because each element is compared to every other element:
+
+- $f(n) = n^2$
+
+In this case, if we add one more element to our input size, we add $n$ units of work, as we have to compare this new element with every other element already in the list.
+
+### Exponential Functions and Growth
+
+An exponential function is one that includes a variable in the exponent. To illustrate, the function $2^n$ is an exponential function. Here, with each unit increase in the input, the output is multiplied (or scaled up) by a factor of 2. For instance:
+
+- $f(1) = 2^1 = 2$
+- $f(2) = 2^2 = 4$
+- $f(n+1) = f(n) * 2$
+
+Exponential growth is characterized by a constant factor scaling up the running time of the algorithm, or the amount of work needed, for each unit increase in the size of the input (often denoted as $N$). This constant factor is the base of the exponent. This means that for an algorithm with a time complexity of $2^N$, adding one more element to the input could potentially double the amount of work required. Examples of algorithms exhibiting exponential growth include certain solutions to problems like the Towers of Hanoi and calculations of the Fibonacci sequence.
+
+### Logarithmic Functions and Growth
+
+Logarithmic functions serve as the inverse of exponential functions. For example, $log_2(n)$ is a logarithmic function. Here, the output is decremented by 1 each time the input is divided (or scaled down) by a factor of 2. For instance:
+
+- $f(16) = log_2(16) = 4$
+- $f(8) = log_2(8) = 3$
+- $f(n/2) = f(n) - 1$
+
+Logarithmic growth is characterized by a decrement of 1 in the running time of the algorithm or the amount of work needed, each time the size of the input (denoted as $N$) is divided by a constant factor. This constant factor is the base of the logarithm. For an algorithm with a time complexity of $log_2(n)$, if we have an input size of 16, doubling the input size will only increase the amount of work by 1 unit. Similarly, halving the input size will decrease the work by 1 unit.
+
+Algorithms often display complexities such as $N*log_2(N)$, which represents a combination of linear and logarithmic growth. Examples of such algorithms that include logarithmic growth are binary search and certain sorting algorithms.
 
 ### Examples
 
