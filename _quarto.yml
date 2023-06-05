@@ -14,6 +14,11 @@ book:
     - part: "Algorithmic Analysis"
       chapters:
         - 03_algorithmic_analysis.md
+    - part: "Unit Testing"
+      chapters:
+        - 04_unit_testing.md
+        - 05_writing_junit_tests.md
+        - 06_mutation_testing.md
     - part: "Graphs"
       chapters:
         - 09_graphs.qmd
