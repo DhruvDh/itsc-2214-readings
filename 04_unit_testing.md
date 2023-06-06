@@ -41,7 +41,7 @@ As we discussed in the previous section, to ensure our `MathUtil` functions corr
 ```java
 public class MathUtilTest {
 
-    public boolean addTest1() {
+    public boolean testAdd1() {
         MathUtil m = new MathUtil();
         int lhs = 5;
         int rhs = 7;
@@ -57,7 +57,7 @@ public class MathUtilTest {
 }
 ```
 
-In the above example, the `addTest1` method tests the addition of two positive numbers. We could also add methods like `addTest2` to test adding a positive and a negative number, `addTest3` to test adding two negative numbers, and so forth. Each of these methods tests a specific scenario and validates that the result is as expected.
+In the above example, the `testAdd1` method tests the addition of two positive numbers. We could also add methods like `testAdd2` to test adding a positive and a negative number, `testAdd3` to test adding two negative numbers, and so forth. Each of these methods tests a specific scenario and validates that the result is as expected.
 
 ## Recognizing the Inefficiencies and Redundancies
 
@@ -67,12 +67,12 @@ While the above approach accomplishes our objective of validating the methods in
 
 Every test method follows a similar pattern - we perform an operation and then verify if the result matches the expected outcome. This redundancy suggests we could abstract out the verification part into a separate method.
 
-In the following expanded `MathUtilTest` class, you can observe that `addTest2` and `addTest3` follow the exact same pattern as `addTest1`. They create an instance of `MathUtil`, perform an operation, and then compare the result with the expected outcome. This repetitive pattern across multiple tests highlights the redundancy and inefficiency of this approach.
+In the following expanded `MathUtilTest` class, you can observe that `testAdd2` and `testAdd3` follow the exact same pattern as `testAdd1`. They create an instance of `MathUtil`, perform an operation, and then compare the result with the expected outcome. This repetitive pattern across multiple tests highlights the redundancy and inefficiency of this approach.
 
 ```java
 public class MathUtilTest {
 
-    public boolean addTest1() {
+    public boolean testAdd1() {
         MathUtil m = new MathUtil();
         int lhs = 5;
         int rhs = 7;
@@ -84,7 +84,7 @@ public class MathUtilTest {
         }
     }
     
-    public boolean addTest2() {
+    public boolean testAdd2() {
         MathUtil m = new MathUtil();
         int lhs = -5;
         int rhs = 7;
@@ -96,7 +96,7 @@ public class MathUtilTest {
         }
     }
 
-    public boolean addTest3() {
+    public boolean testAdd3() {
         MathUtil m = new MathUtil();
         int lhs = -5;
         int rhs = -7;
@@ -119,21 +119,21 @@ Let's see how we need to currently run the tests we've written.
 ```java
 public class MathUtilTest {
 
-    // addTest1, addTest2, addTest3, etc. test methods...
+    // testAdd1, testAdd2, testAdd3, etc. test methods...
 
     public static void main(String[] args) {
         MathUtilTest test = new MathUtilTest();
 
-        System.out.println("addTest1 result: " + (test.addTest1() ? "PASS" : "FAIL"));
-        System.out.println("addTest2 result: " + (test.addTest2() ? "PASS" : "FAIL"));
-        System.out.println("addTest3 result: " + (test.addTest3() ? "PASS" : "FAIL"));
+        System.out.println("testAdd1 result: " + (test.testAdd1() ? "PASS" : "FAIL"));
+        System.out.println("testAdd2 result: " + (test.testAdd2() ? "PASS" : "FAIL"));
+        System.out.println("testAdd3 result: " + (test.testAdd3() ? "PASS" : "FAIL"));
 
         // add more prints for other test cases
     }
 }
 ```
 
-With this `main` method, you can now run the `MathUtilTest` class, and it will execute each of the `addTest` methods and print whether each test passed or failed. This method is a basic way to manually execute the tests and check their results.
+With this `main` method, you can now run the `MathUtilTest` class, and it will execute each of the `testAdd` methods and print whether each test passed or failed. This method is a basic way to manually execute the tests and check their results.
 
 Currently, we need to call each test method manually to run our tests. An automated system that could execute all tests for us would save time and reduce the chances of human error. However, as we will see later, there are better approaches to automation than the one we've used here.
 
@@ -154,51 +154,31 @@ public static void assertEquals(String testCaseName, int expected, int actual) {
 Then we can simplify our test methods by using `assertEquals`:
 
 ```java
-public void addTest1() {
+public void testAdd() {
     MathUtil m = new MathUtil();
-    int lhs = 5;
-    int rhs = 7;
 
-    assertEquals("addTest1", m.add(lhs, rhs), lhs + rhs);
+    assertEquals("testAddTwoPositive", m.add(5, 7), 13);
+    assertEquals("testAddTwoNegative", m.add(-5, -7), -13);
+    assertEquals("testAddNegPos", m.add(-5, 7), 2);
 }
 ```
 
 Now, our test case looks cleaner and easier to understand. The `assertEquals` method abstracts away the comparison details, leaving only the test logic in the test case. We can apply this simplification to all our test methods.
 
-```java
-public void addTest2() {
-    MathUtil m = new MathUtil();
-    int lhs = -5;
-    int rhs = 7;
-
-    assertEquals("addTest2", m.add(lhs, rhs), lhs + rhs);
-}
-
-public void addTest3() {
-    MathUtil m = new MathUtil();
-    int lhs = -5;
-    int rhs = -7;
-
-    assertEquals("addTest3", m.add(lhs, rhs), lhs + rhs);
-}
-```
-
 This approach significantly reduces the redundancy in our test code, making it easier to write and maintain our tests. However, we are still manually running each test method from the `main` method. What if we could also automate the execution of all test methods?
 
 ## Automating Test Execution
 
-What if we could just call a single method that automatically runs all our test methods? Let's define a simple `runTests` method that does exactly that.
+What if we could just call a single method that runs all our test methods? Let's define a simple `runTests` method that does exactly that.
 
 ```java
 public void runTests() {
-    addTest1();
-    addTest2();
-    addTest3();
+    testAdd();
     // Call all other test methods here...
 }
 ```
 
-With this `runTests` method, you no longer need to call each test method individually from the `main` method. You can simply call the `runTests` method to execute all your tests:
+And then you can simply call the `runTests` method to execute all your tests:
 
 ```java
 public static void main(String[] args) {
@@ -207,7 +187,7 @@ public static void main(String[] args) {
 }
 ```
 
-This approach is a significant improvement over manually running each test. However, it still has some drawbacks. For instance, when you add a new test method, you need to remember to add a call to this method in the `runTests` method. It would be better if our test framework could automatically detect and run all test methods without requiring any modifications to the `runTests` method. As we'll see later, this is precisely what test frameworks like JUnit offer.
+This approach is an improvement over manually running each test. However, it still has some drawbacks. For instance, when you add a new test method, you need to remember to add a call to this method in the `runTests` method. It would be better if our test framework could automatically detect and run all test methods without requiring any modifications to the `runTests` method. As we'll see later, this is precisely what test frameworks like JUnit offer.
 
 ## Summary
 
