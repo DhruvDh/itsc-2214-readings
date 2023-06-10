@@ -20,12 +20,18 @@ book:
         - 05_writing_junit_tests.md
         - 06_mutation_testing.md
         - 07_list_of_mutators.md
+    - part: "Iterative Sorting and Searching"
+      chapters:
+        - 08_sorting_intro.md
+        - 09_comparable_comparator.md
+        - 10_bubble_selection_insertion_sort.md
+        - 11_linear_search.md
     - part: "Graphs"
       chapters:
-        - 09_graphs.qmd
+        - 21_graphs.qmd
     - part: "Hashing, HashMaps and HashTables"
       chapters:
-        - 10_hashing.qmd
+        - 22_hashing.qmd
     - references.qmd
 
 bibliography: references.bib
