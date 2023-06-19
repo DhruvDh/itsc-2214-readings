@@ -26,6 +26,10 @@ book:
         - 09_comparable_comparator.md
         - 10_bubble_selection_insertion_sort.md
         - 11_linear_search.md
+    - part: "Sequential Collections of Data"
+      chapters:
+        - 12_collections_of_data_intro.qmd
+        - 13_operations_on_lists.md
     - part: "Graphs"
       chapters:
         - 21_graphs.qmd
