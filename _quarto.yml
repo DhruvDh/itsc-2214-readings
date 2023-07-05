@@ -32,6 +32,10 @@ book:
         - 13_operations_on_lists.md
         - 14_implementing_arraylists.md
         - 15_implementing_linkedlists.md
+    - part: "Stacks and Queues"
+      chapters:
+        - 16_stack.md
+        - 17_queue.md
     - part: "Graphs"
       chapters:
         - 21_graphs.qmd
