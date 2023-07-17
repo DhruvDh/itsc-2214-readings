@@ -36,6 +36,9 @@ book:
       chapters:
         - 16_stack.md
         - 17_queue.md
+    - part: "Recursion"
+      chapters:
+        - 18_recursion.md
     - part: "Graphs"
       chapters:
         - 21_graphs.qmd
