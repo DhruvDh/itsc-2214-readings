@@ -53,7 +53,7 @@ The method has three cases:
 - The base case 2: If the element at `arr[index]` is equal to `key`, it means that the key has been found at the current position. In this case, the method returns `index` to indicate the location of the key in the array.
 - The recursive case: If neither of the base cases are true, it means that the key has not been found yet and there are more elements to check. In this case, the method makes a recursive call to itself with the same array and key, but with an incremented index (`index+1`). This way, the method moves forward in the array until it either finds the key or reaches the end.
 
-The data flows through the recursive calls via the parameters and return values¹[1]. The parameters (`arr`, `key`, and `index`) help in propagating information forward through the recursive calls until reaching one of the base cases²[2]. The return values (`-1` or `index`) relay information back from the base case to the original caller³[3].
+The data flows through the recursive calls via the parameters and return values. The parameters (`arr`, `key`, and `index`) help in propagating information forward through the recursive calls until reaching one of the base cases. The return values (`-1` or `index`) relay information back from the base case to the original caller.
 
 Let's illustrate this with an example: Suppose we want to search for `5` in the array `{3, 1, 4, 2, 5}` using `linearSearchRecursive`. We start by calling `linearSearchRecursive(arr, 5, 0)`, where `arr` is `{3, 1, 4, 2, 5}`, `key` is `5`, and `index` is `0`. The recursive tree will look like this:
 
@@ -98,7 +98,7 @@ The method has three cases:
 - The base case 2: If the element at `arr[left]` or `arr[right]` is equal to `key`, it means that the key has been found at one of the ends of the subarray. In this case, the method returns `left` or `right` to indicate the location of the key in the array.
 - The recursive case: If neither of the base cases are true, it means that the key has not been found yet and there are more elements to check. In this case, the method makes a recursive call to itself with the same array and key, but with a smaller subarray (`left + 1` to `right - 1`). This way, the method eliminates two elements from the search space at each recursive call until it either finds the key or reaches an empty subarray.
 
-The data flows through the recursive calls via the parameters and return values¹[1]. The parameters (`arr`, `left`, `right`, and `key`) help in propagating information forward through the recursive calls until reaching one of the base cases²[2]. The return values (`-1`, `left`, or `right`) relay information back from the base case to the original caller³[3].
+The data flows through the recursive calls via the parameters and return values. The parameters (`arr`, `left`, `right`, and `key`) help in propagating information forward through the recursive calls until reaching one of the base cases. The return values (`-1`, `left`, or `right`) relay information back from the base case to the original caller.
 
 The optimization in this method comes from checking both ends of the subarray at each recursive call, instead of just one element as in `linearSearchRecursive`. This reduces the number of recursive calls needed to find the key or reach an empty subarray. For example, if we want to search for `5` in the array `{3, 1, 4, 2, 5}` using `optimizedLinearSearch`, we start by calling `optimizedLinearSearch(arr, 0, 4, 5)`, where `arr` is `{3, 1, 4, 2, 5}`, `left` is `0`, `right` is `4`, and `key` is `5`. The recursive tree will look like this:
 
@@ -115,7 +115,7 @@ Note that this method works correctly only if there are no duplicates in the arr
 The worst case complexity analysis of both snippets is as follows:
 
 - The `linearSearchRecursive` method has a worst-case complexity of **O(n)**, where **n** is the length of the array. This is because in the worst case, the key is not present in the array or is the last element of the array, and the method has to check every element of the array until it reaches the end. The number of recursive calls is equal to **n** in this case.
-- The `optimizedLinearSearch` method has a worst-case complexity of **O(n/2)**, where **n** is the length of the array. This is because in the worst case, the key is not present in the array or is somewhere in the middle of the array, and the method has to check half of the elements of the array until it reaches an empty subarray. The number of recursive calls is equal to **n/2** in this case.
+- The `optimizedLinearSearch` method has a worst-case complexity of **O(n/2)** - because in the worst case, the key is not present in the array or is somewhere in the middle of the array, and the method has to check half of the elements of the array until it reaches an empty subarray - which ends up being also **O(n)** in Big-O notation.
 
 So it looks like the worst-case scenario hasn't vastly improved. We'd still potentially have to traverse half the array size if the element resides in the middle. In the worst-case scenario, the time complexity remains O(n).
 
@@ -161,7 +161,7 @@ The method has three cases:
 - The recursive case 1: If the element at the middle of the subarray (`arr[mid]`) is greater than `key`, it means that the key must be in the left half of the subarray. In this case, the method makes a recursive call to `optimizedLinearSearch` with a smaller subarray (`arr[0]` to `arr[mid-1]`). This way, the method eliminates half of the elements from the search space and then applies optimized linear search on the remaining elements.
 - The recursive case 2: If the element at the middle of the subarray (`arr[mid]`) is less than `key`, it means that the key must be in the right half of the subarray. In this case, the method makes a recursive call to `optimizedLinearSearch` with a smaller subarray (`arr[mid+1]` to `arr[right]`). This way, the method eliminates half of the elements from the search space and then applies optimized linear search on the remaining elements.
 
-The data flows through the recursive calls via the parameters and return values¹[1]. The parameters (`arr`, `left`, `right`, and `key`) help in propagating information forward through the recursive calls until reaching one of the base cases²[2]. The return values (`mid`, `-1`, `left`, or `right`) relay information back from the base case to the original caller³[3].
+The data flows through the recursive calls via the parameters and return values. The parameters (`arr`, `left`, `right`, and `key`) help in propagating information forward through the recursive calls until reaching one of the base cases. The return values (`mid`, `-1`, `left`, or `right`) relay information back from the base case to the original caller.
 
 Let's illustrate this with an example: Suppose we want to search for `5` in the sorted array `{1, 2, 3, 4, 5}` using `drasticallyFasterSearch`. We start by calling `drasticallyFasterSearch(arr, 0, 4, 5)`, where `arr` is `{1, 2, 3, 4, 5}`, `left` is `0`, `right` is `4`, and `key` is `5`. The recursive tree will look like this:
 
@@ -173,7 +173,7 @@ drasticallyFasterSearch(arr, 0, 4, 5)
 
 At each recursive call, we check if we have reached one of the base cases. If not, we make another recursive call with a smaller subarray. When we reach `optimizedLinearSearch(arr[3..4], 0 ,1 ,5)`, we find that `arr[4]` is equal to `key`, so we return `1`. This value is then added to `left` (which is `3`) and passed back up the call stack until it reaches the original caller. So, `drasticallyFasterSearch(arr, 0 ,4 ,5)` returns `(3 + 1) = 4`, indicating that `5` is found at index `4` in the array.
 
-## Binary Search
+## Even faster `drasticallyFasterSearch`
 
 Building on our previous exploration, we can see a pattern emerging. We are using our `drasticallyFasterSearch` to divide our problem, but when it comes to conquering, we are falling back to `optimizedLinearSearch`. This means we are not fully utilizing the strength of our divide and conquer approach. We have an opportunity for optimization here: what if, instead of resorting to linear search, we applied the same divide and conquer strategy again? This observation leads us to the Binary Search algorithm, a more efficient way to search sorted arrays, which would look like this:
 
@@ -267,7 +267,7 @@ public int drasticallyFasterSearch(int[] arr, int left, int right, int key) {
 }
 ```
 
-## Binary Search: Unveiling The Name and its Complexity
+## Unveiling Binary Search
 
 The name "Binary Search" comes from the fact that this method divides the search space into two (binary) at each step of the algorithm. It is a fundamental technique used in computer science and a cornerstone in algorithm design.
 
