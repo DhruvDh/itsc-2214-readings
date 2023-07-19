@@ -39,6 +39,7 @@ book:
     - part: "Recursion"
       chapters:
         - 18_recursion.md
+        - 19_binary_search.md
     - part: "Graphs"
       chapters:
         - 21_graphs.qmd
@@ -57,3 +58,6 @@ format:
 
 website:
   open-graph: true
+  reader-mode: true
+  repo-url: https://github.com/Charlotte-CCI-ICC/itsc-2214-readings
+  repo-actions: [edit, issue]
