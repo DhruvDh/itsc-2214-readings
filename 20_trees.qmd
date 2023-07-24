@@ -1,0 +1,907 @@
+---
+title: Tree Data Structure
+---
+
+## Background
+
+When we first begin to learn about data structures, we often encounter linear structures such as arrays, linked lists, stacks, and queues. These structures, as the term 'linear' suggests, store data in a sequential manner (@fig-linked-list). This makes them great for situations where the data can be naturally expressed as a sequence, for instance, a to-do list or a queue at a coffee shop.
+
+```{dot}
+//| label: fig-linked-list
+//| fig-cap: "A representation of a linked list structure, highlighting its linear nature."
+digraph G {
+  node [shape=circle];
+  1 -> 2 -> 3 -> 4 -> 5;
+}
+```
+
+Let's consider the linked list. Each node in the linked list has a reference to the next node, creating a chain of elements. This works well when the data in the structure has a natural sequential or linear relationship. However, as we delve deeper into more complex data problems, we begin to see that not all data fits neatly into a linear relationship.
+
+Consider an organizational hierarchy within a company. Each person (except the CEO) reports to exactly one person. However, each manager can have multiple direct reports. In this case, each node (person) might need to reference more than one node (@fig-org-hierarchy). Using a linked list to represent this data would be cumbersome, as it would not capture the multiple relationships that exist between a manager and their direct reports.
+
+```{dot}
+//| label: fig-org-hierarchy
+//| fig-cap: "An example of an organizational hierarchy within a company, illustrating the non-linear relationships that exist."
+digraph G {
+  node [shape=circle];
+  CEO -> {Manager1, Manager2};
+  Manager1 -> {Employee1, Employee2};
+  Manager2 -> {Employee3, Employee4};
+}
+```
+
+Another example is a file system on your computer. Each folder can contain multiple files or other folders. But, each file or folder is contained within exactly one other folder. Once again, we see the need for a data structure that can capture these multiple relationships (@fig-file-system).
+
+```{dot}
+//| label: fig-file-system
+//| fig-cap: "A representation of a simple file system, showing how folders can contain multiple other folders or files."
+digraph G {
+  node [shape=box];
+  Root -> {Folder1, File1};
+  Folder1 -> {Subfolder1, File2};
+  Subfolder1 -> {File3, File4};
+}
+```
+
+These examples bring to light a common pattern: there are situations where our data is not linear, but hierarchical. Hierarchies exist in various forms in the real world, from biological classifications to the layout of web pages, and modeling these hierarchies accurately in our programs allows us to reflect the reality more truthfully. 
+
+Enter the concept of Trees.
+
+A tree in computer science is a hierarchical data structure that can model these kinds of relationships (@fig-tree-structure). This structure gets its name from a real-world tree, but with a twist - the tree data structure is often visualized with the root at the top and the leaves at the bottom, resembling an upside-down real-world tree.
+
+```{dot}
+//| label: fig-tree-structure
+//| fig-cap: "An illustration of a simple tree data structure, with key components labeled."
+digraph G {
+  node [shape=circle];
+  Root -> {Child1, Child2, Child3};
+  Child1 -> {Grandchild1, Grandchild2};
+  Child3 -> {Grandchild3};
+}
+```
+
+The tree structure is a fundamental shift from our previously understood data structures. It can open new doors to solving problems and provide an efficient way to organize and model complex relationships in our data.
+
+In the following sections, we'll take a deeper dive into the world of trees, understanding their properties, variations, and how they can revolutionize the way we think about hierarchical data relationships.
+
+## Introduction to Trees
+
+After establishing the need for a data structure that can handle more complex relationships, we can now formally introduce the concept of trees. 
+
+A tree in computer science is an abstract data type that simulates a hierarchical structure with a set of interconnected nodes. The key characteristic that separates trees from other data structures is that no node in the tree may be connected to more than one parent node, thereby preventing any possibility of a loop in the data structure.
+
+Let's get familiar with some fundamental tree terminologies (see @fig-tree-terminology):
+
+- **Node**: A unit or location in the tree where data is stored. It's similar to a link in a linked list or an element in an array.
+- **Root**: The topmost node in the tree that doesn't have a parent.
+- **Edge**: The connection between two nodes.
+- **Parent**: A node which has one or more child nodes.
+- **Child**: A node which has a parent node.
+- **Leaf**: A node which does not have any child nodes.
+- **Subtree**: A tree consisting of a node and its descendants.
+- **Degree**: The number of children of a node.
+- **Level**: The distance from the root, measured in edges.
+- **Height**: The distance from the node to its furthest leaf.
+- **Depth**: The distance from the node to the root.
+
+```{dot}
+//| label: fig-tree-terminology
+//| fig-cap: "A simple tree illustrating various tree terminologies. Node A is the root, nodes B and C are children of A. Node C, having two children, demonstrates the degree of a node. Nodes D, E, F, G are leaf nodes. The subtree consists of Node C and its descendants (D, E). The level is demonstrated by the level of Node B (Level 1). The depth of Node D is 2 (from Root A). The height of the tree is 2 (distance from the Root A to furthest leaf)."
+digraph G {
+  node [shape=circle];
+  "A" [label="Root (A)\nNode"]
+  "B" [label="Child (B)\nNode\nLevel: 1\nDepth: 1\nParent of: F, G"]
+  "C" [label="Child (C)\nNode\nDegree: 2\n Parent of: D, E"]
+  "D" [label="Leaf (D)\nNode\nDepth: 2"]
+  "E" [label="Leaf (E)\nNode\nDepth: 2"]
+  "F" [label="Leaf (F)\nNode\nDepth: 1"]
+  "G" [label="Leaf (G)\nNode\nDepth: 2"]
+  "A" -> {"B" "C"}
+  "B" -> {"F" "G"}
+  "C" -> {"D" "E"}
+}
+```
+
+The concept of trees becomes truly interesting when we delve into the various types of trees. Different types of trees can be used to solve different types of problems, and it's crucial to choose the right type for a given problem. 
+
+The simplest form of a tree is a **General Tree**, where each node can have any number of child nodes. An example of where a general tree might be useful is in the representation of a file system on a computer. In this system, each folder can contain any number of files or folders. We can illustrate this with a diagram (@fig-general-tree).
+
+```{dot}
+//| label: fig-general-tree
+//| fig-cap: "An example of a general tree representing a file system, where each node can have any number of child nodes."
+digraph G {
+  node [shape=box];
+  Root -> {Folder1, File1};
+  Folder1 -> {Subfolder1, File2};
+  Subfolder1 -> {File3, File4, File5};
+}
+```
+
+However, there are also more specialized types of trees, like **Binary Trees**, where each node can have at most two children, commonly referred to as left and right child. The binary tree can be visualized in the form of a family tree where each parent (node) can have at most two children (@fig-binary-tree).
+
+```{dot}
+//| label: fig-binary-tree
+//| fig-cap: "A binary tree representing a family tree, where each parent can have at most two children."
+digraph G {
+  node [shape=circle];
+  Parent -> {Child1, Child2};
+}
+```
+
+A further specialization is the **Binary Search Tree (BST)**, where the nodes are arranged in a manner such that for every node, nodes in the left subtree have values less than the node, and nodes in the right subtree have values greater than the node. This property makes BSTs useful for search operations, such as finding a book in a library system, where books are organized based on their identifying information (@fig-bst).
+
+```{dot}
+//| label: fig-bst
+//| fig-cap: "A binary search tree (BST) used in a library system for organizing books. The key property of BST is that nodes in the left subtree have values less than the parent node, and nodes in the right subtree have values greater."
+digraph G {
+  node [shape=circle];
+  50 -> {30, 70};
+  30 -> {20, 40};
+  70 -> {60, 80};
+}
+```
+
+There are also self-balancing trees like **AVL Trees** and **Red-Black Trees** that maintain their balance as new nodes are inserted or existing nodes are removed, which ensures that the tree remains efficient for operations like insertion, deletion, and search. 
+
+Another common type of tree is the **B-tree**, used in databases and filesystems. In a B-tree, each node can have more than two children, unlike in a binary tree. This structure allows for efficient access and modification of large blocks of data, which makes B-trees particularly suitable for use in disk-based storage systems, such as databases (@fig-btree).
+
+```{dot}
+//| label: fig-btree
+//| fig-cap: "A representation of a B-tree used in a database. Each node can have more than two children, providing efficient access and modification of large data blocks."
+graph G {
+  node [shape=box];
+  "Node1" -- {Node2, Node3, Node4};
+  "Node2" -- {Leaf1, Leaf2};
+  "Node3" -- {Leaf3, Leaf4, Leaf5};
+  "Node4" -- {Leaf6, Leaf7};
+}
+```
+
+Understanding these types of trees and how they work is crucial to using them effectively. In the next sections, we will delve deeper into some of these tree types and explore their properties and uses.
+
+## Binary Tree
+
+After understanding the basic concept of trees, let's now focus on a special kind of tree, the Binary Tree. As we have mentioned earlier, in a binary tree, a node can have at most two children - commonly referred to as the left child and the right child. This property leads to some interesting and useful characteristics that we'll explore in this section.
+
+The structure of a binary tree is relatively straightforward. Each node in a binary tree contains some data, a reference to the left child node, and a reference to the right child node. If a node has no left or right child, the corresponding reference is set to `null`. 
+
+In a binary tree, each level has twice as many nodes as the previous level, creating a rapidly expanding structure. This property enables binary trees to store large amounts of data in a relatively small number of levels, which can lead to efficient search and insertion operations, given the tree is balanced.
+
+Let's take a look at some different types of binary trees:
+
+- **Full Binary Tree**: In this tree, every node has either 0 or 2 children. This type of tree is useful when you know that every internal node in your tree will have exactly two children. For example, in certain types of decision trees used in machine learning, each decision leads to two subsequent decisions, forming a full binary tree.
+
+```{dot}
+//| label: fig-full-binary-tree
+//| fig-cap: "A Full Binary Tree. Every node has either 0 or 2 children."
+digraph G {
+  node [shape=circle];
+  "A" 
+  "B" 
+  "C"
+  "D" 
+  "E" 
+  "A" -> "B"
+  "A" -> "C"
+  "B" -> "D"
+  "B" -> "E"
+}
+```
+
+- **Complete Binary Tree**: Every level, except possibly the last, is fully filled, and all nodes are as far left as possible. Heaps are an example of complete binary trees. In a heap, all levels are fully filled except for the last level, which is filled from left to right.
+
+```{dot}
+//| label: fig-complete-binary-tree
+//| fig-cap: "A Complete Binary Tree. Every level is fully filled except for the last, which is filled from left to right."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B"
+  "C"
+  "D"
+  "E"
+  "F"
+  "A" -> "B"
+  "A" -> "C"
+  "B" -> "D"
+  "B" -> "E"
+  "C" -> "F"
+}
+```
+
+- **Perfect Binary Tree**: A perfect binary tree is both full and complete. Every level is fully filled. This kind of tree appears in some specialized data structures or algorithms, but is not common in general use.
+
+```{dot}
+//| label: fig-perfect-binary-tree
+//| fig-cap: "A Perfect Binary Tree. Every level is fully filled."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B"
+  "C"
+  "D"
+  "E"
+  "F"
+  "G"
+  "A" -> "B"
+  "A" -> "C"
+  "B" -> "D"
+  "B" -> "E"
+  "C" -> "F"
+  "C" -> "G"
+}
+```
+
+- **Balanced Binary Tree**: The difference in height of left and right subtrees for every node is not more than k (mostly 1). Most of the tree algorithms require the tree to be balanced to maintain their optimal time complexity.
+
+```{dot}
+//| label: fig-balanced-binary-tree
+//| fig-cap: "A Balanced Binary Tree. The difference in height of left and right subtrees for every node is not more than 1."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B"
+  "C"
+  "D"
+  "E"
+  "F"
+  "A" -> "B"
+  "A" -> "C"
+  "B" -> "D"
+  "B" -> "E"
+  "C" -> "F"
+}
+```
+
+- **Degenerate (or pathological) Tree**: Each parent node has only one child. The tree behaves like a linked list, and we lose the advantages of binary trees.
+
+```{dot}
+//| label: fig-degenerate-tree
+//| fig-cap: "A Degenerate (or pathological) Tree. Each parent node has only one child."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B"
+  "C"
+  "D"
+  "E"
+  "A" -> "B"
+  "B" -> "C"
+  "C" -> "D"
+  "D" -> "E"
+}
+```
+
+### Implementing a Binary Tree
+
+In this section, we will be implementing a simple Binary Tree structure using Java. We'll start with the definition of the `Node` class. 
+
+```java
+/**
+ * This class represents a node in the binary tree.
+ * @param <T> This is the type parameter which represents the type of value the node will hold.
+ */
+public class Node<T> {
+    T value;
+    Node<T> left;
+    Node<T> right;
+
+    /**
+     * Node class constructor.
+     * @param value This is the value that the node will hold.
+     */
+    public Node(T value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+```
+
+In the code above, we defined a generic `Node` class with a type parameter `T`. The `Node` class has three fields: `value` of type `T` representing the data the node holds, and `left` and `right` of type `Node<T>` representing the left and right children of the node.
+
+Next, let's define our `BinaryTree` class.
+
+```java
+/**
+ * This class represents a binary tree.
+ * @param <T> This is the type parameter which represents the type of value the nodes in the tree will hold.
+ */
+public class BinaryTree<T> {
+    Node<T> root;
+
+    /**
+     * BinaryTree class constructor.
+     */
+    public BinaryTree() {
+        this.root = null;
+    }
+
+    /**
+     * This method is used to add a value to the binary tree.
+     * @param value This is the value to be added.
+     */
+    public void add(T value) {
+        root = addRecursive(root, value);
+    }
+
+    /**
+     * This is a helper method for the add method. 
+     * It is used to recursively find the place to add a new value.
+     * @param current This is the current node.
+     * @param value This is the value to be added.
+     * @return Node This returns the new node if current node is null, else it returns the current node.
+     */
+    private Node<T> addRecursive(Node<T> current, T value) {
+        if (current == null) {
+            return new Node<>(value);
+        }
+
+        // This compareTo method assumes the type T extends Comparable<T>. 
+        // A more robust implementation may be required based on the actual type of T.
+        int cmp = ((Comparable<T>) value).compareTo(current.value);
+
+        if (cmp < 0) {
+            current.left = addRecursive(current.left, value);
+        } else if (cmp > 0) {
+            current.right = addRecursive(current.right, value);
+        }
+
+        return current;
+    }
+    // Additional methods for traversal or other operations can be added here.
+}
+```
+
+In the `BinaryTree` class, we defined a `root` of type `Node<T>` representing the root of the tree. The `add` method is used to add a new value to the tree. It uses the `addRecursive` helper method to find the correct place for the new value.
+
+Note that this is a basic implementation of a binary tree and only includes the ability to add elements. Practical applications of binary trees usually include additional operations like deleting a node, checking if a value exists in the tree, and various ways of traversing the tree (in-order, pre-order, post-order). 
+
+## Common Operations on Binary Trees
+
+### Traversals and Orderings
+
+Trees, being a nonlinear data structure, cannot be traversed in a single run like arrays, linked lists, or other linear data structures. Therefore, they require some specific methods to traverse their nodes, visit each node once, and perform some operations such as search, update, or accumulate. 
+
+Three common types of depth-first traversal are **in-order**, **pre-order**, and **post-order**.
+
+#### In-Order Traversal
+
+In in-order traversal, the process is as follows:
+1. Traverse the left subtree
+2. Visit the root node
+3. Traverse the right subtree
+
+This traversal technique is widely used, and in binary search trees, it retrieves data in ascending order.
+
+```{dot}
+//| label: fig-in-order-traversal
+//| fig-cap: "In-Order Traversal: Traverse left subtree, Visit root, Traverse right subtree. The numbers indicate the order of traversal."
+digraph G {
+  node [shape=circle];
+  "A" [label="2\nA"]
+  "B" [label="1\nB"]
+  "C" [label="3\nC"]
+  "A" -> "B"
+  "A" -> "C"
+}
+```
+
+Pseudocode for in-order traversal can look like this:
+
+```pseudocode
+function inOrderTraversal(node) {
+  if (node != null) {
+    inOrderTraversal(node.left)
+    visit(node)
+    inOrderTraversal(node.right)
+  }
+}
+```
+
+#### Pre-Order Traversal
+
+In pre-order traversal, the process is as follows:
+1. Visit the root node
+2. Traverse the left subtree
+3. Traverse the right subtree
+
+This method can be used to create a copy of the tree, or to get a prefix expression of an expression tree.
+
+```{dot}
+//| label: fig-pre-order-traversal
+//| fig-cap: "Pre-Order Traversal: Visit root, Traverse left subtree, Traverse right subtree. The numbers indicate the order of traversal."
+digraph G {
+  node [shape=circle];
+  "A" [label="1\nA"]
+  "B" [label="2\nB"]
+  "C" [label="3\nC"]
+  "A" -> "B"
+  "A" -> "C"
+}
+```
+
+Pseudocode for pre-order traversal can look like this:
+
+```pseudocode
+function preOrderTraversal(node) {
+  if (node != null) {
+    visit(node)
+    preOrderTraversal(node.left)
+    preOrderTraversal(node.right)
+  }
+}
+```
+
+#### Post-Order Traversal
+
+In post-order traversal, the process is as follows:
+1. Traverse the left subtree
+2. Traverse the right subtree
+3. Visit the root node
+
+This method is used to delete or deallocate nodes of a tree, or to get a postfix expression of an expression tree.
+
+```{dot}
+//| label: fig-post-order-traversal
+//| fig-cap: "Post-Order Traversal: Traverse left subtree, Traverse right subtree, Visit root. The numbers indicate the order of traversal."
+digraph G {
+  node [shape=circle];
+  "A" [label="3\nA"]
+  "B" [label="1\nB"]
+  "C" [label="2\nC"]
+  "A" -> "B"
+  "A" -> "C"
+}
+```
+
+Pseudocode for post-order traversal can look like this:
+
+```pseudocode
+function postOrderTraversal(node) {
+  if (node != null) {
+    postOrderTraversal(node.left)
+    postOrderTraversal(node.right)
+    visit(node)
+  }
+}
+```
+
+In each of the traversal methods above, `visit(node)` is an operation that performs some computation on `node`, such as printing its value.
+
+It's important to note that traversal operations have a time complexity of O(n), where n is the number of nodes in the tree. This is because every node must be visited once and only once during the traversal.
+
+In addition to traversal methods, other common operations on binary trees include `insertion`, `deletion`, and `searching`. These are vital operations for maintaining and interacting with the binary tree structure.
+
+### Removing Nodes from a Binary Tree
+
+Deleting or removing a node from a binary tree is a slightly complex operation compared to insertion. This is because when we remove a node, we need to ensure that the remaining nodes still form a binary tree. The process differs depending on the number of children the node has:
+
+1. **No child**: If the node is a leaf node (i.e., it does not have any children), we can directly remove the node.
+
+```{dot}
+//| label: fig-removal-no-child
+//| fig-cap: "Removing a node with no children. The node 'C' is simply removed from the tree."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B" -> "A" [label="remove", color="red"]
+  "C" [color="red"]
+  "B" -> "C"
+}
+```
+
+2. **One child**: If the node has a single child, we can replace the node with its subtree.
+
+```{dot}
+//| label: fig-removal-one-child
+//| fig-cap: "Removing a node with one child. The node 'B' is replaced by its subtree rooted at 'C'."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B" -> "A" [label="remove", color="red"]
+  "C"
+  "B" -> "C" [color="blue"]
+  "D" [color="blue"]
+  "C" -> "D"
+}
+```
+
+3. **Two children**: This is the most complex case. If the node has two children, we generally seek a node from the tree to replace the node to be deleted. The replacement node is typically the in-order predecessor or the in-order successor of the node. These are the node's immediate previous and next nodes in in-order traversal (see @fig-in-order-traversal).
+
+   - **In-order predecessor**: This is the node with the highest value that is smaller than the value of the node to be removed. It can be found by moving one step to the left (to the left child), and then as far right as possible.
+
+   - **In-order successor**: This is the node with the smallest value that is larger than the value of the node to be removed. It can be found by moving one step to the right (to the right child), and then as far left as possible.
+
+```{dot}
+//| label: fig-removal-two-children
+//| fig-cap: "Removing a node with two children. The node 'B' is replaced by its in-order predecessor 'A' or in-order successor 'C'. The replacement node is then recursively removed from its original position."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B" -> "A" [color="blue"]
+  "B" [color="red"]
+  "C"
+  "B" -> "C" [color="blue"]
+}
+```
+
+Once we find the in-order predecessor (or successor), we replace the node to be deleted with the predecessor (or successor) and then recursively delete the predecessor (or successor) from its original position.
+
+The reason we choose the in-order predecessor or successor is to maintain the binary search tree property, i.e., for every node, nodes in the left subtree have values less than the node, and nodes in the right subtree have values greater than the node. 
+
+Here is a basic outline of the removal process in pseudocode:
+
+```pseudocode
+function remove(node, key) {
+  if (node is null) {
+    return node
+  }
+  if (key < node.key) {
+    node.left = remove(node.left, key)
+  } else if (key > node.key) {
+    node.right = remove(node.right, key)
+  } else {
+    if (node.left is null) {
+      return node.right
+    } else if (node.right is null) {
+      return node.left
+    }
+    node.key = minValue(node.right)
+    node.right = remove(node.right, node.key)
+  }
+  return node
+}
+
+function minValue(node) {
+  current = node
+  while (current.left is not null) {
+    current = current.left
+  }
+  return current.key
+}
+```
+
+In this pseudocode, `remove()` is a recursive function that deletes the node with the specified key from the tree and returns the new root of the subtree, and `minValue()` is a helper function that returns the minimum value in a non-empty binary search tree.
+
+The time complexity for deletion in a binary tree can range from O(log n) to O(n), where n is the number of nodes. In a balanced tree, the time complexity is O(log n) because we would be traversing the height of the tree, which is logarithmic in a balanced tree. However, in the worst-case scenario, such as when the tree is a degenerate or skewed tree, the time complexity would be O(n) because each removal could potentially involve traversing all the nodes of the tree.
+
+
+## Binary Search Trees (BST)
+
+Before delving into Binary Search Trees (BSTs), let's take a step back and contemplate the significance of search operations in computer science. A search operation is fundamental to many applications, from looking up a contact in your smartphone to searching for a specific book in a library database. Therefore, making search operations efficient has always been a central challenge in computer science.
+
+Traditional search approaches like linear search, which checks each item one by one, can be time-consuming especially when dealing with large datasets, as it has a time complexity of O(n). A considerable improvement is the binary search algorithm, which works by repeatedly dividing the sorted list of elements in half until the target element is found, giving it a time complexity of O(log n). However, binary search requires the data to be sorted, and maintaining a sorted list of elements can be expensive for insert and delete operations.
+
+This is where Binary Search Trees come in. A Binary Search Tree is a special type of binary tree that maintains a specific ordering property — for each node, all elements in the left subtree are less than the node, and all elements in the right subtree are greater than the node (see @fig-bst-property). This property of BSTs enables us to perform search, insert, and delete operations efficiently, maintaining a time complexity of O(log n) in an ideal situation where the tree is balanced. Let's explore these concepts in more detail.
+
+### Definition, Properties, and Structure of BSTs
+
+A Binary Search Tree (BST) is a binary tree where for every node:
+
+- The values in its left subtree are less than the node's value.
+- The values in its right subtree are greater than the node's value.
+
+```{dot}
+//| label: fig-bst-property
+//| fig-cap: "The Binary Search Tree property: for every node, all elements in the left subtree are less than the node, and all elements in the right subtree are greater than the node."
+digraph G {
+  node [shape=circle];
+  "5" -> "3"
+  "5" -> "7"
+  "3" -> "2"
+  "3" -> "4"
+  "7" -> "6"
+  "7" -> "8"
+}
+```
+
+This property ensures that the "in-order" traversal of a BST results in a sorted sequence of values, which is the key to efficient search, insertion, and deletion operations.
+
+### Advantages of BSTs over other tree structures
+
+The BST property provides some advantages over other tree structures:
+
+- **Efficient search**: If the tree is balanced, we can find, insert, or delete entries in O(log n) time where n is the total number of nodes. This is significantly faster than linear search, and it doesn't require the maintenance of a sorted list like binary search.
+- **Sorted traversal**: In-order traversal of a BST yields the nodes in sorted order, which can be useful in various applications.
+- **Flexibility**: Unlike an array, BSTs do not have a fixed size. They can grow and shrink during the execution of the program, allowing efficient use of memory.
+
+### Detailed description of BST operations: insertion, deletion, searching
+
+BSTs support three fundamental operations: search, insertion, and deletion, all of which leverage the BST property to operate efficiently.
+
+**Search**: Starting from the root, if the target value is less than the current node, we move to the left child; if it's greater, we move to the right child. We repeat this process until we either find the target value or reach a null where the target value should be if it were in the tree (see @fig-bst-search).
+
+```{dot}
+//| label: fig-bst-search
+//| fig-cap: "BST search operation: Starting from the root, the algorithm compares the target value with the current node and moves left or right based on the comparison. The search ends when the target is found or when a null is encountered."
+digraph G {
+  node [shape=circle];
+  "5" -> "3"
+  "5" -> "7"
+  "3" -> "2"
+  "3" -> "4"
+  "7" -> "6"
+  "7" -> "8"
+  "2" [color="red"]
+}
+```
+
+**Insertion**: Similar to search, but when we reach a null location, we create a new node with the target value at that spot (see @fig-bst-insertion).
+
+```{dot}
+//| label: fig-bst-insertion
+//| fig-cap: "BST insertion operation: Similar to the search operation, the algorithm moves down the tree starting from the root. When a null location is encountered, a new node is created at that spot."
+digraph G {
+  node [shape=circle];
+  "5" -> "3"
+  "5" -> "7"
+  "3" -> "2"
+  "3" -> "4"
+  "7" -> "6"
+  "7" -> "8"
+  "2" -> "1" [color="blue"]
+  "1" [color="blue"]
+}
+```
+
+**Deletion**: A bit more complicated as we need to maintain the BST property after removing a node. The process varies based on the number of children the node to be deleted has
+
+, similar to deletion in a binary tree (see @fig-bst-deletion).
+
+```{dot}
+//| label: fig-bst-deletion
+//| fig-cap: "BST deletion operation: Deletion in a BST can be complex as it must maintain the BST property after removing a node. The process varies depending on whether the node to be deleted has no children, one child, or two children."
+digraph G {
+  node [shape=circle];
+  "5" -> "3"
+  "5" -> "7"
+  "3" -> "2"
+  "3" -> "4"
+  "7" -> "6"
+  "7" -> "8"
+  "2" [color="red"]
+  "2" -> "1" [color="blue"]
+  "1" [color="blue"]
+}
+```
+
+Absolutely. Let's break down the implementation of BST operations into both recursive and iterative approaches using Java.
+
+### Recursive and Iterative Implementations in Java
+
+While recursion offers a straightforward and elegant approach to implementing BST operations, the iterative method can often provide better performance in terms of space complexity. Let's look at both methods for each of the main BST operations: search, insertion, and deletion.
+
+### Search Operation
+
+**Recursive Approach**
+
+```java
+public TreeNode search(TreeNode node, int value) {
+    if (node == null || node.val == value)
+        return node;
+
+    if (node.val > value)
+        return search(node.left, value);
+    
+    return search(node.right, value);
+}
+```
+
+**Iterative Approach**
+
+```java
+public TreeNode search(TreeNode root, int value) {
+    while (root != null) {
+        if (root.val > value)
+            root = root.left;
+        else if (root.val < value)
+            root = root.right;
+        else
+            return root;
+    }
+    return null;
+}
+```
+
+### Insertion Operation
+
+**Recursive Approach**
+
+```java
+public TreeNode insert(TreeNode node, int value) {
+    if (node == null) {
+        return new TreeNode(value);
+    }
+
+    if (value < node.val) {
+        node.left = insert(node.left, value);
+    } else if (value > node.val) {
+        node.right = insert(node.right, value);
+    }
+
+    return node;
+}
+```
+
+**Iterative Approach**
+
+```java
+public TreeNode insert(TreeNode root, int value) {
+    TreeNode node = new TreeNode(value);
+    if (root == null) {
+        return node;
+    }
+
+    TreeNode parent = null, current = root;
+    while (current != null) {
+        parent = current;
+        if (current.val > value) {
+            current = current.left;
+        } else {
+            current = current.right;
+        }
+    }
+
+    if (parent.val > value) {
+        parent.left = node;
+    } else {
+        parent.right = node;
+    }
+
+    return root;
+}
+```
+
+### Deletion Operation
+
+**Recursive Approach**
+
+```java
+public TreeNode delete(TreeNode root, int value) {
+    if (root == null) {
+        return root;
+    }
+
+    if (value < root.val) {
+        root.left = delete(root.left, value);
+    } else if (value > root.val) {
+        root.right = delete(root.right, value);
+    } else {
+        if (root.left == null)
+            return root.right;
+        else if (root.right == null)
+            return root.left;
+
+        root.val = findMinValue(root.right);
+        root.right = delete(root.right, root.val);
+    }
+
+    return root;
+}
+
+private int findMinValue(TreeNode root) {
+    int min = root.val;
+    while (root.left != null) {
+        min = root.left.val;
+        root = root.left;
+    }
+    return min;
+}
+```
+
+Please note that the iterative implementation of delete operation is relatively complex and can detract from the understanding of how the delete operation fundamentally works. Therefore, we generally prefer the recursive approach for teaching purposes. However, once you are comfortable with the recursive implementation, it's worthwhile to try to implement the iterative version on your own for practice.
+
+The presented examples illustrate how different BST operations can be performed in both recursive and iterative manner. Each has its own pros and cons - recursive methods are often easier to comprehend and write, whereas iterative methods might provide better performance. 
+
+### Performance and Time Complexity
+
+
+The time complexity of binary search tree operations such as search, insert, and delete depends on the height of the binary search tree. In the best-case scenario, the tree is perfectly balanced, and its height is log(n), where n is the number of nodes. In this case, search, insert, and delete operations can be performed in O(log n) time. However, in the worst-case scenario, the tree can become skewed, which means it resembles a linked list more than a tree. In this case, the height of the tree is n, and operations can take up to O(n) time.
+
+Let's see how this plays out for each operation:
+
+**Search Operation**
+
+- Best-case performance: O(log n) – This is when the tree is balanced, and we can eliminate half of the nodes from our search at each step.
+- Worst-case performance: O(n) – This happens when the tree is skewed, and our search path includes most or all nodes in the tree.
+
+**Insert Operation**
+
+- Best-case performance: O(log n) – When the tree is balanced, the location for a new node is found by traversing from the root to the appropriate leaf node.
+- Worst-case performance: O(n) – In a skewed tree, the new node could end up being a child of the deepest leaf node.
+
+**Delete Operation**
+
+- Best-case performance: O(log n) – In a balanced tree, we find the node to delete quickly. If the node has two children, we also need time to find the in-order predecessor or successor.
+- Worst-case performance: O(n) – In a skewed tree, deletion can involve traversing most of the tree.
+
+One thing to note is that the best-case scenario, a balanced tree, is not the average case. Unless measures are taken to balance the tree, binary search trees can become skewed from sequences of insertions and deletions.
+
+The next topic that we'll discuss, self-balancing binary search trees, will address this limitation of the basic binary search tree by ensuring that the tree remains approximately balanced at all times. As a result, self-balancing binary search trees can guarantee that the time complexity of major operations is always O(log n), which is a significant improvement in the worst-case scenario.
+
+## Balanced Binary Search Trees
+
+Binary search trees (BSTs) are powerful data structures that support efficient search, insertion, and deletion operations. However, if the tree becomes unbalanced, these operations could degrade to linear time complexity. One effective way to mitigate this issue is by employing balanced binary search trees, such as AVL Trees and Red-Black Trees. These trees aim to maintain balance, ensuring efficient performance regardless of the input sequence.
+
+The concept of a "balanced" tree might sound abstract, so let's make it tangible with an example (@fig-balanced-bst). A balanced binary tree is one where the difference between the heights of the left and right subtrees of every node is either -1, 0, or 1. This balance ensures that the tree doesn't lean too heavily on one side, optimizing the path to every node and promoting efficiency.
+
+```{dot}
+//| label: fig-balanced-bst
+//| fig-cap: "A balanced binary search tree. The numbers show the height of each node."
+digraph G {
+  node [shape=circle];
+  "6" -> "4"
+  "6" -> "8"
+  "4" -> "2"
+  "4" -> "5"
+  "2" -> "1"
+  "2" -> "3"
+  "8" -> "7"
+  "8" -> "9"
+}
+```
+
+Consider a balance scale, with nodes as the weights. When equally balanced, the scale maintains equilibrium. However, adding or subtracting weights (or nodes) disturbs this balance, causing the scale to lean towards the heavier side. AVL Trees and Red-Black Trees work similarly - they maintain equilibrium by redistributing the weights, which we call "rotations" in the context of trees.
+
+**AVL Trees**, named after their inventors Adelson-Velsky and Landis, adjust their balance through a process called rotation. This operation preserves the in-order property of the tree. If the balance factor of a node in an AVL tree becomes 2 or -2, a rotation is performed to regain balance. Let's illustrate this with a simple example (@fig-avl-rotation).
+
+Consider inserting 1, 2, 3 into an initially empty AVL tree.
+
+1. Inserting 1 gives us:
+
+```{dot}
+//| label: fig-avl-insert-1
+//| fig-cap: "Inserting 1 into an empty AVL tree."
+digraph G {
+  node [shape=circle];
+  "1"
+}
+```
+
+2. Inserting 2 gives us:
+
+```{dot}
+//| label: fig-avl-insert-2
+//| fig-cap: "Inserting 2 into the AVL tree."
+digraph G {
+  node [shape=circle];
+  "1" -> "2"
+}
+```
+
+3. Inserting 3 unbalances the tree:
+
+```{dot}
+//| label: fig-avl-unbalanced
+//| fig-cap: "Inserting 3 into the AVL tree results in an unbalanced tree."
+digraph G {
+  node [shape=circle];
+  "1" -> "2"
+  "2" -> "3"
+}
+```
+
+This structure is unbalanced and equivalent to a linked list. The balance factor for node 1 is -2, indicating a required rotation.
+
+4. We perform a left rotation around the root (node 1), resulting in a balanced tree:
+
+```{dot}
+//| label: fig-avl-rotation
+//| fig-cap: "A left rotation around the root balances the AVL tree."
+digraph G {
+  node [shape=circle];
+  "2" -> "1"
+  "2" -> "3"
+}
+```
+
+The AVL Tree is now balanced, and all operations are guaranteed logarithmic time complexity.
+
+**Red-Black Trees** offer another solution, painting each node one of two colors – red or black – and maintaining balance by adhering to red-black properties. Although the rules and operations are more complex, they also ensure the tree remains approximately balanced during additions and deletions. A Red-Black Tree would be great to visualize, but given its complexity, it's better to explore it interactively or in more advanced courses.
+
+These tree structures may seem complicated, but they highlight how well-understood tools like a binary tree can be further optimized for efficiency. While we've only scratched the surface here, you'll delve deeper into these and other types of self-balancing trees in advanced data structures courses. The goal is not to memorize every detail but to appreciate the breadth of tools available for different use cases.
+
+In your journey as a computer scientist, you'll encounter various real-world scenarios where maintaining efficiency is vital. From databases to file systems, different applications require different tools. Understanding the principles behind these tools, such as the importance of balance in BSTs, will empower you to make informed decisions in your work.
+
+With this, we conclude our journey into the world of binary trees and binary search trees. We hope that the concepts, examples, and code shared in this chapter help illuminate these fundamental data structures. Remember that learning is a process - with every step, you're building a stronger foundation in computer science. Keep practicing, keep questioning, and keep exploring.

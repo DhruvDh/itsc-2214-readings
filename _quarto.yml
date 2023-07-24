@@ -40,6 +40,9 @@ book:
       chapters:
         - 18_recursion.md
         - 19_binary_search.md
+    - part: "Trees"
+      chapters:
+        - 20_trees.qmd
     - part: "Graphs"
       chapters:
         - 21_graphs.qmd
