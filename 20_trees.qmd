@@ -94,7 +94,7 @@ digraph G {
   "C" [label="Child (C)\nNode\nDegree: 2\n Parent of: D, E"]
   "D" [label="Leaf (D)\nNode\nDepth: 2"]
   "E" [label="Leaf (E)\nNode\nDepth: 2"]
-  "F" [label="Leaf (F)\nNode\nDepth: 1"]
+  "F" [label="Leaf (F)\nNode\nDepth: 2"]
   "G" [label="Leaf (G)\nNode\nDepth: 2"]
   "A" -> {"B" "C"}
   "B" -> {"F" "G"}
@@ -245,11 +245,13 @@ digraph G {
   "D"
   "E"
   "F"
+  
   "A" -> "B"
   "A" -> "C"
   "B" -> "D"
   "B" -> "E"
   "C" -> "F"
+
 }
 ```
 
@@ -316,46 +318,10 @@ public class BinaryTree<T> {
     public BinaryTree() {
         this.root = null;
     }
-
-    /**
-     * This method is used to add a value to the binary tree.
-     * @param value This is the value to be added.
-     */
-    public void add(T value) {
-        root = addRecursive(root, value);
-    }
-
-    /**
-     * This is a helper method for the add method. 
-     * It is used to recursively find the place to add a new value.
-     * @param current This is the current node.
-     * @param value This is the value to be added.
-     * @return Node This returns the new node if current node is null, else it returns the current node.
-     */
-    private Node<T> addRecursive(Node<T> current, T value) {
-        if (current == null) {
-            return new Node<>(value);
-        }
-
-        // This compareTo method assumes the type T extends Comparable<T>. 
-        // A more robust implementation may be required based on the actual type of T.
-        int cmp = ((Comparable<T>) value).compareTo(current.value);
-
-        if (cmp < 0) {
-            current.left = addRecursive(current.left, value);
-        } else if (cmp > 0) {
-            current.right = addRecursive(current.right, value);
-        }
-
-        return current;
-    }
-    // Additional methods for traversal or other operations can be added here.
 }
 ```
 
-In the `BinaryTree` class, we defined a `root` of type `Node<T>` representing the root of the tree. The `add` method is used to add a new value to the tree. It uses the `addRecursive` helper method to find the correct place for the new value.
-
-Note that this is a basic implementation of a binary tree and only includes the ability to add elements. Practical applications of binary trees usually include additional operations like deleting a node, checking if a value exists in the tree, and various ways of traversing the tree (in-order, pre-order, post-order). 
+In the `BinaryTree` class, we defined a `root` of type `Node<T>` representing the root of the tree. Practical applications of binary trees usually include additional operations like adding a node, deleting a node, checking if a value exists in the tree, and various ways of traversing the tree (in-order, pre-order, post-order). 
 
 ## Common Operations on Binary Trees
 
@@ -473,100 +439,6 @@ It's important to note that traversal operations have a time complexity of O(n),
 
 In addition to traversal methods, other common operations on binary trees include `insertion`, `deletion`, and `searching`. These are vital operations for maintaining and interacting with the binary tree structure.
 
-### Removing Nodes from a Binary Tree
-
-Deleting or removing a node from a binary tree is a slightly complex operation compared to insertion. This is because when we remove a node, we need to ensure that the remaining nodes still form a binary tree. The process differs depending on the number of children the node has:
-
-1. **No child**: If the node is a leaf node (i.e., it does not have any children), we can directly remove the node.
-
-```{dot}
-//| label: fig-removal-no-child
-//| fig-cap: "Removing a node with no children. The node 'C' is simply removed from the tree."
-digraph G {
-  node [shape=circle];
-  "A"
-  "B" -> "A" [label="remove", color="red"]
-  "C" [color="red"]
-  "B" -> "C"
-}
-```
-
-2. **One child**: If the node has a single child, we can replace the node with its subtree.
-
-```{dot}
-//| label: fig-removal-one-child
-//| fig-cap: "Removing a node with one child. The node 'B' is replaced by its subtree rooted at 'C'."
-digraph G {
-  node [shape=circle];
-  "A"
-  "B" -> "A" [label="remove", color="red"]
-  "C"
-  "B" -> "C" [color="blue"]
-  "D" [color="blue"]
-  "C" -> "D"
-}
-```
-
-3. **Two children**: This is the most complex case. If the node has two children, we generally seek a node from the tree to replace the node to be deleted. The replacement node is typically the in-order predecessor or the in-order successor of the node. These are the node's immediate previous and next nodes in in-order traversal (see @fig-in-order-traversal).
-
-   - **In-order predecessor**: This is the node with the highest value that is smaller than the value of the node to be removed. It can be found by moving one step to the left (to the left child), and then as far right as possible.
-
-   - **In-order successor**: This is the node with the smallest value that is larger than the value of the node to be removed. It can be found by moving one step to the right (to the right child), and then as far left as possible.
-
-```{dot}
-//| label: fig-removal-two-children
-//| fig-cap: "Removing a node with two children. The node 'B' is replaced by its in-order predecessor 'A' or in-order successor 'C'. The replacement node is then recursively removed from its original position."
-digraph G {
-  node [shape=circle];
-  "A"
-  "B" -> "A" [color="blue"]
-  "B" [color="red"]
-  "C"
-  "B" -> "C" [color="blue"]
-}
-```
-
-Once we find the in-order predecessor (or successor), we replace the node to be deleted with the predecessor (or successor) and then recursively delete the predecessor (or successor) from its original position.
-
-The reason we choose the in-order predecessor or successor is to maintain the binary search tree property, i.e., for every node, nodes in the left subtree have values less than the node, and nodes in the right subtree have values greater than the node. 
-
-Here is a basic outline of the removal process in pseudocode:
-
-```pseudocode
-function remove(node, key) {
-  if (node is null) {
-    return node
-  }
-  if (key < node.key) {
-    node.left = remove(node.left, key)
-  } else if (key > node.key) {
-    node.right = remove(node.right, key)
-  } else {
-    if (node.left is null) {
-      return node.right
-    } else if (node.right is null) {
-      return node.left
-    }
-    node.key = minValue(node.right)
-    node.right = remove(node.right, node.key)
-  }
-  return node
-}
-
-function minValue(node) {
-  current = node
-  while (current.left is not null) {
-    current = current.left
-  }
-  return current.key
-}
-```
-
-In this pseudocode, `remove()` is a recursive function that deletes the node with the specified key from the tree and returns the new root of the subtree, and `minValue()` is a helper function that returns the minimum value in a non-empty binary search tree.
-
-The time complexity for deletion in a binary tree can range from O(log n) to O(n), where n is the number of nodes. In a balanced tree, the time complexity is O(log n) because we would be traversing the height of the tree, which is logarithmic in a balanced tree. However, in the worst-case scenario, such as when the tree is a degenerate or skewed tree, the time complexity would be O(n) because each removal could potentially involve traversing all the nodes of the tree.
-
-
 ## Binary Search Trees (BST)
 
 Before delving into Binary Search Trees (BSTs), let's take a step back and contemplate the significance of search operations in computer science. A search operation is fundamental to many applications, from looking up a contact in your smartphone to searching for a specific book in a library database. Therefore, making search operations efficient has always been a central challenge in computer science.
@@ -674,7 +546,13 @@ While recursion offers a straightforward and elegant approach to implementing BS
 
 ### Search Operation
 
-**Recursive Approach**
+The objective of the search operation in a binary search tree (BST) is to find a node that contains a specified value. If the value is present in the BST, the function will return that node. Otherwise, it will return null. 
+
+To find a node in a BST, we can use one of two main approaches: recursion or iteration. Both have their advantages and disadvantages, which will depend on the situation at hand.
+
+#### Recursive Approach
+
+Consider the following Java code that uses a recursive method to search a node in a BST.
 
 ```java
 public TreeNode search(TreeNode node, int value) {
@@ -688,7 +566,17 @@ public TreeNode search(TreeNode node, int value) {
 }
 ```
 
-**Iterative Approach**
+The method `search` receives a TreeNode `node` (that represents a current node in the BST) and an integer `value` (that is the value to be searched). 
+
+The search operation begins by checking whether the node is null (which indicates that we've traversed a path in the tree where the value does not exist) or the value of the current node is equal to the desired value. If either condition is true, the node is returned. 
+
+If the value to be found is less than the current node's value, the function recursively calls itself, continuing the search on the left subtree (`node.left`). 
+
+Conversely, if the value is greater than the current node's value, the function calls itself to continue the search on the right subtree (`node.right`).
+
+#### Iterative Approach
+
+Now, let's look at an iterative approach to search a node in a BST. The iterative approach can be more space-efficient as it does not require stack space for recursive calls.
 
 ```java
 public TreeNode search(TreeNode root, int value) {
@@ -704,9 +592,50 @@ public TreeNode search(TreeNode root, int value) {
 }
 ```
 
+In the iterative approach, we begin with the root node and enter a while loop that continues as long as the current node is not null. 
+
+If the value of the current node (`root.val`) is greater than the desired value, we move to the left child of the current node (`root = root.left`). 
+
+If the value of the current node is less than the desired value, we move to the right child (`root = root.right`). 
+
+The loop breaks and the current node is returned if the value of the current node is equal to the desired value. 
+
+If the value is not found in the tree, the function will return null. 
+
+#### Visualizing the Search Operation
+
+We'll use a simple binary search tree with the values 2, 1, and 3, with 2 being the root node, 1 the left child, and 3 the right child. We'll search for the value 3.
+
+```{dot}
+//| label: fig-BST-Search
+//| fig-cap: "Illustration of the search operation process in a binary search tree, comparing recursive and iterative approaches. The recursive path is shown in blue, while the iterative path is shown in green."
+digraph BST {
+  node [shape=circle];
+  2 -> {1, 3}
+  
+  // Nodes in the path of the recursive search
+  2 [color=blue];
+  3 [color=blue];
+
+  // Nodes in the path of the iterative search
+  2 [color=green];
+  3 [color=green];
+}
+```
+
+Here, the search operation starts at node 2 (the root node). In both recursive and iterative approaches, the search function compares the value to be found (3) with the current node's value (2). As 3 is greater than 2, the function moves to the right child (node 3) for both recursive and iterative approaches. This search path is highlighted in blue for recursive and green for iterative.
+
+The search function now finds that the value of the current node (3) is equal to the desired value (3). Therefore, the function returns this node.
+
+Please note that in this simple example, the recursive and iterative paths are identical. This won't always be the case, especially in larger trees, but the key takeaway is that both methods are following the same fundamental logic, albeit through different operational mechanics.
+
 ### Insertion Operation
 
-**Recursive Approach**
+Insertion operation in a Binary Search Tree (BST) aims to add a new node with a specific value to the tree. The position of the new node is determined by the fundamental property of BST: for any given node, all nodes in its left subtree have values less than its value, and all nodes in its right subtree have values greater than its value.
+
+#### Recursive Approach
+
+Let's start with the recursive approach to insert a node in a BST. Here is a snippet of Java code implementing this approach:
 
 ```java
 public TreeNode insert(TreeNode node, int value) {
@@ -724,7 +653,19 @@ public TreeNode insert(TreeNode node, int value) {
 }
 ```
 
-**Iterative Approach**
+This `insert` function takes a TreeNode `node` (representing the current node in the BST) and an integer `value` (the value to be inserted).
+
+The function first checks if the node is null. If it is (indicating that we've reached an empty spot in the tree where a new node should be inserted), it creates a new TreeNode with the given value and returns it.
+
+If the node is not null, it checks if the value to be inserted is less than the value of the current node. If so, it recursively calls the `insert` function to insert the value into the left subtree (`node.left`).
+
+If the value to be inserted is greater than the value of the current node, it recursively calls `insert` to insert the value into the right subtree (`node.right`). 
+
+After the value is inserted, it returns the (potentially modified) current node, maintaining the structure of the tree.
+
+#### Iterative Approach
+
+Now let's consider an iterative approach to insert a node in a BST, which can be more space-efficient as it doesn't require stack space for recursive calls:
 
 ```java
 public TreeNode insert(TreeNode root, int value) {
@@ -753,9 +694,141 @@ public TreeNode insert(TreeNode root, int value) {
 }
 ```
 
+In the iterative `insert` function, we start by creating a new TreeNode `node` with the specified value. 
+
+If the BST is empty (i.e., the root is null), we return this new node as the root of the BST. 
+
+If the BST is not empty, we start from the root and iterate down the tree to find the correct position for the new node. 
+
+We maintain two pointers during the traversal: `parent` (representing the parent of the current node) and `current` (the current node in the traversal). We update `parent` to be `current` before moving `current` in each iteration. 
+
+When the `current` node becomes null, we've found the correct spot for the new node. If the new value is less than the parent's value, we insert the new node as the left child of the parent; otherwise, we insert it as the right child. 
+
+The function then returns the root of the (now modified) BST.
+
+#### Visualizing the Insertion Operation
+
+Consider a simple binary search tree with values 2, 1, and 3, where 2 is the root node, 1 is the left child, and 3 is the right child. Let's try to insert a new node with the value 4 into this tree.
+
+```{dot}
+//| label: fig-BST-Insert
+//| fig-cap: "Illustration of the node insertion process in a binary search tree, showcasing both recursive and iterative approaches. The path followed by the recursive approach is shown in blue, while the path followed by the iterative approach is shown in green."
+digraph BST {
+  node [shape=circle];
+  2 -> {1, 3}
+  3 -> 4
+  4 [color=red];
+  
+  // Nodes in the path of the recursive search
+  2 [color=blue];
+  3 [color=blue];
+
+  // Nodes in the path of the iterative search
+  2 [color=green];
+  3 [color=green];
+}
+```
+
+In this diagram, we start at node 2 (the root node) and want to insert a node with the value 4 (shown in red). In both the recursive and iterative methods, we start by comparing the value to be inserted (4) with the value of the current node (2). Since 4 is greater than 2, we move to the right child (node 3). 
+
+We then compare 4 with 3. Since 4 is greater than 3, and node 3 doesn't have a right child, we add the new node as the right child of node 3. The paths taken by the recursive and iterative approaches are shown in blue and green respectively.
+
+Just like the search operation, in this simple example, the recursive and iterative paths for the insertion operation are identical. But in a larger tree, the paths may differ depending on the current state of the tree and the value to be inserted. However, both methods adhere to the same principle - the new node is added in such a way that it maintains the property of the binary search tree.
+
 ### Deletion Operation
 
-**Recursive Approach**
+Deleting or removing a node from a binary tree is a slightly complex operation compared to insertion. This is because when we remove a node, we need to ensure that the remaining nodes still form a binary tree. The process differs depending on the number of children the node has:
+
+1. **No child**: If the node is a leaf node (i.e., it does not have any children), we can directly remove the node.
+
+```{dot}
+//| label: fig-removal-no-child
+//| fig-cap: "Removing a node with no children. The node 'C' is simply removed from the tree."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B" -> "A" [label="remove", color="red"]
+  "C" [color="red"]
+  "B" -> "C"
+}
+```
+
+2. **One child**: If the node has a single child, we can replace the node with its subtree.
+
+```{dot}
+//| label: fig-removal-one-child
+//| fig-cap: "Removing a node with one child. The node 'B' is replaced by its subtree rooted at 'C'."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B" -> "A" [label="remove", color="red"]
+  "C"
+  "B" -> "C" [color="blue"]
+  "D" [color="blue"]
+  "C" -> "D"
+}
+```
+
+3. **Two children**: This is the most complex case. If the node has two children, we generally seek a node from the tree to replace the node to be deleted. The replacement node is typically the in-order predecessor or the in-order successor of the node. These are the node's immediate previous and next nodes in in-order traversal (see @fig-in-order-traversal).
+
+   - **In-order predecessor**: This is the node with the highest value that is smaller than the value of the node to be removed. It can be found by moving one step to the left (to the left child), and then as far right as possible.
+
+   - **In-order successor**: This is the node with the smallest value that is larger than the value of the node to be removed. It can be found by moving one step to the right (to the right child), and then as far left as possible.
+
+```{dot}
+//| label: fig-removal-two-children
+//| fig-cap: "Removing a node with two children. The node 'B' is replaced by its in-order predecessor 'A' or in-order successor 'C'. The replacement node is then recursively removed from its original position."
+digraph G {
+  node [shape=circle];
+  "A"
+  "B" -> "A" [color="blue"]
+  "B" [color="red"]
+  "C"
+  "B" -> "C" [color="blue"]
+}
+```
+
+Once we find the in-order predecessor (or successor), we replace the node to be deleted with the predecessor (or successor) and then recursively delete the predecessor (or successor) from its original position.
+
+The reason we choose the in-order predecessor or successor is to maintain the binary search tree property, i.e., for every node, nodes in the left subtree have values less than the node, and nodes in the right subtree have values greater than the node. 
+
+Here is a basic outline of the removal process in pseudocode:
+
+```pseudocode
+function remove(node, key) {
+  if (node is null) {
+    return node
+  }
+  if (key < node.key) {
+    node.left = remove(node.left, key)
+  } else if (key > node.key) {
+    node.right = remove(node.right, key)
+  } else {
+    if (node.left is null) {
+      return node.right
+    } else if (node.right is null) {
+      return node.left
+    }
+    node.key = minValue(node.right)
+    node.right = remove(node.right, node.key)
+  }
+  return node
+}
+
+function minValue(node) {
+  current = node
+  while (current.left is not null) {
+    current = current.left
+  }
+  return current.key
+}
+```
+
+In this pseudocode, `remove()` is a recursive function that deletes the node with the specified key from the tree and returns the new root of the subtree, and `minValue()` is a helper function that returns the minimum value in a non-empty binary search tree.
+
+The time complexity for deletion in a binary tree can range from O(log n) to O(n), where n is the number of nodes. In a balanced tree, the time complexity is O(log n) because we would be traversing the height of the tree, which is logarithmic in a balanced tree. However, in the worst-case scenario, such as when the tree is a degenerate or skewed tree, the time complexity would be O(n) because each removal could potentially involve traversing all the nodes of the tree.
+
+#### Recursive Approach
 
 ```java
 public TreeNode delete(TreeNode root, int value) {
