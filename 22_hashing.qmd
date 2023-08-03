@@ -2,27 +2,27 @@
 
 ## Background and Motivation
 
-### Indexing
+### The Power and Constraints of Indexing
 
-**Indexing** refers to the idea of accessing a certain element of an array by referring to it using a specific number, called the index. Using the same index always returns the same element, as long as the array remains unchanged. For example, to access the 12th element of an array `arr`, we use `arr[11]`.
+**Indexing** allows for direct access to individual elements within an array, using an integer as a specific reference, referred to as an 'index'. When called with the same index, an array always returns the same element, provided the array itself hasn't been altered. For instance, to retrieve the 12th element of an array `arr`, you would use `arr[11]`.
 
-The math for finding the address of an element in the array works out to be:
+Mathematically, the formula to find the memory address of an array element is given by:
 
 ```
 baseAddress + (index * sizeOfElement)
 ```
 
-Now, keeping that in mind, let's explore the limitations of indexing.
+While this concept is powerful and efficient, it encounters certain limitations when extended beyond its original design. Let's delve into one of these constraints.
 
-### Limitations of Indexing
+### The Challenge of Non-numeric Indexing
 
-Suppose we want to access an element in the array using a string as an index, such as `arr["dhruv"]`. What is stopping us?
+Imagine a scenario where we want to access an array element using a string as an index, for example, `arr["dhruv"]`. What's the issue here?
 
-The problem is that we cannot calculate `baseAddress + ("dhruv" * sizeOfElement)` because the index, in this case, is a string, not a number. The operation is not defined, and therefore, we can't directly use strings as indices in an array.
+The problem lies in the arithmetic: `baseAddress + ("dhruv" * sizeOfElement)` is not feasible because the index, "dhruv", is not a numeric value. Without the ability to perform this operation, we're unable to directly use strings as indices in an array.
 
-### Mapping Strings to Numbers
+### Mapping Strings to Numbers: A Key to Overcoming the Constraint
 
-Let's consider an array of strings. We can use it to map a number to a string:
+Consider an array of strings where we map numeric indices to string values:
 
 ```
 0 -> "Alice"
@@ -30,9 +30,9 @@ Let's consider an array of strings. We can use it to map a number to a string:
 2 -> "Charlie"
 ```
 
-If we can use an array to map a number to a string, can we also use it to map strings to numbers? Yes, we can!
+With an array allowing us to map a number to a string, could we use a similar mechanism to map strings to numbers? Absolutely!
 
-One way to do this is by searching linearly for a string in the array to find its index. For example, we can find the string "Dhruv" at index 5:
+One approach involves a linear search for a string in the array, noting its index. For instance, let's assume we find the string "Dhruv" at index 5:
 
 ```
 0 -> "Alice"
@@ -42,60 +42,133 @@ One way to do this is by searching linearly for a string in the array to find it
 5 -> "Dhruv"
 ```
 
-The index at which we found the string "Dhruv" (in this case, 5) can be used as a key in a different array to find the data related to "Dhruv". However, this method of linear searching can be quite slow for large datasets.
+The index where we locate the string "Dhruv" (5, in this case) can serve as a key in another array, enabling access to data associated with "Dhruv". Nevertheless, this method, while feasible, isn't very efficient. Linear searching can become significantly slow when dealing with large datasets, begging the question - is there a better solution? We'll explore the answer to this question in the upcoming sections.
 
-### Hashing: A Better Solution
+```{dot}
+//| label: fig-array-string-mapping
+//| fig-cap: "Mapping strings to numbers using array indices. The index of an array corresponds to a specific string value, such as 'Dhruv' at index 5. Each box represents an array element."
+graph G {
+  node [shape=record];
+  array [label="{<0>0: Alice |<1> 1: Bob |<2> 2: Charlie |<ellipsis> ... |<5> 5: Dhruv}", color="blue"];
+  node [shape=plaintext, fontcolor="darkgreen"];
+  0 -- array:0 [color="orange"];
+  1 -- array:1 [color="orange"];
+  2 -- array:2 [color="orange"];
+  5 -- array:5 [color="orange"];
+}
+```
 
-This is where **hashing** comes into play. Hashing allows us to efficiently map strings (or any other non-numeric keys) to numbers. By using a hash function, we can convert a string into a number that represents the index in the array.
+### Hashing: A Key to Efficient Mapping
 
-A **hash function** takes a key as input and outputs an index in the hash table's array. A good hash function has the following criteria:
+This brings us to **hashing**, an ingenious method that enables us to map non-numeric keys, such as strings, to numeric indices, achieving efficiency even with a large volume of data. At the core of this mechanism is a **hash function**, which transforms a given key into a number that serves as an index within an array.
 
-- **Uniform distribution**: The hash function should distribute keys evenly across the array to minimize collisions (when multiple keys map to the same index).
-- **Minimal collisions**: A good hash function should minimize the chance of collisions.
-- **Fast computation**: The hash function should be fast to compute, allowing for quick insertion, deletion, and retrieval of data.
-- **Deterministic output**: The hash function should produce the same output for the same input every time it is called.
+A **hash function** ingests a key and excretes an index, pointing to a location within the hash table's array. An effective hash function should meet the following criteria:
 
-For example, let's consider a simple hash function that converts the first character of a string into its ASCII code:
+- **Uniform distribution**: The function should scatter keys evenly across the array, thereby reducing the likelihood of collisions (where multiple keys map to the same index).
+- **Minimal collisions**: It should minimize the occurrence of hash collisions.
+- **Swift computation**: The function should quickly compute the hash, thereby enabling rapid data insertion, retrieval, and deletion.
+- **Deterministic output**: The function should consistently produce the same output for a given input.
+
+Consider a rudimentary hash function that transforms the first character of a string into its ASCII code:
 
 ```plaintext
 hash("dhruv") = ASCII('d') = 100
 ```
 
-The output of the hash function is 100, which we can use as an index in an array to store or retrieve data related to "dhruv". This allows us to use strings (and other non-numeric keys) as indices, achieving our goal of efficient mapping.
+The hash function yields 100, which we can utilize as an index in an array to store or retrieve data related to "dhruv". This illustrates how hashing enables us to use strings (and other non-numeric keys) as indices, thus offering a practical solution to efficient mapping.
 
 ## Hash Functions
 
 ### Introduction
 
-Previously, we managed to map a string "D" to some data, just like an index maps to some data in an array. The resulting data structure that can map any string to any data is called a **hash table**. The function used to map strings to data is called a **hash function**. The concept of mapping "D" to some data can be referred to as **hashing** "D" to an index 3, which is where we found the value corresponding to "D".
+In our earlier discussion, we accomplished mapping the string "D" to certain data, akin to mapping an index to specific data in an array. The resulting data structure, capable of mapping any string to any data, is termed a **hash table**. The function that conducts this mapping from strings to data is, as you've guessed, the **hash function**. The procedure of associating "D" to an index 3, where we locate the corresponding value, can be referred to as **hashing** "D".
 
-Now, we'll learn about a way of mapping any object (called a key) to any other object (called the record, or the value). For instance, your student ID can be a key, and all the data about you on your ID can be stored in a record object.
+As we step further into the realm of hashing, we'll explore how it enables mapping any object (referred to as a 'key') to any other object (termed the 'record' or 'value'). Picture your student ID as a key, while the record stores all relevant data about you attached to this ID.
+
+*Figure 2: At this juncture, a diagram illustrating the concept of hash functions and their role in a hash table would be helpful. The diagram could visualize a hash function mapping different keys (string, numeric or otherwise) to different indices in an array (hash table), which in turn point to corresponding data or records.*
+
+```{dot}
+//| label: fig-hash-function
+//| fig-cap: "Hash function mapping keys to indices in a hash table. Each key is hashed to a specific index, which points to the corresponding data or record."
+digraph G {
+  node [shape=record];
+  hashTable [label="{Index 0: | Index 1: | Index 2: | ... | Index 100: Dhruv's Data}"];
+  key1 [label="Key 1"];
+  key2 [label="Key 2"];
+  key3 [label="Key 3"];
+  dhruvKey [label="Key: 'dhruv'"];
+  
+  key1 -> hashTable [label="hash(Key 1)"];
+  key2 -> hashTable [label="hash(Key 2)"];
+  key3 -> hashTable [label="hash(Key 3)"];
+  dhruvKey -> hashTable [label="hash('dhruv')"];
+}
+```
 
 ### Hashing
 
-Hashing can be thought of as a method for storing and retrieving records from a database. It lets you insert, delete, and search for records based on a search key value. When properly implemented, these operations can be performed in constant time. In fact, a properly tuned hash system typically looks at only one or two records for each search, insert, or delete operation. This is far better than the $O(log n)$ average cost required to do a binary search on a sorted array of n records, or the $O(log n)$ average cost required to do an operation on a binary search tree. However, even though hashing is based on a very simple idea, it is surprisingly difficult to implement properly. Designers need to pay careful attention to all of the details involved with implementing a hash system.
+We can conceptualize hashing as a mechanism for storing and retrieving records from a database, similar to an adept librarian who knows exactly where to fetch a book or where to replace it on the vast shelves. Given a search key value, hashing facilitates the insertion, deletion, and search for records. The speed and efficiency of these operations is remarkable when the hashing is properly implemented, often examining merely one or two records for each operation. This outperforms the average cost of $O(log n)$ required to execute a binary search on a sorted array of n records, or to conduct an operation on a binary search tree.
 
-A hash system stores records in an array called a **hash table**, which we will call `HT`. Hashing works by performing a computation on a search key `K` in a way that is intended to identify the position in `HT` that contains the record with key `K`. The function that does this calculation is called the **hash function**, and will be denoted by the letter `h`. Since hashing schemes place records in the table in whatever order satisfies the needs of the address calculation, records are not ordered by value. A position in the hash table is also known as a **slot**. The number of slots in hash table `HT` will be denoted by the variable `M` with slots numbered from 0 to M−1. The goal for a hashing system is to arrange things such that, for any key value `K` and some hash function `h`, $i=h(K)$ is a slot in the table such that $0 \leq i < M$, and we have the key of the record stored at `HT[i]` equal to `K`.
+Despite its simplicity in concept, the implementation of hashing can be surprisingly complex, requiring careful attention to every detail to ensure a correctly working system. A hash system stores records in an array known as a **hash table**, denoted as `HT` in our discussions. Hashing operates by computing a search key `K` to pinpoint the location in `HT` that houses the record with key `K`. This computation is performed by the **hash function**, denoted as `h`.
 
-Hashing is not good for applications where multiple records with the same key value are permitted. Hashing is not a good method for answering range searches. In other words, we cannot easily find all records (if any) whose key values fall within a certain range. Nor can we easily find the record with the minimum or maximum key value or visit the records in key order. Hashing is most appropriate for answering the question, 'What record, if any, has key value K?' For applications where all search is done by exact-match queries, hashing is the search method of choice because it is extremely efficient when implemented correctly.
+Given that hashing schemes position records in the table based on the needs of the address calculation, records aren't sorted by value. A position in the hash table is often referred to as a **slot**. The number of slots in the hash table `HT` is denoted by the variable `M`, with slots numbered from 0 to M−1. The ultimate aim of a hashing system is to ensure that for any key value `K` and a hash function `h`, $i=h(K)$ identifies a slot in the table such that $0 \leq i < M$, with the key of the record at `HT[i]` being equal to `K`.
 
-Hashing generally takes records whose key values come from a large range and stores those records in a table with a relatively small number of slots. Since keys have a large range and values have smaller, limited slots for storage – A hash function might sometimes end up hashing two keys to the same slot. We refer to such an event as a **collision**.
+However, hashing isn't the panacea for all applications. It stumbles in scenarios where multiple records with the same key value are allowed. Nor is it effective in addressing range searches, i.e., locating all records whose key values fall within a particular range. It also falters when it comes to finding the record with the minimum or maximum key value, or traversing the records in key order. Hashing excels at answering the question, 'Which record, if any, has the key value K?' It's most appropriate for exact-match queries, and proves to be incredibly efficient when implemented correctly.
 
-To illustrate, consider a classroom full of students. What is the probability that some pair of students shares the same birthday (i.e., the same day of the year, not necessarily the same year)? If there are 23 students, then it is unlikely that more than one student will share the same birthday. There are 365 "slots" or possible days a student can have a birthday on; but only 23 "keys". As the number of students increases, the probability of a "collision" or two students sharing a birthday increases. To be practical, a database organized by hashing must store records in a hash table that is not so large that it wastes space.
+Given the large range of key values, hashing generally takes records and stores them in a table with a relatively small number of slots. This inevitably leads to situations where a hash function maps two keys to the same slot, an event known as a **collision**.
 
-We would like to pick a hash function that maps keys to slots in a way that makes each slot in the hash table have equal probability of being filled for the actual set keys being used. Unfortunately, we normally have no control over the distribution of key values for the actual records in a given database or collection. So how well any particular hash function does depends on the actual distribution of the keys used within the allowable key range. In some cases, incoming data are well distributed across their key range. For example, if the input is a set of random numbers selected uniformly from the key range, any hash function that assigns the key range so that each slot in the hash table receives an equal share of the range will likely also distribute the input records uniformly within the table.
+To illustrate, imagine a classroom of students. What is the likelihood that a pair of students share the same birthday (same day of the year, not necessarily the same year)? With 23 students and 365 "slots" or possible days for a birthday, the odds seem slim. However, as the number of students grows, so does the probability of a collision, i.e., two students sharing a birthday. A database utilizing hashing must be careful not to create a hash table so large it wastes space.
 
-However, in many applications the incoming records are highly clustered or otherwise poorly distributed. When input records are not well distributed throughout the key range it can be difficult to devise a hash function that does a good job of distributing the records throughout the table, especially if the input distribution is not known in advance. For example, If the input is a collection of English words, the beginning letter will be poorly distributed. A dictionary of words mapped to their frequency is often used in rudimentary natural language processing algorithms.
+An ideal hash function should distribute keys to slots such that every slot in the hash table has an equal probability of being filled, given the actual set of keys being used. Unfortunately, we typically have no control over the distribution of key values for the actual records in a given database or collection. Hence, the effectiveness of any particular hash function depends on the actual distribution of the keys used within the allowable key range.
 
-In conclusion, anything can be a hash function (i.e., map a value to an index), but not everything can be a good hash function. A function that always returns the index 0 is a hash function that maps everything to 0. It’s no good but it’s still a hash function. An example of a commonly used hash function is the modulus operator! It is common for `N`-sized hash tables to use the modulus of `N` as a hash function. If `N` is $20$, data for 113 will be hashed to index $113 \% 20 = 13$.
+In some cases, incoming data are well distributed across their key range. For instance, if the input is a set of random numbers selected uniformly from the key range, any hash function that assigns the key range so that each slot in the hash table receives an equal share of the range will likely also distribute the input records uniformly within the table.
 
-But if we use the modulo operator as a hash function, what do we do when multiple pieces of data map to the same index? $53 \% 20 = 13$, $73 \% 20 = 13$, etc. But if you think about it, we can store everything at $13$! By using nested data structures… More on this later.
+However, there are numerous scenarios where incoming records are highly clustered or otherwise poorly distributed. It can be challenging to devise a hash function that successfully scatters the records throughout the table, especially if the input distribution is unknown in advance. For example, if the input is a collection of English words, the beginning letter will be poorly distributed. A dictionary of words mapped to their frequencies is often used in basic natural language processing algorithms.
+
+In summary, while any function can serve as a hash function (i.e., mapping a value to an index), not all can qualify as a good hash function. A function that constantly returns the index 0 is a hash function, albeit a subpar one as it maps everything to 0. A common hash function is the modulus operator. For instance, in `N`-sized hash tables, it's common to use the modulus of `N` as a hash function. If `N` is $20$, data for 113 will be hashed to index $113 \% 20 = 13$.
+
+But what happens when multiple pieces of data map to the same index using the modulus operator? For instance, $53 \% 20 = 13$, $73 \% 20 = 13$, etc. The solution lies in the use of nested data structures, allowing us to store everything at index 13. We will explore this in more detail later.
 
 ### Simple Hash Functions
 
-Let's apply a simple hash function to a set of keys and compute their indices. In this example, we'll use the modulo operation as the hash function. Given a hash table with a size of 5, we can compute the indices for the keys as follows:
+```{dot}
+//| label: fig-hash-collision
+//| fig-cap: "An illustration of hash collision and its resolution using nested data structures. Multiple keys hash to the same index (13), triggering a collision. A nested data structure (linked list) at index 13 accommodates all these colliding keys."
+digraph G {
+  node [shape=record, fontcolor=black];
+  edge [fontcolor=black];
+  
+  subgraph cluster_0 {
+    color=blue;
+    label = "Hash Table";
+    node [style=filled, fillcolor=lightblue];
+    hashTable [label="{<f0> Index 0: | <f1> Index 1: | <f2> ... | <f13> Index 13: | <f14> ... | <f19> Index 19:}", fontsize=18];
+  }
 
+  subgraph cluster_1 {
+    color=darkorange;
+    label = "Nested Data Structure\n(Linked List)";
+    node [style=filled, fillcolor=lightsalmon];
+    nested [label="{113 | 53 | 73}", fontsize=18];
+  }
+  
+  node [style=filled, fillcolor=lightgreen];
+  keys [label="Keys: 113, 53, 73", fontsize=18];
+  
+  node [style=filled, fillcolor=lightgoldenrod];
+  hashFunction [label="Hash Function\n(% 20)", fontsize=18];
+  
+  keys -> hashFunction [label="apply", fontsize=16];
+  hashFunction -> hashTable:f13 [label="hash to index 13", fontsize=16];
+  hashTable:f13 -> nested [label="store at index 13", fontsize=16];
+}=
 ```
+
+Let's envision hashing as a real-world scenario. A teacher has a stack of students' tests, and she wants to categorize them by the last digit of their respective student IDs. In this case, the "bucket" will be the bins labeled with numbers from 0 to 9, and the teacher will place each test paper in the bin that matches the last digit of the student's ID. This process is analogous to a hash function, and the simple function in this example is equivalent to the modulo operation. 
+
+Given a hash table of size 5, we can use this hash function to assign keys to the appropriate index:
+
+```plaintext
 HashTable size: 5
 HashFunction: key % size
 
@@ -109,58 +182,56 @@ Indices:
 33 % 5 = 3
 ```
 
-### Other Types of Hash Functions
+This quick mapping of keys to indices highlights the simplicity and efficiency of a well-chosen hash function. However, not all hash functions are created equal, and their effectiveness can be dependent on the data they're being applied to. Let's explore a few other hash functions that are commonly used in different scenarios.
+
+### Various Hash Functions and Their Applications
 
 #### Direct Hashing
 
-A direct hash function uses the item's key as the bucket index. For example, if the key is 937, the index is 937. A hash table with a direct hash function is called a direct access table. Given a key, a direct access table search algorithm returns the item at index key if the bucket is not empty, and returns null (indicating item not found) if empty.
+Direct hashing is as straightforward as it gets. If we consider the item's key as its index, this constitutes direct hashing. It's like walking into a classroom and asking students to sit according to their roll numbers, which are unique to each student. So, a student with roll number 15 would sit at desk number 15.
 
-**Limitations**:
+This simplicity, however, comes with its own limitations:
 
-A direct access table has the advantage of no collisions: Each key is unique (by definition of a key), and each gets a unique bucket, so no collisions can occur. However, a direct access table has two main limitations:
-
-1. All keys must be non-negative integers, but for some applications, keys may be negative.
-2. The hash table's size equals the largest key value plus 1, which may be very large.
-
-Similarly, there are other hash functions each with their own characteristics.
+1. Keys must be non-negative integers.
+2. The size of the hash table must equal the maximum key value plus 1, which can lead to a large table and inefficient use of space if the keys are large.
 
 #### Modulo Hash
 
-A modulo hash function computes the index by taking the remainder of the key divided by the table size `M`. This is a simple and effective way to convert a large key range into a smaller index range. The hash function can be defined as:
+The modulo hash function, as seen in our example above, utilizes the remainder of the key divided by the table size `M` to determine the index. It's a simple and effective way to convert a larger key range into a manageable index range.
 
-```
+```plaintext
 h(K) = K % M
 ```
 
 #### Mid-Square Hash
 
-A mid-square hash function computes the index by first squaring the key, and then extracting a portion of the squared value as the index. This approach is especially useful when the keys are not uniformly distributed. The hash function can be defined as:
+Mid-square hashing takes a unique approach. The key is squared, and a portion of the resulting squared value is used as the index. This technique can be particularly useful when keys are not uniformly distributed.
 
-```
+```plaintext
 h(K) = middle_digits(K^2)
 ```
 
 #### Mid-Square Hash with Base 2
 
-A mid-square hash function with base 2 is a variation of the mid-square hash function, where the key is first squared, and then the middle bits of the binary representation of the squared value are extracted as the index. This approach is especially useful for binary keys. The hash function can be defined as:
+This variation of mid-square hashing squares the key and extracts the middle bits of the binary representation of the squared value as the index. This technique can be particularly useful for binary keys.
 
-```
+```plaintext
 h(K) = middle_bits(K^2)
 ```
 
 #### Multiplicative String Hashing
 
-A multiplicative string hashing function computes the index by treating the characters in the string as numbers and combining them using a multiplication and a constant. This approach can help achieve a good distribution of string keys in the hash table. The hash function can be defined as:
+Multiplicative string hashing offers a way to handle string keys. It treats the characters in the string as numbers and combines them using multiplication and a constant. This approach can help achieve a good distribution of string keys in the hash table.
 
-```
+```plaintext
 h(K) = (c1 * a^(n-1) + c2 * a^(n-2) + ... + cn) % M
 ```
 
-where `c1, c2, ..., cn` are the character codes of the string, `a` is a constant, `n` is the length of the string, and `M` is the size of the hash table.
+Here, `c1, c2, ..., cn` are the character codes of the string, `a` is a constant, `n` is the length of the string, and `M` is the size of the hash table.
 
-Here's the ASCII representation of the resulting hash table:
+Applying our hash function (modulo 5) to the keys from the example above, we end up with a hash table represented in ASCII as follows:
 
-```
+```plaintext
 Index | Key
 -------------
   0   | 15
@@ -170,132 +241,234 @@ Index | Key
   4   | -
 ```
 
-In this example, we can see that the keys 15 and 10, as well as 28 and 33, have collided, as they both map to the same indices (0 and 3, respectively).
+Here, we observe that the keys 15 and 10, as well as 28 and 33, have resulted in collisions, as they both map to the same indices (0 and 3, respectively). The presence of collisions brings us to another important aspect of hashing: collision resolution strategies, which we will explore in the upcoming sections.
 
-### Trade-offs Between Different Hash Functions
+```{dot}
+//| label: fig-hash-table
+//| fig-cap: "Illustration of a hash table with keys and collisions. The keys 15 and 10, as well as 28 and 33, have collided, mapping to the same indices (0 and 3, respectively)."
+digraph G {
+  node [shape=record, color="darkorchid1"];
+  hashTable [label="{Index 0: | Index 1: | Index 2: | Index 3: | Index 4:}", fontsize=18];
+  keys1 [label="{15 | 10}", fontsize=18, color="goldenrod"];
+  keys3 [label="{28 | 33}", fontsize=18, color="goldenrod"];
+  key2 [label="47", fontsize=18, color="goldenrod"];
+  hashFunction [label="Hash Function\n(% 5)", fontsize=18, color="turquoise4"];
+  keys1 -> hashFunction [label="apply", fontsize=16];
+  keys3 -> hashFunction [label="apply", fontsize=16];
+  key2 -> hashFunction [label="apply", fontsize=16];
+  hashFunction -> hashTable [label="hash to indices", fontsize=16];
+  keys1 -> hashTable [label="collision (at index 0)", color="firebrick1", fontsize=16, fontcolor="firebrick1", arrowhead="dot", dir="both"];
+  keys3 -> hashTable [label="collision (at index 3)", color="firebrick1", fontsize=16, fontcolor="firebrick1", arrowhead="dot", dir="both"];
+}
+```
 
-There are trade-offs between different hash functions in terms of performance and complexity:
+### Comparing Different Hash Functions
 
-- A simple hash function, like the modulo operation, is fast to compute but may not distribute keys uniformly, leading to more collisions and reduced performance.
-- More complex hash functions, such as cryptographic hash functions, can provide a better distribution of keys but may be slower to compute.
+Various hash functions exist, each offering a distinct balance between computational speed and uniform key distribution, thus leading to different degrees of collision occurrence. The effectiveness of a hash function can significantly influence the overall performance of a hash table. 
 
-In practice, the choice of a hash function depends on the specific requirements of the application and the data being stored. The goal is to find a balance between uniform distribution, minimal collisions, fast computation, and deterministic output.
+#### Efficiency versus Complexity Trade-off
 
-## Hash Collisions
+For instance, a simple hash function, such as modulo operation, is computationally efficient but tends to distribute keys unevenly across the table. This non-uniform distribution increases the probability of collisions, resulting in deteriorated performance due to the need for collision resolution techniques.
 
-**Hash collisions** occur when two or more keys map to the same index in the hash table. Due to the pigeonhole principle, hash collisions are inevitable, as there are typically more possible keys than available indices in the array. Collisions negatively impact the efficiency of hashing, as they can lead to longer access times for insertion, deletion, and retrieval of key-value pairs.
+On the other hand, more sophisticated hash functions, including cryptographic hash functions, yield a more uniform distribution of keys across the table. However, their complexity leads to slower computation times, impacting the speed of operations.
 
-There are two primary methods to resolve hash collisions: **chaining** and **open addressing**.
+In real-world applications, the choice of a hash function is largely influenced by the specific demands of the task and the nature of the data being processed. The primary goal is to strike a balance between achieving a uniform key distribution, minimal collisions, fast computation, and deterministic output.
 
-## Chaining
+## Collision Resolution in Hashing: Chaining and Open Addressing
 
-**Chaining** is a collision resolution technique that uses a linked list or another data structure to store multiple key-value pairs at the same index. When a collision occurs, the new key-value pair is simply added to the data structure at the index.
+### Hash Collisions
 
-### Insertion, Search, and Deletion
+**Hash collisions**, a scenario where multiple keys map to the same index, are an inevitable outcome in hash tables due to the pigeonhole principle, which states that if there are more pigeons than pigeonholes, at least one pigeonhole must contain more than one pigeon. In the context of hashing, the keys represent pigeons, and the indices of the hash table are the pigeonholes. This analogy aptly describes how more keys than available indices will result in collisions. Such collisions can have a detrimental effect on the efficiency of hash table operations, increasing access times for insertions, deletions, and retrievals.
 
-Here's how to perform insertion, search, and deletion operations using chaining:
+Two prominent strategies for collision resolution include **chaining** and **open addressing**.
 
-1. **Insertion**: Calculate the index using the hash function. If the index is empty, create a new data structure (e.g., linked list) and insert the key-value pair. If the index is not empty, add the key-value pair to the existing data structure.
+### Chaining in Hash Collisions
 
-2. **Search**: Calculate the index using the hash function. If the index is empty, the key is not in the hash table. If the index is not empty, search the data structure at the index for the key.
+**Chaining** employs an auxiliary data structure, such as a linked list, at each index to accommodate multiple key-value pairs. This strategy effectively creates a 'chain' of entries at the index where a collision occurs.
 
-3. **Deletion**: Calculate the index using the hash function. If the index is empty, the key is not in the hash table. If the index is not empty, search the data structure at the index for the key and remove it if found.
+#### Process for Insertion, Search, and Deletion
 
-### Advantages and Disadvantages of Chaining
+The following steps outline the handling of key-value pairs during insertion, search, and deletion when using chaining:
 
-Chaining has several advantages and disadvantages:
+1. **Insertion**: The hash function calculates the index for the key. If the index is empty, a new data structure is initialized, and the key-value pair is inserted. In case of a non-empty index, the key-value pair is added to the existing data structure.
+
+2. **Search**: Upon calculating the index using the hash function, if the index is empty, it indicates the absence of the key in the hash table. If not empty, the data structure at the index is searched to find the key.
+
+3. **Deletion**: Similar to the search operation, the index is determined using the hash function. If the index is empty, it means the key does not exist in the hash table. If the index is non-empty, the data structure is searched to locate the key, which is then removed.
+
+```{dot}
+//| label: fig-chaining
+//| fig-cap: "Illustration of collision resolution using Chaining. Keys 15 and 10, and 28 and 33, have collided at indices 0 and 3, respectively, resulting in linked lists (chains) at those indices."
+digraph G {
+  node [shape=record, color="darkorchid1"];
+  hashTable [label="{Index 0: | Index 1: | Index 2: | Index 3: | Index 4:}", fontsize=18];
+  keys1 [label="{15 | 10}", fontsize=18, color="goldenrod"];
+  keys3 [label="{28 | 33}", fontsize=18, color="goldenrod"];
+  key2 [label="47", fontsize=18, color="goldenrod"];
+  hashFunction [label="Hash Function", fontsize=18, color="turquoise4"];
+  
+  hashProcess [label="", shape=ellipse, color=lightgrey, style=filled];
+  keys1 -> hashProcess [arrowhead=none];
+  keys3 -> hashProcess [arrowhead=none];
+  key2 -> hashProcess [arrowhead=none];
+  hashFunction -> hashProcess [arrowhead=none];
+
+  hashProcess -> hashTable [label="hash to indices", fontsize=16];
+
+  chain0 [label="{15 | 10}", fontsize=18, color="turquoise4", shape=Mrecord];
+  chain3 [label="{28 | 33}", fontsize=18, color="turquoise4", shape=Mrecord];
+
+  hashTable -> chain0 [label="collision resolved (at index 0)", color="firebrick1", fontsize=16, fontcolor="firebrick1", arrowhead="dot", dir="both"];
+  hashTable -> chain3 [label="collision resolved (at index 3)", color="firebrick1", fontsize=16, fontcolor="firebrick1", arrowhead="dot", dir="both"];
+}
+```
+
+#### Advantages and Disadvantages of Chaining
+
+Chaining presents several benefits and drawbacks:
 
 - **Advantages**:
-  - Easy implementation: Chaining can be easily implemented using existing data structures like linked lists.
-  - Dynamic size: The data structure at each index can grow or shrink as needed, allowing for efficient use of space.
+  - **Ease of implementation**: The use of pre-existing data structures, like linked lists, simplifies the implementation of chaining.
+  - **Dynamic size management**: The data structure at each index can grow or shrink as necessary, enabling efficient space utilization.
 - **Disadvantages**:
-  - Extra space: Chaining requires additional space for the data structure at each index, which can increase memory overhead.
-  - Variable access time: The access time for key-value pairs depends on the length of the data structure at the index, which can vary.
+  - **Increased space requirements**: Chaining necessitates extra space to store the data structure at each index, contributing to memory overhead.
+  - **Variable access time**: The time taken to access key-value pairs is contingent on the length of the data structure at the index, which can vary.
 
-Chaining is a popular method for resolving hash collisions due to its simplicity and dynamic size. However, it may not be the most efficient option for all use cases, especially when memory overhead and variable access times are critical factors.
+Despite the memory overhead and potentially variable access times, chaining remains a widely used method for resolving hash collisions due to its simplicity and capacity to dynamically manage memory.
 
-## Open Addressing
+### Open Addressing in Hash Collisions
 
-**Open addressing** is a collision resolution technique that finds an alternative index for a key-value pair if the original index is occupied. When a collision occurs, the algorithm searches for the next available index using a probing technique. There are three common types of probing techniques: linear probing, quadratic probing, and double hashing.
+**Open addressing** presents an alternative strategy for collision resolution. It entails finding a substitute index for a key-value pair if the original index is already occupied. This method employs a technique known as probing to find the next available index in the event of a collision. Common probing techniques include linear probing, quadratic probing, and double hashing.
 
-### Probing Techniques
+#### Probing Techniques
 
-1. **Linear probing**: When a collision occurs, search the hash table linearly (one index at a time) until an empty slot is found.
-2. **Quadratic probing**: When a collision occurs, search the hash table quadratically (by increasing the index by the square of the probe number) until an empty slot is found.
-3. **Double hashing**: When a collision occurs, use a secondary hash function to compute a new index for the key-value pair, and repeat this process until an empty slot is found.
+1. **Linear probing**: If a collision is encountered, the hash table is scanned sequentially (one index at a time) until an empty slot is discovered.
+2. **Quadratic probing**: During a collision, the hash table is searched quadratically (by incrementing the index by the square of the probe number) until a vacant slot is identified.
+3. **Double hashing**: In the event of a collision, a secondary hash function is utilized to determine a new index for the key-value pair. This process is repeated until an empty slot is found.
 
-### Insertion, Search, and Deletion
+```{dot}
+//| label: fig-open-addressing
+//| fig-cap: "Illustration of collision resolution using Open Addressing. Here, key 33 has been relocated to index 4 due to a collision at index 3."
+digraph G {
+  node [shape=record, color="darkorchid1"];
+  hashTable [label="{Index 0: | Index 1: | Index 2: | Index 3: | Index 4:}", fontsize=18];
+  keys1 [label="{15 | 10}", fontsize=18, color="goldenrod"];
+  keys2 [label="{28 | 33}", fontsize=18, color="goldenrod"];
+  key2 [label="47", fontsize=18, color="goldenrod"];
+  hashFunction [label="Hash Function", fontsize=18, color="turquoise4"];
+  
+  hashProcess [label="", shape=ellipse, color=lightgrey, style=filled];
+  keys1 -> hashProcess [arrowhead=none];
+  keys2 -> hashProcess [arrowhead=none];
+  key2 -> hashProcess [arrowhead=none];
+  hashFunction -> hashProcess [arrowhead=none];
 
-Here's how to perform insertion, search, and deletion operations using open addressing:
+  hashProcess -> hashTable [label="hash to indices", fontsize=16];
 
-1. **Insertion**: Calculate the index using the hash function. If the index is empty, insert the key-value pair. If the index is occupied, use the chosen probing technique to find the next available index and insert the key-value pair there.
+  relocatedKey [label="33", fontsize=18, color="firebrick1", shape=Mrecord];
+  
+  hashTable -> relocatedKey [label="collision resolved (at index 4)", color="firebrick1", fontsize=16, fontcolor="firebrick1", arrowhead="dot", dir="both"];
+}
+```
 
-2. **Search**: Calculate the index using the hash function. If the index is empty, the key is not in the hash table. If the index is occupied, check if the key matches the stored key. If not, use the chosen probing technique to search for the next index until the key is found or an empty index is encountered.
+#### Insertion, Search, and Deletion
 
-3. **Deletion**: Calculate the index using the hash function. If the index is empty, the key is not in the hash table. If the index is occupied and the key matches the stored key, remove the key-value pair and mark the index as deleted. Continue searching using the chosen probing technique to handle cases where the removed key-value pair was part of a cluster.
+When interacting with a hash table operating under open addressing, three main operations emerge: insertion, search, and deletion. The performance of these operations deeply intertwines with the hash function and probing technique utilized:
 
-### Advantages and Disadvantages of Open Addressing
+1. **Insertion**: To insert a key-value pair, begin by computing the hash function to determine the initial index. If the index remains unoccupied, place the key-value pair there. However, if a collision occurs and the index is occupied, leverage the probing technique to navigate the terrain of the hash table and locate an alternative index. There, you will find your new home for the key-value pair.
 
-Open addressing has several advantages and disadvantages:
+2. **Search**: To find a key, repeat the hashing process, leading to the first potential residence of the key-value pair. If an empty index greets you, the key does not exist in the hash table. If an occupied index is found, compare the stored key with the desired one. A match indicates a successful search; a mismatch compels the probing technique to guide you towards the next probable index. Repeat this process until the key reveals itself or an empty index signals the end of the journey.
+
+3. **Deletion**: To remove a key-value pair, initiate the same hashing and searching process. If the key is located, excise the key-value pair and mark the index as a grave—a formerly occupied place. However, a solitary deletion might disrupt the balance of the hash table if the removed pair was part of a cluster, requiring continued probing to rectify the disarray.
+
+#### Advantages and Disadvantages
+
+Like all data structures, open addressing presents both advantages and disadvantages, a balance one must consider carefully:
 
 - **Advantages**:
-  - No extra space: Open addressing does not require additional space for data structures at each index, making it more memory-efficient.
-  - Fixed size: The hash table has a fixed size, which can be useful when memory is limited.
+  - Memory-Efficient: Open addressing demands no extra storage for additional data structures at each index, presenting a more frugal option.
+  - Defined Size: The static size of the hash table allows for predictable memory usage, a boon when memory resources are constrained.
+
 - **Disadvantages**:
-  - Clustering: Probing techniques can cause clusters of key-value pairs to form, leading to increased access times.
-  - Deletion issues: Deleting key-value pairs can create complications, as it may leave "holes" in clusters that need to be addressed.
+  - Clustering Phenomenon: Certain probing techniques can induce clusters of key-value pairs, hindering efficient access.
+  - Deletion Dilemmas: The removal of key-value pairs can disrupt the structure, creating "holes" within clusters that must be addressed.
 
-Open addressing is an alternative method for resolving hash collisions that can be more memory-efficient than chaining. However, it may not be the best option for all use cases, especially when clustering and deletion issues are critical factors.
+While open addressing provides a viable alternative for resolving hash collisions and may outperform chaining in memory-constrained situations, it's not the panacea for all use cases. One must consider clustering phenomena and deletion challenges, which could tip the scales unfavorably.
 
-## Complexity and Load Factor
+## Evaluating Complexity and Load Factor in Hash Tables
 
-When analyzing the complexity of hash functions and hash tables, we need to consider the time taken for searching, inserting, or deleting an element. There are two main steps involved in these operations:
+In order to properly assess the complexity of hash functions and hash tables, it's important to understand the time required to perform fundamental operations such as search, insertion, and deletion. These operations typically consist of two essential steps:
 
-1. Computing the hash function for the given key.
-2. Traversing the list of key-value pairs present at the computed index.
+1. Computation of the hash function for the given key.
+2. Traversal of the list of key-value pairs at the computed index.
 
-### Time Complexity of Hash Computation
+### Analyzing Time Complexity in Hash Computation
 
-For the first step, the time taken depends on the key and the hash function. For example, if the key is a string "abcd", then its hash function may depend on the length of the string. But for very large values of `n`, the number of entries into the map, the length of the keys is almost negligible in comparison to `n`, so hash computation can be considered to take place in constant time, i.e., O(1).
+In the first step, the time complexity depends on both the key and the hash function used. Let's take an example where the key is a string, such as "abcd". In this case, the complexity of its hash function might depend on the length of the string. However, when we're dealing with an exceptionally large number of entries `n` in the map, the length of the keys becomes almost negligible compared to `n`. Therefore, we can treat the computation of the hash function as a constant time operation, i.e., O(1).
 
-### Time Complexity of List Traversal
+### Investigating Time Complexity in List Traversal
 
-For the second step, traversal of the list of key-value pairs present at that index needs to be done. In the worst case, all the `n` entries are at the same index, resulting in a time complexity of O(n). However, enough research has been done to make hash functions uniformly distribute the keys in the array, so this almost never happens.
+For the second step, which involves traversing the list of key-value pairs at the computed index, the time complexity can be quite variable. In the worst-case scenario, where all the `n` entries end up at the same index, the time complexity escalates to O(n). However, thanks to the substantial amount of research dedicated to designing hash functions that distribute keys uniformly in the array, this situation occurs very infrequently.
 
-### Load Factor
+### Understanding the Load Factor
 
-On average, if there are `n` entries and `b` is the size of the array, there would be `n/b` entries at each index. This value `n/b` is called the load factor, which represents the load on our map. The load factor is denoted by the symbol λ:
+The load factor, represented by the symbol λ, plays a pivotal role in the performance of our hash table. It's defined as `n/b`, where `n` represents the number of entries and `b` stands for the size of the array. Hence, it refers to the average number of entries at each index:
 
 ```
 λ = n/b
 ```
 
-This load factor needs to be kept low so that the number of entries at one index is less, and the complexity remains almost constant, i.e., O(1).
+It's crucial to keep this load factor low in order to limit the number of entries at a single index, thus keeping the complexity close to a constant, i.e., O(1).
 
-### Balancing Load Factor and Complexity
+### The Interplay Between Load Factor and Complexity
 
-To maintain the load factor at an acceptable level, the hash table can be resized when the load factor exceeds a certain threshold. This helps to keep the complexity of hash table operations near O(1) by redistributing the keys uniformly across a larger array.
+In order to maintain the load factor within an acceptable range, we can resize the hash table when the load factor surpasses a certain predefined threshold. This action effectively helps to maintain the complexity of the hash table operations around O(1) by ensuring a uniform distribution of the keys across a larger array.
 
-In conclusion, understanding the complexity and load factor of hash functions is crucial for designing efficient hash tables. By carefully choosing a suitable hash function and managing the load factor, it's possible to achieve near-constant time complexity for various hash table operations.
+In conclusion, a comprehensive understanding of the complexity and load factor of hash functions is key to designing efficient hash tables. By carefully selecting an appropriate hash function and managing the load factor, we can aim to achieve a near-constant time complexity for various operations in a hash table.
 
 ## Rehashing
 
-Rehashing, as the name suggests, means hashing again. When the load factor increases to more than its pre-defined value (the default value of the load factor is 0.75), the complexity increases. To overcome this issue, the size of the array is increased (typically doubled) and all the values are hashed again and stored in the new, larger array. This helps maintain a low load factor and low complexity.
+Rehashing—quite literally, hashing anew—is a mechanism that helps manage the load factor when it swells beyond a certain threshold. This predefined value often defaults to 0.75. If the load factor rises above this threshold, the complexity of hash table operations increases, thereby prompting a need for rehashing.
 
-### Why?
+During rehashing, the size of the array (typically doubling) is augmented, and all existing values are rehashed, subsequently being placed into the new, more capacious array. This enlargement of the array helps in maintaining a lower load factor and thereby, lower complexity.
 
-Rehashing is done because whenever key-value pairs are inserted into the map, the load factor increases, which implies that the time complexity also increases, as explained earlier. This might not provide the desired time complexity of O(1). Hence, rehashing must be performed, increasing the size of the `bucketArray` to reduce the load factor and the time complexity.
+```{dot}
+//| label: fig-rehashing
+//| fig-cap: "The process of rehashing in a hash table. Upon insertion of a new key, if the load factor crosses a certain threshold, the hash table increases its size and redistributes the keys uniformly across the new, larger array, maintaining an efficient time complexity."
+digraph G {
+  node [shape=record, color="darkorchid1"];
 
-### How?
+  BeforeRehash [label="Hash Table (Before Rehashing)\nλ > Threshold\nSize = 4", fontsize=18, color="lightblue", shape=Mrecord];
+  AfterRehash [label="Hash Table (After Rehashing)\nSize Increased to 8\nKeys Redistributed\nλ < Threshold", fontsize=18, color="lightgreen", shape=Mrecord];
+  
+  BeforeEntries [label="{| | K1 | | K2 |}", fontsize=18, color="goldenrod"];
+  AfterEntries [label="{| K1 | | K2 | | | | K3 |}", fontsize=18, color="goldenrod"];
+  
+  rehashProcess [label="Rehashing\n(Resize and Redistribute)", shape=ellipse, color="lightgrey", style=filled, fontsize=16];
+  
+  BeforeRehash -> rehashProcess [arrowhead=none];
+  AfterRehash -> rehashProcess [arrowhead=none];
+  
+  rehashProcess -> BeforeEntries [label="Before Rehashing", fontsize=16];
+  rehashProcess -> AfterEntries [label="After Rehashing", fontsize=16];
+}
 
-Rehashing can be done as follows:
+```
 
-1. For each addition of a new entry to the map, check the load factor.
-2. If the load factor is greater than its pre-defined value (or the default value of 0.75 if not given), then perform rehashing.
-3. To rehash, create a new array of double the previous size and make it the new `bucketArray`.
-4. Traverse each element in the old `bucketArray` and call the `insert()` method for each, to insert it into the new larger `bucketArray`.
+### The Need for Rehashing
 
-The following diagram illustrates the rehashing process:
+As key-value pairs accumulate in the map, they contribute to an increasing load factor. As previously detailed, a rising load factor implies an escalating time complexity, which could potentially compromise the desirable time complexity of O(1). Consequently, to restore the balance, rehashing is employed, expanding the size of the `bucketArray` to dial down both the load factor and time complexity.
+
+### The Mechanics of Rehashing
+
+Rehashing in a hash table typically unfolds as follows:
+
+1. Monitor the load factor with each addition of a new entry to the map.
+2. If the load factor surpasses its predefined value (or defaults to 0.75 if not specified), initiate rehashing.
+3. As part of the rehashing process, construct a new array that's double the size of the previous one and assign it as the new `bucketArray`.
+4. Iterate through each element in the former `bucketArray` and employ the `insert()` method for each, allowing it to find its place in the new, enlarged `bucketArray`.
+
+The diagram below offers a visual representation of this rehashing process:
 
 ```
 Initial bucketArray (size = 4):
@@ -303,7 +476,7 @@ Initial bucketArray (size = 4):
 |   | K1|   | K2|
 +---+---+---+---+
 
-After inserting a new key K3 (load factor > 0.75):
+Upon insertion of a new key K3 (load factor > 0.75):
 
 New bucketArray (size = 8):
 +---+---+---+---+---+---+---+---+
@@ -311,42 +484,43 @@ New bucketArray (size = 8):
 +---+---+---+---+---+---+---+---+
 ```
 
-By rehashing, the hash table maintains its desired time complexity of O(1) even as the number of elements increases. It is important to note that rehashing can be a costly operation, especially if the number of elements in the hash table is large. However, since rehashing is done infrequently and only when the load factor surpasses a certain threshold, the amortized cost of rehashing remains low, allowing the hash table operations to maintain near-constant time complexity.
+By applying rehashing, a hash table can retain its desired time complexity of O(1) even as the element count increases. It's noteworthy that rehashing, while an effective mechanism, can be a costly operation—especially if the hash table houses a large number of elements. Nevertheless, since rehashing is triggered infrequently and only when the load factor breaches a certain threshold, the amortized cost of rehashing remains low. This allows hash table operations to sustain their near-constant time complexity.
 
-## Hash Tables vs Hash Maps
+## Hash Tables and Hash Maps
 
-**Hash tables** and **hash maps** differ in their implementation and functionality.
+It's common for individuals, even computer science students and practitioners, to use the terms **hash table** and **hash map** interchangeably. However, these are distinct constructs in computing, each with its unique characteristics, capabilities, and preferred applications. 
 
-- **Hash tables** use direct hashing, where the key is an integer or can be directly converted to an integer (e.g., a string of digits). The integer is then used to compute the index in the hash table.
-- **Hash maps** use indirect hashing, where the key can be any data type. A separate hash function is needed to convert the key into an index in the hash table.
+**Hash tables** and **hash maps**, while sharing similarities, diverge significantly in their operational mechanisms:
 
-When deciding whether to use a hash table or a hash map, consider the problem domain and the data type of the keys:
+- A **hash table** implements direct hashing, necessitating that the key either be an integer or directly convertible to one, such as a string of numerals. This integer then serves as the determinant for the index in the hash table.
 
-- If the keys are integers or can be directly converted to integers, a **hash table** may be a more suitable choice. For example, if you're working with student IDs as keys, a hash table would be a good fit.
+- A **hash map**, in contrast, embraces indirect hashing, where keys of any data type are permitted. This necessitates an auxiliary hash function that transforms the key into an index within the hash table.
 
-- If the keys are of any other data type or cannot be directly converted to integers, a **hash map** would be more appropriate. For example, if you're working with strings, such as usernames or URLs, a hash map would be a better choice.
+When making the choice between a hash table or a hash map, one must critically examine the problem domain, particularly the data type of the keys:
 
-\newpage
+- In scenarios where keys are integers or easily translatable into integers, a **hash table** might be a more fitting solution. A case in point is when handling student IDs as keys; in such a context, a hash table would be ideal.
+
+- If the keys, however, belong to other data types or resist easy conversion into integers, a **hash map** is often the superior choice. For instance, if you are dealing with strings like usernames or URLs as keys, a hash map tends to be the better fit.
 
 ## HashMaps in Java
 
-A **HashMap** is a collection in Java that implements the Map interface and uses a hash table for storage. It stores key-value pairs, where each key is unique, and the keys are not ordered.
+The **HashMap** class is a part of the Java Collection Framework and encapsulates the functionality of a hash table. As a key-value pair repository, each key within a HashMap is unique, and the ordering of keys is not maintained.
 
-Here's how to use a HashMap in Java:
+Here's how to utilize a HashMap in Java:
 
-1. **Import the HashMap class**: To use the HashMap class in your Java code, you'll need to import it from the `java.util` package:
+1. **Import the HashMap class**: First, you must import the HashMap class from the `java.util` package to use it within your Java code:
 
    ```java
    import java.util.HashMap;
    ```
 
-2. **Create a HashMap**: To create a new HashMap, use the following syntax:
+2. **Instantiate a HashMap**: To create a new HashMap instance, employ the following syntax:
 
    ```java
    HashMap<String, Integer> myMap = new HashMap<String, Integer>();
    ```
 
-3. **Add elements**: To add key-value pairs to the HashMap, use the `put()` method:
+3. **Inserting elements**: To add key-value pairs to the HashMap, make use of the `put()` method:
 
    ```java
    myMap.put("apple", 3);
@@ -354,27 +528,27 @@ Here's how to use a HashMap in Java:
    myMap.put("orange", 2);
    ```
 
-4. **Access elements**: To access the value associated with a key, use the `get()` method:
+4. **Retrieving elements**: To fetch the value associated with a specific key, use the `get()` method:
 
    ```java
-   int apples = myMap.get("apple"); // 3
-   int oranges = myMap.get("orange"); // 2
+   int apples = myMap.get("apple"); // returns 3
+   int oranges = myMap.get("orange"); // returns 2
    ```
 
-5. **Remove elements**: To remove a key-value pair from the HashMap, use the `remove()` method:
+5. **Removing elements**: To delete a key-value pair from the HashMap, apply the `remove()` method:
 
    ```java
    myMap.remove("banana");
    ```
 
-6. **Check if a key exists**: To check if a key is in the HashMap, use the `containsKey()` method:
+6. **Verifying key existence**: To verify whether a particular key resides within the HashMap, call the `containsKey()` method:
 
    ```java
-   boolean hasApple = myMap.containsKey("apple"); // true
-   boolean hasGrape = myMap.containsKey("grape"); // false
+   boolean hasApple = myMap.containsKey("apple"); // returns true
+   boolean hasGrape = myMap.containsKey("grape"); // returns false
    ```
 
-7. **Iterate over keys**: To iterate over the keys in a HashMap, you can use a for-each loop with the `keySet()` method:
+7. **Iterating over keys**: To traverse the keys in a HashMap, you can utilize a for-each loop in conjunction with the `keySet()` method:
 
    ```java
    for (String fruit : myMap.keySet()) {
@@ -382,7 +556,7 @@ Here's how to use a HashMap in Java:
    }
    ```
 
-8. **Iterate over values**: To iterate over the values in a HashMap, you can use a for-each loop with the `values()` method:
+8. **Iterating over values**: If you wish to iterate over the values within a HashMap, a for-each loop alongside the `values()` method can be used:
 
    ```java
    for (Integer count : myMap.values()) {
@@ -390,7 +564,7 @@ Here's how to use a HashMap in Java:
    }
    ```
 
-9. **Iterate over key-value pairs**: To iterate over the key-value pairs in a HashMap, you can use a for-each loop with the `entrySet()` method:
+9. **Iterating over key-value pairs**: To cycle through the key-value pairs in a HashMap, employ a for-each loop with the `entrySet()` method:
 
    ```java
    for (HashMap.Entry<String, Integer> entry : myMap.entrySet()) {
@@ -398,29 +572,29 @@ Here's how to use a HashMap in Java:
    }
    ```
 
-A HashMap can be a useful data structure when you need to store key-value pairs efficiently. It provides constant-time performance for common operations like put, get, and remove, making it an ideal choice for various applications.
+The HashMap proves to be a handy data structure when it comes to efficiently storing key-value pairs. With constant-time performance for common operations such as put, get, and remove, it emerges as an invaluable asset for a wide array of applications.
 
-\newpage
+This is an excellent first draft that is very detailed. I've noticed a few opportunities for improvement that will make your descriptions more consistent and add a bit more depth to your explanations.
 
 ## HashTables in Java
 
-A **HashTable** is a collection in Java that implements the Map interface and uses a hash table for storage. It is similar to a HashMap but with some differences, such as being synchronized, which makes it thread-safe. HashTable stores key-value pairs, where each key is unique, and the keys are not ordered.
+In Java, a **HashTable** is a type of collection that adheres to the Map interface, utilizing a hash table for storage. It shares similarities with HashMap, however, it distinguishes itself through its inherent synchronization which confers thread-safety. The HashTable class stores unique keys and their corresponding values, much like HashMap, it does not maintain any ordering of these keys.
 
-Here's how to use a HashTable in Java:
+Here is how one might put HashTable to use in Java:
 
-1. **Import the HashTable class**: To use the HashTable class in your Java code, you'll need to import it from the `java.util` package:
+1. **Importing the HashTable Class**: The HashTable class can be integrated into your Java code via importing from the `java.util` package:
 
    ```java
    import java.util.Hashtable;
    ```
 
-2. **Create a HashTable**: To create a new HashTable, use the following syntax:
+2. **Instantiating a HashTable**: The creation of a new HashTable can be achieved with the following syntax:
 
    ```java
    Hashtable<String, Integer> myTable = new Hashtable<String, Integer>();
    ```
 
-3. **Add elements**: To add key-value pairs to the HashTable, use the `put()` method:
+3. **Inserting Elements**: Key-value pairs can be added to the HashTable using the `put()` method:
 
    ```java
    myTable.put("apple", 3);
@@ -428,27 +602,27 @@ Here's how to use a HashTable in Java:
    myTable.put("orange", 2);
    ```
 
-4. **Access elements**: To access the value associated with a key, use the `get()` method:
+4. **Accessing Elements**: The value associated with a specific key can be retrieved using the `get()` method:
 
    ```java
    int apples = myTable.get("apple"); // 3
    int oranges = myTable.get("orange"); // 2
    ```
 
-5. **Remove elements**: To remove a key-value pair from the HashTable, use the `remove()` method:
+5. **Deleting Elements**: To expunge a key-value pair from the HashTable, make use of the `remove()` method:
 
    ```java
    myTable.remove("banana");
    ```
 
-6. **Check if a key exists**: To check if a key is in the HashTable, use the `containsKey()` method:
+6. **Key Existence Verification**: To ascertain the existence of a key in the HashTable, the `containsKey()` method is handy:
 
    ```java
    boolean hasApple = myTable.containsKey("apple"); // true
    boolean hasGrape = myTable.containsKey("grape"); // false
    ```
 
-7. **Iterate over keys**: To iterate over the keys in a HashTable, you can use a for-each loop with the `keySet()` method:
+7. **Iteration Over Keys**: Iteration through the keys in a HashTable can be achieved with a for-each loop in conjunction with the `keySet()` method:
 
    ```java
    for (String fruit : myTable.keySet()) {
@@ -456,7 +630,7 @@ Here's how to use a HashTable in Java:
    }
    ```
 
-8. **Iterate over values**: To iterate over the values in a HashTable, you can use a for-each loop with the `values()` method:
+8. **Iteration Over Values**: To traverse through the values in a HashTable, a for-each loop combined with the `values()` method is efficient:
 
    ```java
    for (Integer count : myTable.values()) {
@@ -464,7 +638,7 @@ Here's how to use a HashTable in Java:
    }
    ```
 
-9. **Iterate over key-value pairs**: To iterate over the key-value pairs in a HashTable, you can use a for-each loop with the `entrySet()` method:
+9. **Iteration Over Key-Value Pairs**: To iterate through the key-value pairs in a HashTable, the `entrySet()` method can be used in combination with a for-each loop:
 
    ```java
    for (Hashtable.Entry<String, Integer> entry : myTable.entrySet()) {
@@ -472,29 +646,27 @@ Here's how to use a HashTable in Java:
    }
    ```
 
-A HashTable can be a useful data structure when you need to store key-value pairs and require thread-safe operations. However, it has some performance overhead due to synchronization, so if thread safety is not a concern, a HashMap is generally a more efficient choice.
-
-\newpage
+The HashTable class proves useful in scenarios where key-value pairs need to be stored with a requirement for thread-safe operations. However, due to the performance overhead resulting from synchronization, if thread safety isn't a primary concern, a HashMap would generally be a more efficient alternative.
 
 ## HashSets in Java
 
-A **HashSet** is a collection in Java that implements the Set interface and uses a hash table for storage. It does not store key-value pairs like hash tables or hash maps, but instead stores unique elements. The elements in a HashSet are not ordered, and duplicate values are not allowed.
+A **HashSet** in Java is a collection class implementing the Set interface, and leverages a hash table for its storage mechanism. Contrary to hash tables and hash maps, it doesn't store key-value pairs. Instead, it stores unique elements only. These elements aren't stored in any particular order, and the class doesn't allow for duplicate values.
 
-Here's how to use a HashSet in Java:
+The usage of a HashSet in Java can be illustrated as follows:
 
-1. **Import the HashSet class**: To use the HashSet class in your Java code, you'll need to import it from the `java.util` package:
+1. **Importing the HashSet Class**: To integrate the HashSet class into your Java code, import it from the `java.util` package:
 
    ```java
    import java.util.HashSet;
    ```
 
-2. **Create a HashSet**: To create a new HashSet, use the following syntax:
+2. **Creating a HashSet**: A new HashSet can be instantiated using the following syntax:
 
    ```java
    HashSet<String> mySet = new HashSet<String>();
    ```
 
-3. **Add elements**: To add elements to the HashSet, use the `add()` method:
+3. **Adding Elements**: Elements can be added to the HashSet using the `add()` method:
 
    ```java
    mySet.add("apple");
@@ -502,20 +674,20 @@ Here's how to use a HashSet in Java:
    mySet.add("orange");
    ```
 
-4. **Remove elements**: To remove elements from the HashSet, use the `remove()` method:
+4. **Removing Elements**: To remove an element from the HashSet, employ the `remove()` method:
 
    ```java
    mySet.remove("banana");
    ```
 
-5. **Check if an element exists**: To check if an element is in the HashSet, use the `contains()` method:
+5. **Element Existence Verification**: To verify the existence of an element in the HashSet, the `contains()` method is quite useful:
 
    ```java
    boolean hasApple = mySet.contains("apple"); // true
    boolean hasGrape = mySet.contains("grape"); // false
    ```
 
-6. **Iterate over elements**: To iterate over the elements in a HashSet, you can use a for-each loop:
+6. **Iteration Over Elements**: To traverse the elements stored in a HashSet, a for-each loop is effective:
 
    ```java
    for (String fruit : mySet) {
@@ -523,35 +695,47 @@ Here's how to use a HashSet in Java:
    }
    ```
 
-A HashSet can be a useful data structure when you need to store a collection of unique elements without any specific order. It provides constant-time performance for common operations like add, remove, and contains, making it an efficient choice for many applications.
+The HashSet class is particularly beneficial when there's a need to store a unique set of elements without any specific order. Given its provision of constant-time performance for frequent operations such as add, remove, and contains, it emerges as an efficient choice for a wide range of applications.
 
-\newpage
+```{dot}
+//| label: fig-data-structures-comparison
+//| fig-cap: "Comparative Analysis of HashMap, HashTable, and HashSet. This diagram depicts the similarities and differences between HashMap, HashTable, and HashSet in terms of their structure and performance characteristics. It helps visualize how each of them stores data and their efficiency for common operations."
+digraph G {
+  node [shape=record, color="darkorchid1"];
 
-## `hasCode` and `equals` in Java
+  HashMap [label="HashMap\n| { Key-Value Pairs | { Add: O(1) | Remove: O(1) | Contains: O(1) } }", fontsize=18, color="lightblue", shape=Mrecord];
+  HashTable [label="HashTable\n| { Key-Value Pairs | { Add: O(1) | Remove: O(1) | Contains: O(1) } }", fontsize=18, color="lightgreen", shape=Mrecord];
+  HashSet [label="HashSet\n| { Unique Values | { Add: O(1) | Remove: O(1) | Contains: O(1) } }", fontsize=18, color="gold", shape=Mrecord];
+  
+  HashMap -> HashTable [label="Thread-Safe\nNo Ordering", fontsize=16, dir="none"];
+  HashTable -> HashSet [label="No Key-Value Pairs\nNo Ordering", fontsize=16, dir="none"];
+  HashSet -> HashMap [label="Key-Value Pairs\nNo Thread-Safety", fontsize=16, dir="none"];
+}
+```
 
-In Java, the `hashCode` method is part of the `Object` class, which is the superclass of all Java classes. The purpose of the `hashCode` method is to provide a default implementation for generating hash codes, which are integer values that represent the memory address of an object.
+## `hashCode` and `equals` in Java
 
-### The `hashCode` Method
+In the heart of Java's Object Oriented structure, lies the `Object` class. It plays the role of the ultimate superclass for all Java classes. Within this class, two methods, `hashCode` and `equals`, form the fundamental basis for the interaction of objects in various Java collections. These methods interplay crucially in object comparison and are instrumental in the design and function of hash-based collections such as `HashSet`, `HashMap`, and `HashTable`.
 
-The `hashCode` method has the following signature:
+### Understanding `hashCode`
+
+The `hashCode` method provides a means for generating hash codes, which are integers symbolizing the memory address of an object. The method signature is as follows:
 
 ```java
 public int hashCode()
 ```
 
-This method returns an integer hash code for the object on which it is called. By default, it returns a hash code that is based on the object's memory address, but this behavior can be overridden in subclasses to provide custom hash code generation.
+By default, the method returns a hash code derived from the object's memory address. However, subclasses can override this behavior to offer custom hash code generation. For the efficient functioning of hash-based collections, and to maintain object-to-hashcode consistency, a well-defined `hashCode` method should adhere to these principles:
 
-A well-implemented `hashCode` method should follow these general rules:
-
-1. If two objects are equal according to their `equals()` method, they must have the same hash code.
-2. If two objects have the same hash code, they are not necessarily equal according to their `equals()` method.
-3. The hash code of an object should not change over time unless the information used in the `equals()` method also changes.
+1. If `equals()` perceives two objects as equal, their hash codes must be identical.
+2. The inverse, however, isn't true: objects with matching hash codes are not necessarily equal according to their `equals()` method.
+3. Unless data influencing the `equals()` method alters, the object's hash code should remain consistent.
 
 ### Overriding the `hashCode` Method
 
-When creating custom classes, it is important to override the `hashCode` method if the `equals()` method is also overridden. This ensures that the general contract of the `hashCode` method is maintained, which is essential for the correct functioning of hash-based data structures like `HashSet` and `HashMap`.
+For custom classes, overriding `hashCode` becomes essential if the `equals()` method is also overridden. Ensuring that both these methods are in sync upholds the general `hashCode` contract, and thereby guarantees the smooth operation of hash-based data structures.
 
-Here's an example of a custom `Person` class that overrides both the `equals()` and `hashCode()` methods:
+Below is an instance of a custom `Person` class, which overrides both `equals()` and `hashCode()` methods:
 
 ```java
 public class Person {
@@ -579,12 +763,38 @@ public class Person {
 }
 ```
 
-In this example, the `equals()` method checks if two `Person` objects have the same name and age. The `hashCode()` method uses the `Objects.hash()` utility method, which generates a hash code based on the name and age fields.
+Here, the `equals()` method verifies if two `Person` objects share the same name and age. Meanwhile, the `hashCode()` method leverages the utility function `Objects.hash()`, which generates a hash code based on the name and age fields.
 
-### Using `hashCode` with Java Collections
+```{dot}
+//| label: fig-hashCode-equals-relationship
+//| fig-cap: "Understanding `hashCode` and `equals` in Java. The first part (top) of this diagram showcases the need for synchronizing `hashCode` and `equals` methods in custom classes. The second part (bottom) illuminates the role of `hashCode` in storing and retrieving objects in hash-based collections like HashSet."
+digraph G {
+  node [shape=record, color="darkorchid1", fontsize=16];
 
-The `hashCode` method plays a crucial role in the performance of Java's hash-based data structures, such as `HashSet`, `HashMap`, and `HashTable`. These data structures rely on the `hashCode` method to efficiently store and retrieve objects based on their hash codes.
+  subgraph cluster_0 {
+    label = "Overriding hashCode and equals";
+    Person1 [label="{Person|{name=x|age=y}}", fillcolor=lightblue, style=filled, shape=Mrecord];
+    Person2 [label="{Person|{name=x|age=y}}", fillcolor=lightblue, style=filled, shape=Mrecord];
+    Person1 -> Person2 [label="equals()", fontcolor=blue, fontsize=14];
+  }
+  
+  subgraph cluster_1 {
+    label = "hashCode in HashSet";
+    HashTable [label="HashSet Structure", shape=plaintext];
+    Person [label="{Person|{name=x|age=y}}", fillcolor=lightblue, style=filled, shape=Mrecord];
+    Index [label="{Index|hashCode}", fillcolor=lightyellow, style=filled, shape=Mrecord];
+    Person -> Index [label="hashCode()", fontcolor=blue, fontsize=14];
+    Index -> HashTable [label="Stores at Index", fontcolor=green, fontsize=14];
+  }
+}
+```
 
-When working with these collections, it is important to ensure that the `hashCode` method is correctly implemented for the objects being stored. Failing to do so can lead to poor performance or incorrect behavior.
+### `hashCode` in the Context of Java Collections
 
-In summary, the `hashCode` method in Java is a critical part of the `Object` class that provides a default implementation for generating hash codes. When creating custom classes, it is essential to override the `hashCode` method if the `equals()` method is also overridden, ensuring the correct functioning of hash-based data structures like `HashSet` and `HashMap`.
+In hash-based collections like `HashSet`, `HashMap`, and `HashTable`, the `hashCode` method takes center stage, boosting their performance through efficient storage and retrieval of objects based on hash codes.
+
+Maintaining an aptly implemented `hashCode` method for the objects being stored is paramount when working with these collections. Missteps could result in compromised performance or erroneous behavior.
+
+In essence, the `hashCode` method in Java, which stems from the `Object` class, provides a default blueprint for hash code generation. While creating custom classes, it is critical to override the `hashCode` method in sync with the `equals()` method. This symbiosis between the two methods ensures a seamless operation of hash-based data structures like `HashSet` and `HashMap`.
+
+While this section provides an understanding of `hashCode` and `equals` in Java, the next chapter will further delve into comparing objects in Java and the intricacies involved therein.
