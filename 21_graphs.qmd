@@ -349,7 +349,7 @@ The adjacency list is particularly effective for sparse graphs, where the number
 An **adjacency matrix** is a two-dimensional grid representation, where the cell at the i-th row and j-th column denotes the connection between the i-th and j-th vertices. In an unweighted graph, the cells contain a 1 (indicating an edge between the vertices) or a 0 (indicating no edge). In a weighted graph, the cells hold the weights of the respective edges.
 
 ```{dot}
-//| label: adjacency-matrix-graph
+//| label: fig-adjacency-matrix-graph
 //| fig-cap: A graph for adjacency matrix example
 graph G {
   A -- B;
