@@ -3,8 +3,8 @@ project:
   output-dir: docs
 
 book:
-  title: "ITSC 2214 - Data Structures and Algorithms - Summer 2023"
-  date: "5/22/2023"
+  title: "ITSC 2214 - Data Structures and Algorithms - Fall 2023"
+  date: "08/21/2023"
   chapters:
     - index.qmd
     - part: "On Computers and Computing"
