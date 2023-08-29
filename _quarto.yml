@@ -11,9 +11,8 @@ book:
       chapters:
         - 01_intro_to_cs_dsa.md
         - 02_general_purpose_computers.md
-    - part: "Algorithmic Analysis"
-      chapters:
-        - 03_algorithmic_analysis.md
+    - 02_1_compilers_types.qmd
+    - 03_algorithmic_analysis.md
     - part: "Unit Testing"
       chapters:
         - 04_unit_testing.md
@@ -40,15 +39,9 @@ book:
       chapters:
         - 18_recursion.md
         - 19_binary_search.md
-    - part: "Trees"
-      chapters:
-        - 20_trees.qmd
-    - part: "Graphs"
-      chapters:
-        - 21_graphs.qmd
-    - part: "Hashing, HashMaps and HashTables"
-      chapters:
-        - 22_hashing.qmd
+    - 20_trees.qmd
+    - 21_graphs.qmd
+    - 22_hashing.qmd
     - references.qmd
 
 bibliography: references.bib
