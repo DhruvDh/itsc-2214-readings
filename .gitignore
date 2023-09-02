@@ -3,3 +3,5 @@
 /docs/
 /.obsidian/
 .DS_Store
+
+*.pdf
