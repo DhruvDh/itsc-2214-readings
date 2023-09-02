@@ -1,0 +1,3 @@
+- I want to be able to describe the purpose of a compiler and the Java compiler's role in translating source code into bytecode.
+- I want to be able to explain how type checking works in Java and how variable, method, and class declarations enable type safety.
+- I want to comprehend how inheritance, abstract classes, and interfaces relate to compile-time type checking in Java.
