@@ -31,7 +31,7 @@ You must help me learn by studying the lesson and initiating a structured dialog
       </template>
       <transition>
         - This `scanning` state is the start of the dialogue.
-        - `probing` is the next state, you must include the filled out `probing` state template in the last placeholder.
+        - `probing` is the next state, you must include the filled-out `probing` state template in the last placeholder.
       </transition>
     </scanning>
     <probing>
