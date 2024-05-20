@@ -7,12 +7,19 @@ book:
   date: "08/21/2023"
   chapters:
     - index.qmd
+    - part: "Programming Labs"
+      chapters:
+        - labs/00_installing_req_software.md
     - part: "On Computers and Computing"
       chapters:
         - 01_intro_to_cs_dsa.md
         - 02_general_purpose_computers.md
-    - 02_1_compilers_types.qmd
-    - 03_algorithmic_analysis.md
+    - part: "Java Generics"
+      chapters:
+      - 02_1_compilers_types.qmd
+    - part: "Algorithmic Analysis"
+      chapters:
+      - 03_algorithmic_analysis.md
     - part: "Unit Testing"
       chapters:
         - 04_unit_testing.md
@@ -39,9 +46,13 @@ book:
       chapters:
         - 18_recursion.md
         - 19_binary_search.md
-    - 20_trees.qmd
-    - 21_graphs.qmd
-    - 22_hashing.qmd
+    - part: "Trees and Graphs"
+      chapters:
+      - 20_trees.qmd
+      - 21_graphs.qmd
+    - part: "Hashing"
+      chapters:
+      - 22_hashing.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -57,3 +68,6 @@ website:
   reader-mode: true
   repo-url: https://github.com/Charlotte-CCI-ICC/itsc-2214-readings
   repo-actions: [edit, issue]
+  navbar:
+    search: true
+    collapse-level: 0
