@@ -9,6 +9,54 @@ You will need to install the following software on your laptop to work on labs i
 3. Git - Version control system. OS-specific installation instructions are below.
 4. Autograder - OS-specific installation instructions below.
 
+## One-Liner Install (Experimental)
+
+### Windows
+
+Follow the instructions in the first comment on this gist - <https://gist.github.com/DhruvDh/71d90635a528db1318a36ea35da6d56d>
+
+To run the script on Windows:
+
+1. Open a PowerShell window.
+2. Go to the gist and click the `Raw` button next to the file name at the top.
+3. Copy the URL from your browser's address bar (this is the `PASTE_RAW_URL`).
+4. Replace `PASTE_RAW_URL` in the command below with the URL you copied.
+5. Run the command in PowerShell:
+
+```powershell
+Invoke-RestMethod -Uri PASTE_RAW_URL | iex
+```
+
+For the current version (at the time of writing), you can use this command:
+
+```powershell
+Invoke-RestMethod -Uri https://gist.githubusercontent.com/DhruvDh/71d90635a528db1318a36ea35da6d56d/raw/38aa59f4c8ee3698dd2f266321c74f81c171858e/lab-prep-windows.ps1 | iex
+```
+
+### MacOS
+
+Follow the instructions in the first comment on this gist - <https://gist.github.com/DhruvDh/f313bf5edd929949a31995e247e28c53>
+
+To run the script on macOS:
+
+1. Open a Terminal window.
+2. Go to the gist and click the `Raw` button next to the file name at the top.
+3. Copy the URL from your browser's address bar (this is the `PASTE_RAW_URL`).
+4. Replace `PASTE_RAW_URL` in the command below with the URL you copied.
+5. Run the command in Terminal:
+
+```bash
+curl -sL PASTE_RAW_URL | bash
+```
+
+For the current version (at the time of writing), you can use this command:
+
+```bash
+curl -sL https://gist.githubusercontent.com/DhruvDh/f313bf5edd929949a31995e247e28c53/raw/e9741437bf437fa73e5ba9a7e81a83eb21e0cbe3/lab-prep-macos.sh | bash
+```
+
+This will download and execute the script, installing all necessary software and configurations for your lab preparation.
+
 ## IDE - Visual Studio Code
 
 Download and install Visual Studio Code from [here](https://code.visualstudio.com/download).

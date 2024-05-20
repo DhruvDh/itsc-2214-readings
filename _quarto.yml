@@ -10,6 +10,8 @@ book:
     - part: "Programming Labs"
       chapters:
         - labs/00_installing_req_software.md
+        - labs/01_using_autograder.md
+        - labs/02_1l_java_ide_practice-1.md
     - part: "On Computers and Computing"
       chapters:
         - 01_intro_to_cs_dsa.md
@@ -53,7 +55,6 @@ book:
     - part: "Hashing"
       chapters:
       - 22_hashing.qmd
-    - references.qmd
 
 bibliography: references.bib
 
