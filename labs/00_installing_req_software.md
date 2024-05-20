@@ -52,7 +52,7 @@ curl -sL PASTE_RAW_URL | bash
 For the current version (at the time of writing), you can use this command:
 
 ```bash
-curl -sL https://gist.githubusercontent.com/DhruvDh/f313bf5edd929949a31995e247e28c53/raw/e9741437bf437fa73e5ba9a7e81a83eb21e0cbe3/lab-prep-macos.sh | bash
+curl -sL https://gist.githubusercontent.com/DhruvDh/f313bf5edd929949a31995e247e28c53/raw/8be0c2ff7f8e28763944497e41114a69492e3a9f/lab-prep-macos.sh | bash
 ```
 
 This will download and execute the script, installing all necessary software and configurations for your lab preparation.
@@ -128,16 +128,13 @@ We will be using a "package manager" to install the software we need, called `sc
 5. Now, we can install Java. Copy and paste the following command into the terminal and press enter:
 
   ```powershell
-  scoop install openjdk17
-
-  # If you are feeling adventurous, you can install the latest version of Java, which is 21 at the time of writing this.
-  # scoop install openjdk21
+  scoop install openjdk
   ```
 
 6. Finally, we can verify that Java is installed. Copy and paste the following command into a **NEW** terminal window and press enter:
 
   ```powershell
-  java --version
+  javac --version
   ```
   
   If you don't get an error, you should be good to go.
@@ -147,7 +144,7 @@ We will be using a "package manager" to install the software we need, called `sc
 1. We will need to install a compiler for a different programming language, called `rust`. The compiler will download, compile, and finally install the autograder. Before we begin, we need to install a few dependencies. Copy and paste the following command into the terminal and press enter:
 
   ```powershell
-  scoop install gcc
+  scoop install mingw
   ```
 
 1. Now, let's install `rust`. Go to <https://rustup.rs/> and download and run `rustup-init.exe`. This will open a terminal window, and you should see a window that asks you whether or not you want to install pre-requisites. The **third** option should say *Don't install pre-requisites* and that is the one you choose **by pressing `3` and then Enter**.
@@ -250,22 +247,6 @@ We will be using a "package manager" to install the software we need, called `sc
 
 ## MacOS
 
-### Git
-
-1. We will be using `brew` again to install git. Ensure you've gone through the previous steps. Copy and paste the following command into the terminal and press enter:
-
-  ```bash
-  brew install git
-  ```
-
-2. Verify that git is installed. Copy and paste the following command into a **NEW** terminal window and press enter:
-
-  ```bash
-  git --version
-  ```
-
-  If you don't get an error, you should be good to go.
-
 ### Java (JDK 17)
 
 We will be using a "package manager" to install the software we need, called `brew`. A package manager is a tool that allows you to install software from the command line. It is similar to the `apt` package manager on Ubuntu, or `scoop` on Windows.
@@ -280,7 +261,13 @@ We will be using a "package manager" to install the software we need, called `br
 
   If you see a different prompt, please let the instructor know.
 
-2. Next, copy and paste the following command into the terminal and press enter:
+2. Before we begin, we need to install a few dependencies. Copy and paste the following command into the terminal and press enter:
+
+  ```bash
+  xcode-select --install
+  ```
+
+3. Next, copy and paste the following command into the terminal and press enter:
 
   ```bash
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -300,7 +287,7 @@ We will be using a "package manager" to install the software we need, called `br
   eval "$(/opt/homebrew/bin/brew shellenv)"
   ```
 
-3. Nex, try opening a new terminal window and typing `brew --`version` and pressing enter. You should see something similar to -
+4. Nex, try opening a new terminal window and typing `brew --`version` and pressing enter. You should see something similar to -
 
   ```bash
   Homebrew 3.2.12
@@ -309,27 +296,39 @@ We will be using a "package manager" to install the software we need, called `br
 
   The version number may be different, but as long as you don't see an error, you should be good to go.
 
-4. We will now install Java. Copy and paste the following command into the terminal and press enter:
+5. We will now install Java. Copy and paste the following command into the terminal and press enter:
 
   ```bash
-  brew install openjdk@17
+  brew install openjdk
   ```
 
-5. Finally, we can verify that Java is installed. Copy and paste the following command into a **NEW** terminal window and press enter:
+6. Finally, we can verify that Java is installed. Copy and paste the following command into a **NEW** terminal window and press enter:
 
   ```bash
-  java --version
+  javac --version
+  ```
+
+  If you don't get an error, you should be good to go.
+
+### Git
+
+1. We will be using `brew` again to install git. Ensure you've gone through the previous steps. Copy and paste the following command into the terminal and press enter:
+
+  ```bash
+  brew install git
+  ```
+
+2. Verify that git is installed. Copy and paste the following command into a **NEW** terminal window and press enter:
+
+  ```bash
+  git --version
   ```
 
   If you don't get an error, you should be good to go.
 
 ### Autograder
 
-1. We will need to install a compiler for a different programming language, called `rust`. The compiler will download, compile, and finally install the autograder. Before we begin, we need to install a few dependencies. Copy and paste the following command into the terminal and press enter:
-
-  ```bash
-  xcode-select --install
-  ```
+1. We will need to install a compiler for a different programming language, called `rust`. The compiler will download, compile, and finally install the autograder.
 
 2. Now, let's install rust. You can do so by running -
 
