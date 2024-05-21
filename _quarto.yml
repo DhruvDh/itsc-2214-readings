@@ -25,6 +25,7 @@ book:
     - part: "Unit Testing"
       chapters:
         - 04_unit_testing.md
+        - labs/3L.md
         - 05_writing_junit_tests.md
         - 06_mutation_testing.md
         - 07_list_of_mutators.md
