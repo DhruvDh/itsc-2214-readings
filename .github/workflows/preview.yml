@@ -31,7 +31,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          netlify deploy --prod --dir=_site --message="PR Preview: $PR_NUMBER" --alias=$PR_NUMBER
+          netlify deploy --dir=_site --prod --message="PR Preview: $PR_NUMBER" --alias=$PR_NUMBER
 
       - name: Create PR Comment
         uses: actions/github-script@v6
