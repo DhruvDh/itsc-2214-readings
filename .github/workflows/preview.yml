@@ -25,20 +25,13 @@ jobs:
           to: html
           path: .
 
-      - name: Deploy to GitHub Pages Preview
+      - name: Deploy to Netlify
         env:
-          PR_NUMBER: ${{ github.event.number }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          TARGET_DIR="_site/preview/$PR_NUMBER"
-          mkdir -p $TARGET_DIR
-          cp -r _site/* $TARGET_DIR/
-          cd $TARGET_DIR
-          git init
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "PR Preview: $PR_NUMBER"
-          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" master:gh-pages-preview
+          netlify deploy --prod --dir=_site --message="PR Preview: $PR_NUMBER" --alias=$PR_NUMBER
 
       - name: Create PR Comment
         uses: actions/github-script@v6
@@ -46,7 +39,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr_number = context.payload.pull_request.number;
-            const comment = `Preview the rendered site [here](https://${{ github.repository_owner }}.github.io/${{ github.repository }}/preview/${pr_number}/)`;
+            const preview_url = `https://<your-netlify-site>.netlify.app/${pr_number}/`;
+            const comment = `Preview the rendered site [here](${preview_url})`;
             github.issues.createComment({
               issue_number: pr_number,
               owner: context.repo.owner,
