@@ -33,6 +33,8 @@ jobs:
           NETLIFY_DEPLOY_MESSAGE: "PR Preview: ${{ github.event.pull_request.number }}"
           build_directory: "_site"
           deploy_alias: "pr-${{ github.event.pull_request.number }}"
+          install_command: "echo 'No install needed'"
+          build_command: "echo 'No build needed'"
 
       - name: Create PR Comment
         uses: actions/github-script@v6
