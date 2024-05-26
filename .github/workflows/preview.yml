@@ -1,0 +1,52 @@
+name: Preview Quarto Site
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+      - run: quarto install tinytex
+
+      - name: Render Quarto Project
+        uses: quarto-dev/quarto-actions/render@v2
+        with:
+          to: html
+          path: .
+
+      - name: Deploy to Netlify
+        uses: jsmrcaga/action-netlify-deploy@v2.0.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "PR Preview: ${{ github.event.pull_request.number }}"
+          build_directory: "_site"
+          deploy_alias: "pr-${{ github.event.pull_request.number }}"
+          install_command: "echo 'No install needed'"
+          build_command: "echo 'No build needed'"
+
+      - name: Create PR Comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr_number = context.payload.pull_request.number;
+            const preview_url = `https://<your-netlify-site>.netlify.app/pr-${pr_number}/`;
+            const comment = `Preview the rendered site [here](${preview_url})`;
+            github.issues.createComment({
+              issue_number: pr_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment,
+            });
