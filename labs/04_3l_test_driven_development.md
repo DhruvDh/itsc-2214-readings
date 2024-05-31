@@ -1,5 +1,7 @@
 
-# Auto-grader Instructions
+---
+title: "3L. Test-Driven Development"
+---
 
 ## Update Auto-grader
 
@@ -115,4 +117,4 @@ Get familiar with these files and read through the comments!
     umm create-submission
     ```
 
-2. Submit the `submission-2024-... .zip` file to Gradescope. The submission zip file will appear in the file explorer tab of VS Code. You can right click on this file and click on reveal in explorer (windows) or reveal in finder (mac) in order to find this file. then, you can drag and drop this to gradescope for submission.
+2. Submit the `submission-2024-... .zip` file to Gradescope. The submission zip file will appear in the file explorer tab of VS Code. You can right-click on this file and click on `Reveal in Explorer` (windows) or `Reveal in Finder` (mac) in order to find this file. Then, you can drag and drop this to Gradescope for submission.
