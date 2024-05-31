@@ -2,36 +2,45 @@
 # Auto-grader Instructions
 
 ## Update Auto-grader
+
 First, update the auto-grader by running the following command:
+
 ```bash
-cargo install --git=https://github.com/DhruvDh/umm.git
+umm update 
 ```
 
 ## Opening Project in IDE
-Project files: [3L_test-driven-development.zip](<Link_todo>)
 
-1. Unzip the files preferably into an `ITSC 2214` folder for this class.
+Project files: [3L_test-driven-development.zip](https://www.dropbox.com/scl/fi/bij5z8o9dl5ofgz7pfdjc/3L_test-driven-development-TEMPLATE.zip?rlkey=6j924rgd2llmss7u0tod2t6a8&raw=1)
+
+1. Unzip the files preferably into an `ITSC 2214` folder for this class.  This folder should serve as the parent directory for all labs related to the class.
 2. Open Visual Studio Code.
 3. Go to `File > Open Folder` and choose the folder where you extracted the files.
 
 ## Checking Grade
+
 You can check your grade without hitting check answer by following these steps:
 
 ### Using Terminal
-1. Open a terminal (`Ctrl + ``).
+
+1. Open a terminal. To open a terminal in Visual Studio Code on different operating systems:
+    - **Windows:** Press `Ctrl + `` or`Ctrl + Shift + ` to open the integrated terminal.
+
+    - **Mac:** Press `Cmd + `` or`Cmd + Shift + ` to open the integrated terminal.
 2. Run the command:
+
     ```bash
     umm grade ./script.rhai
     ```
-### OR
-### Using Command Palate
-1. Open the command palate with `Ctrl + Shift + P` on Windows or `Cmd + Shift + P` on Mac.
-2. Type "run task" and select "Tasks: Run Task" (or "Tasks: Rerun Last Task" in the future).
-3. Select the "Grade Assignment" task. Use the other ones as needed but avoid the "Update" task unless told to do so.
-4. Select `script.rhai` and press Enter.
 
-### [WATCH: Checking for Compiler Errors.](<Link_todo>)
+### Watch
+
+1. [How to check for compiler errors is VSCode](https://capture.dropbox.com/ojlTIhxa3CEgUO9m)
+
+2. [Installing and Using Codeium](https://www.youtube.com/watch?v=gIPSEyMoiMM)
+
 ## Project Overview
+
 Here are the files in your project for the ConcertTicket package:
 
 ```
@@ -59,6 +68,7 @@ Get familiar with these files and read through the comments!
 
 3. **Implement `remove` Method**
     - There is no method for removing a `ConcertTicket` from the wallet! Your job is to write that method. The method should be called `remove`. It should take no parameters and it should return the most recently added `ConcertTicket`.
+
     ```java
     public ConcertTicket remove() {
         // Create a ConcertTicket reference variable (DO NOT create a
@@ -78,31 +88,31 @@ Get familiar with these files and read through the comments!
 4. **Checking for Errors**
     - Once you are done, make sure there are no syntax errors. You can do so by opening the problems view by clicking on this button in the bottom left:
 
-        ![Problems View Button](<Link_todo>)
+        ![Problems View Button](../imgs/problems-view-button.png)
 
     - Which opens this tab:
 
-        ![Problems View Tab](<Link_todo>)
+        ![Problems View Tab](../imgs/problems-view-tab.png)
 
 5. **Running Tests**
     - If there are no errors, go to `WalletTest.java` in the `test/ConcertTicket` folder. Click on the thick double green arrow on line 7 to run all tests -
 
-        ![Double green arrow](<Link_todo>)
+        ![Double green arrow](../imgs/test-run-green-arrow.png)
 
 6. **Submitting**
     - If all tests have passed, hit submit!
 
 ## Rubric
+
 - **Project must compile to receive a grade.**
 - **All tests for `ConcertTicket.WalletTest` must pass (25 points).**
 
 ## Submission
 
 1. You can copy and run the `umm create-submission` command in the terminal, and that should create a zip file with a name similar to `submission-2024-01-24-15-04-50.zip`.
+
     ```bash
     umm create-submission
     ```
 
-2. Submit the `submission-2024-... .zip` file to Gradescope.
-
-
+2. Submit the `submission-2024-... .zip` file to Gradescope. The submission zip file will appear in the file explorer tab of VS Code. You can right click on this file and click on reveal in explorer (windows) or reveal in finder (mac) in order to find this file. then, you can drag and drop this to gradescope for submission.

@@ -12,6 +12,7 @@ book:
         - labs/00_installing_req_software.md
         - labs/01_using_autograder.md
         - labs/02_1l_java_ide_practice-1.md
+        - labs/04_3l_test_driven_development.md
     - part: "On Computers and Computing"
       chapters:
         - 01_intro_to_cs_dsa.md
@@ -25,7 +26,6 @@ book:
     - part: "Unit Testing"
       chapters:
         - 04_unit_testing.md
-        - labs/3L.md
         - 05_writing_junit_tests.md
         - 06_mutation_testing.md
         - 07_list_of_mutators.md
