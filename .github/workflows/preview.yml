@@ -34,7 +34,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_DEPLOY_MESSAGE: "PR Preview: ${{ github.event.pull_request.number }}"
-          build_directory: "_site"
+          build_directory: "docs"
           deploy_alias: "pr-${{ github.event.pull_request.number }}"
           install_command: "echo 'No install needed'"
           build_command: "echo 'No build needed'"
