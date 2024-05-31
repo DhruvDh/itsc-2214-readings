@@ -1,9 +1,7 @@
 name: Preview Quarto Site
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request_target
 
 jobs:
   build-preview:
