@@ -45,7 +45,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr_number = context.payload.pull_request.number;
-            const preview_url = `https://<your-netlify-site>.netlify.app/pr-${pr_number}/`;
+            const preview_url = `https://pr-${pr_number}--pr-preview-2214-readings.netlify.app/`;
             const comment = `Preview the rendered site [here](${preview_url})`;
             await github.rest.issues.createComment({
               issue_number: pr_number,
