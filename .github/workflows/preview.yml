@@ -8,6 +8,7 @@ on:
 jobs:
   build-preview:
     runs-on: ubuntu-latest
+    environment: netlify-preview
     permissions:
       contents: write
       pull-requests: write
