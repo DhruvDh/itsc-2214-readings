@@ -48,6 +48,7 @@ book:
       chapters:
         - 18_recursion.md
         - 19_binary_search.md
+        - 18_1_mergesort.md
     - part: "Trees and Graphs"
       chapters:
       - 20_trees.qmd
