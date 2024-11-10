@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>17&nbsp; Operations on Lists – ITSC 2214 - Data Structures and Algorithms - Fall 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./14_implementing_arraylists.html" rel="next">
+<link href="./12_collections_of_data_intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3fbf620316015237a6991a5ebc2a9eb0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12_collections_of_data_intro.html">Sequential Collections of Data</a></li><li class="breadcrumb-item"><a href="./13_operations_on_lists.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ITSC 2214 - Data Structures and Algorithms - Fall 2023</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Programming Labs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/00_installing_req_software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Installing Required Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/01_using_autograder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Using the Autograder</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/02_1l_java_ide_practice-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">1L. Java and IDE Practice - 1</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">On Computers and Computing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro_to_cs_dsa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Background on Computer Science and Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_general_purpose_computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modern General-Purpose, Programmable Computers</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Java Generics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_1_compilers_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Java Compiler and Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Algorithmic Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_algorithmic_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Algorithmic Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unit Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_unit_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Unit Testing and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_writing_junit_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Writing JUnit Tests and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_mutation_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Mutation Testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_list_of_mutators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">List of Mutators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Sorting and Searching</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_sorting_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to Sorting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_comparable_comparator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Comparable and Comparator</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_bubble_selection_insertion_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Bubble, Selection, and Insertion Sort</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_linear_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sequential Collections of Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_collections_of_data_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_operations_on_lists.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_implementing_arraylists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Implementing Array-backed Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_implementing_linkedlists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Implementing Linked Lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Stacks and Queues</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_stack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stack Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_queue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Queue Data Structure</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Recursion</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_recursion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_binary_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Trees and Graphs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Tree Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Graphs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hashing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_hashing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#adding-data-to-a-list" id="toc-adding-data-to-a-list" class="nav-link active" data-scroll-target="#adding-data-to-a-list"><span class="header-section-number">17.1</span> Adding Data to a List</a>
+  <ul class="collapse">
+  <li><a href="#appending-an-element" id="toc-appending-an-element" class="nav-link" data-scroll-target="#appending-an-element"><span class="header-section-number">17.1.1</span> Appending an Element</a></li>
+  <li><a href="#prepending-an-element" id="toc-prepending-an-element" class="nav-link" data-scroll-target="#prepending-an-element"><span class="header-section-number">17.1.2</span> Prepending an Element</a></li>
+  <li><a href="#inserting-an-element-at-a-specific-index" id="toc-inserting-an-element-at-a-specific-index" class="nav-link" data-scroll-target="#inserting-an-element-at-a-specific-index"><span class="header-section-number">17.1.3</span> Inserting an Element at a Specific Index</a></li>
+  <li><a href="#adding-all-elements-from-another-list" id="toc-adding-all-elements-from-another-list" class="nav-link" data-scroll-target="#adding-all-elements-from-another-list"><span class="header-section-number">17.1.4</span> Adding All Elements from Another List</a></li>
+  </ul></li>
+  <li><a href="#the-role-of-abstract-data-types-adts" id="toc-the-role-of-abstract-data-types-adts" class="nav-link" data-scroll-target="#the-role-of-abstract-data-types-adts"><span class="header-section-number">17.2</span> The Role of Abstract Data Types (ADTs)</a>
+  <ul class="collapse">
+  <li><a href="#summary-of-addition-operations" id="toc-summary-of-addition-operations" class="nav-link" data-scroll-target="#summary-of-addition-operations"><span class="header-section-number">17.2.1</span> Summary of Addition Operations</a></li>
+  </ul></li>
+  <li><a href="#removing-data-from-our-list" id="toc-removing-data-from-our-list" class="nav-link" data-scroll-target="#removing-data-from-our-list"><span class="header-section-number">17.3</span> Removing data from our List</a></li>
+  <li><a href="#removing-data-from-a-list" id="toc-removing-data-from-a-list" class="nav-link" data-scroll-target="#removing-data-from-a-list"><span class="header-section-number">17.4</span> Removing Data from a List</a>
+  <ul class="collapse">
+  <li><a href="#removing-an-element-at-a-specific-index" id="toc-removing-an-element-at-a-specific-index" class="nav-link" data-scroll-target="#removing-an-element-at-a-specific-index"><span class="header-section-number">17.4.1</span> Removing an Element at a Specific Index</a></li>
+  <li><a href="#removing-the-first-occurrence-of-an-element" id="toc-removing-the-first-occurrence-of-an-element" class="nav-link" data-scroll-target="#removing-the-first-occurrence-of-an-element"><span class="header-section-number">17.4.2</span> Removing the First Occurrence of an Element</a></li>
+  <li><a href="#removing-all-elements-from-another-list" id="toc-removing-all-elements-from-another-list" class="nav-link" data-scroll-target="#removing-all-elements-from-another-list"><span class="header-section-number">17.4.3</span> Removing All Elements from Another List</a></li>
+  <li><a href="#removing-all-elements-from-the-list" id="toc-removing-all-elements-from-the-list" class="nav-link" data-scroll-target="#removing-all-elements-from-the-list"><span class="header-section-number">17.4.4</span> Removing All Elements from the List</a></li>
+  <li><a href="#summary-of-removal-operations" id="toc-summary-of-removal-operations" class="nav-link" data-scroll-target="#summary-of-removal-operations"><span class="header-section-number">17.4.5</span> Summary of Removal Operations</a></li>
+  </ul></li>
+  <li><a href="#searching-for-data-in-our-list" id="toc-searching-for-data-in-our-list" class="nav-link" data-scroll-target="#searching-for-data-in-our-list"><span class="header-section-number">17.5</span> Searching for data in our List</a></li>
+  <li><a href="#searching-in-a-list" id="toc-searching-in-a-list" class="nav-link" data-scroll-target="#searching-in-a-list"><span class="header-section-number">17.6</span> Searching in a List</a>
+  <ul class="collapse">
+  <li><a href="#checking-if-an-element-exists-in-the-list" id="toc-checking-if-an-element-exists-in-the-list" class="nav-link" data-scroll-target="#checking-if-an-element-exists-in-the-list"><span class="header-section-number">17.6.1</span> Checking If an Element Exists in the List</a></li>
+  <li><a href="#checking-if-all-elements-of-another-collection-exist-in-the-list" id="toc-checking-if-all-elements-of-another-collection-exist-in-the-list" class="nav-link" data-scroll-target="#checking-if-all-elements-of-another-collection-exist-in-the-list"><span class="header-section-number">17.6.2</span> Checking If All Elements of Another Collection Exist in the List</a></li>
+  <li><a href="#finding-the-index-of-an-element" id="toc-finding-the-index-of-an-element" class="nav-link" data-scroll-target="#finding-the-index-of-an-element"><span class="header-section-number">17.6.3</span> Finding the Index of an Element</a></li>
+  <li><a href="#finding-the-last-index-of-an-element" id="toc-finding-the-last-index-of-an-element" class="nav-link" data-scroll-target="#finding-the-last-index-of-an-element"><span class="header-section-number">17.6.4</span> Finding the Last Index of an Element</a></li>
+  <li><a href="#summary-of-search-operations" id="toc-summary-of-search-operations" class="nav-link" data-scroll-target="#summary-of-search-operations"><span class="header-section-number">17.6.5</span> Summary of Search Operations</a></li>
+  </ul></li>
+  <li><a href="#miscellaneous-operations-on-a-list" id="toc-miscellaneous-operations-on-a-list" class="nav-link" data-scroll-target="#miscellaneous-operations-on-a-list"><span class="header-section-number">17.7</span> Miscellaneous Operations on a List</a>
+  <ul class="collapse">
+  <li><a href="#accessing-an-element" id="toc-accessing-an-element" class="nav-link" data-scroll-target="#accessing-an-element"><span class="header-section-number">17.7.1</span> Accessing an Element</a></li>
+  <li><a href="#modifying-an-element" id="toc-modifying-an-element" class="nav-link" data-scroll-target="#modifying-an-element"><span class="header-section-number">17.7.2</span> Modifying an Element</a></li>
+  <li><a href="#determining-the-size-of-the-list" id="toc-determining-the-size-of-the-list" class="nav-link" data-scroll-target="#determining-the-size-of-the-list"><span class="header-section-number">17.7.3</span> Determining the Size of the List</a></li>
+  <li><a href="#converting-the-list-to-an-array" id="toc-converting-the-list-to-an-array" class="nav-link" data-scroll-target="#converting-the-list-to-an-array"><span class="header-section-number">17.7.4</span> Converting the List to an Array</a></li>
+  <li><a href="#summary-of-miscellaneous-operations" id="toc-summary-of-miscellaneous-operations" class="nav-link" data-scroll-target="#summary-of-miscellaneous-operations"><span class="header-section-number">17.7.5</span> Summary of Miscellaneous Operations</a></li>
+  </ul></li>
+  <li><a href="#summary-and-conclusion" id="toc-summary-and-conclusion" class="nav-link" data-scroll-target="#summary-and-conclusion"><span class="header-section-number">17.8</span> Summary and Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12_collections_of_data_intro.html">Sequential Collections of Data</a></li><li class="breadcrumb-item"><a href="./13_operations_on_lists.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In the prior lecture, we journeyed through the concept of collections of data and their manifestations in computer memory. Such collections were referred to as lists, a data structure central to understanding the organization and manipulation of data in programming. Our objective is to delve into the practical implementation of these lists in Java. However, before we embark on that, we must consider the types of operations we desire our lists to perform. These operations guide our implementation strategy and ensure that our list behaves in the ways we want it to. In this chapter, we’ll be investigating operations performed on a List Abstract Data Type (ADT).</p>
+<section id="adding-data-to-a-list" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="adding-data-to-a-list"><span class="header-section-number">17.1</span> Adding Data to a List</h2>
+<p>As you may recall, a list is a collection of data elements. A key operation, therefore, is the ability to add data to this collection. Let’s visualize a simple list:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>There are multiple ways to insert new data into this list. For instance, you might want to add a new element, say “X”, at the end:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>X</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>Alternatively, you could place “X” at the beginning:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>X</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>Or perhaps insert “X” somewhere in the middle:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>X</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>There are three distinct methods to add data to our list, and each method may serve different needs in your program. Let’s discuss how these operations are implemented in the List ADT provided by the Java standard library, <code>java.util.List</code>.</p>
+<section id="appending-an-element" class="level3" data-number="17.1.1">
+<h3 data-number="17.1.1" class="anchored" data-anchor-id="appending-an-element"><span class="header-section-number">17.1.1</span> Appending an Element</h3>
+<p>Appending an element to the end of a list is perhaps the most straightforward method of adding data. The <code>add</code> method provided by <code>java.util.List</code> is used for this operation. Here is how you might use it:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">add</span><span class="op">(</span>itemToAdd<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="prepending-an-element" class="level3" data-number="17.1.2">
+<h3 data-number="17.1.2" class="anchored" data-anchor-id="prepending-an-element"><span class="header-section-number">17.1.2</span> Prepending an Element</h3>
+<p>Inserting an element at the beginning of a list is also a common operation, often called “prepending”. Though the <code>java.util.List</code> interface doesn’t provide a <code>prepend</code> method, we can use the overloaded <code>add</code> method, which accepts an index and an element. To prepend, we simply pass <code>0</code> as the index:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="dv">0</span><span class="op">,</span> itemToAdd<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="inserting-an-element-at-a-specific-index" class="level3" data-number="17.1.3">
+<h3 data-number="17.1.3" class="anchored" data-anchor-id="inserting-an-element-at-a-specific-index"><span class="header-section-number">17.1.3</span> Inserting an Element at a Specific Index</h3>
+<p>As hinted in the prepend operation, the <code>add</code> method in <code>java.util.List</code> allows for adding an element at any index in the list:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">add</span><span class="op">(</span>index<span class="op">,</span> itemToAdd<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="adding-all-elements-from-another-list" class="level3" data-number="17.1.4">
+<h3 data-number="17.1.4" class="anchored" data-anchor-id="adding-all-elements-from-another-list"><span class="header-section-number">17.1.4</span> Adding All Elements from Another List</h3>
+<p>Sometimes, you may want to merge one list into another. The <code>addAll</code> method allows you to add all the elements from another list to the end of the current list:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">addAll</span><span class="op">(</span>anotherList<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="the-role-of-abstract-data-types-adts" class="level2" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="the-role-of-abstract-data-types-adts"><span class="header-section-number">17.2</span> The Role of Abstract Data Types (ADTs)</h2>
+<p>We’ve mentioned the term “Abstract Data Type” (ADT) several times so far, but what does it really mean? An ADT is a high-level description of a collection of data and the operations that can be performed on that data. It is “abstract” in that it describes what operations are to be done but not how these operations will be implemented.</p>
+<p>In the context of lists,</p>
+<p>the List ADT defines a list’s behavior. For instance, we can append, prepend, or insert an element at a specific index, but we don’t care about how these operations are performed.</p>
+<p>Why do we need ADTs? ADTs allow us to abstract away the details of the data structure’s implementation. They encapsulate the data and provide a well-defined interface to interact with it, ensuring that data remains consistent and operations on the data are predictable. Moreover, by using ADTs, different implementations of the same type of data structure can be swapped seamlessly, without changing the code that uses the data structure.</p>
+<p>In your journey with Java so far, you’ve only used one kind of list – the ArrayList. As you progress, you’ll encounter other types of lists, like LinkedLists and Stacks, each with its own strengths, weaknesses, and suitable use cases. All these list types adhere to the same List ADT, allowing us to switch from one type to another depending on our requirements, while our code remains largely the same.</p>
+<p>In the next sections of this course, we will dive deeper into different types of lists and their unique characteristics. For now, the important takeaway is that ADTs allow us to focus on <em>what</em> operations we want to perform without worrying about <em>how</em> they are implemented.</p>
+<section id="summary-of-addition-operations" class="level3" data-number="17.2.1">
+<h3 data-number="17.2.1" class="anchored" data-anchor-id="summary-of-addition-operations"><span class="header-section-number">17.2.1</span> Summary of Addition Operations</h3>
+<p>Here is a summary of the adding operations available in the <code>java.util.List</code> ADT:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Modifier and Type</th>
+<th>Method and Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#add(E)">add(E e)</a> Appends the specified element to the end of this list (optional operation).</td>
+</tr>
+<tr class="even">
+<td>void</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#add(int,%20E)">add(int index, E element)</a> Inserts the specified element at the specified position in this list (optional operation).</td>
+</tr>
+<tr class="odd">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#addAll(java.util.Collection)">addAll(Collection&lt;? extends E&gt; c)</a> Appends all of the elements in the specified collection to the end of this list, in the order that they are returned by the specified collection’s iterator (optional operation).</td>
+</tr>
+<tr class="even">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#addAll(int,%20java.util.Collection)">addAll(int index, Collection&lt;? extends E&gt; c)</a> Inserts all of the elements in the specified collection into this list at the specified position (optional operation).</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="removing-data-from-our-list" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="removing-data-from-our-list"><span class="header-section-number">17.3</span> Removing data from our List</h2>
+</section>
+<section id="removing-data-from-a-list" class="level2" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="removing-data-from-a-list"><span class="header-section-number">17.4</span> Removing Data from a List</h2>
+<p>Having explored the addition of data to a list, let’s now shift our attention to its counterpart: removing data from the list. Remember our list from the previous section?</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>Let’s consider different ways to remove data from this list.</p>
+<section id="removing-an-element-at-a-specific-index" class="level3" data-number="17.4.1">
+<h3 data-number="17.4.1" class="anchored" data-anchor-id="removing-an-element-at-a-specific-index"><span class="header-section-number">17.4.1</span> Removing an Element at a Specific Index</h3>
+<p>Sometimes, you might need to remove an item from a specific position within the list. Java’s List ADT provides the <code>remove(int index)</code> method for this purpose. This method removes the element at the specified position:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">remove</span><span class="op">(</span>index<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="removing-the-first-occurrence-of-an-element" class="level3" data-number="17.4.2">
+<h3 data-number="17.4.2" class="anchored" data-anchor-id="removing-the-first-occurrence-of-an-element"><span class="header-section-number">17.4.2</span> Removing the First Occurrence of an Element</h3>
+<p>At times, you might not know (or care about) the index of the element you want to remove, but you know the value of the element. In such cases, you can use the <code>remove(Object o)</code> method, which removes the first occurrence of the specified element from the list:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">remove</span><span class="op">(</span>objectToRemove<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="removing-all-elements-from-another-list" class="level3" data-number="17.4.3">
+<h3 data-number="17.4.3" class="anchored" data-anchor-id="removing-all-elements-from-another-list"><span class="header-section-number">17.4.3</span> Removing All Elements from Another List</h3>
+<p>Consider that you have two lists, and you want to remove all elements in the second list from the first one. You can use the <code>removeAll(Collection&lt;?&gt; c)</code> method, which removes from the current list all of its elements that are contained in the specified collection:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">removeAll</span><span class="op">(</span>anotherList<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="removing-all-elements-from-the-list" class="level3" data-number="17.4.4">
+<h3 data-number="17.4.4" class="anchored" data-anchor-id="removing-all-elements-from-the-list"><span class="header-section-number">17.4.4</span> Removing All Elements from the List</h3>
+<p>In some scenarios, you might want to clear your list entirely. The <code>clear()</code> method comes in handy for this, as it removes all elements from the list:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">clear</span><span class="op">();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Like the addition operations, these removal operations offer different ways to manage the data in our list, providing flexibility based on the specific needs of our program.</p>
+</section>
+<section id="summary-of-removal-operations" class="level3" data-number="17.4.5">
+<h3 data-number="17.4.5" class="anchored" data-anchor-id="summary-of-removal-operations"><span class="header-section-number">17.4.5</span> Summary of Removal Operations</h3>
+<p>Here is a summary of the removal operations available in the <code>java.util.List</code> ADT:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Modifier and Type</th>
+<th>Method and Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html">E</a></td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#remove(int)">remove(int index)</a> Removes the element at the specified position in this list (optional operation).</td>
+</tr>
+<tr class="even">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#remove(java.lang.Object)">remove(Object o)</a> Removes the first occurrence of the specified element from this list, if it is present (optional operation).</td>
+</tr>
+<tr class="odd">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#removeAll(java.util.Collection)">removeAll(Collection&lt;?&gt; c)</a> Removes from this list all of its elements that are contained in the specified collection (optional operation).</td>
+</tr>
+<tr class="even">
+<td>void</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#clear()">clear()</a> Removes all of the elements from this list (optional operation).</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="searching-for-data-in-our-list" class="level2" data-number="17.5">
+<h2 data-number="17.5" class="anchored" data-anchor-id="searching-for-data-in-our-list"><span class="header-section-number">17.5</span> Searching for data in our List</h2>
+</section>
+<section id="searching-in-a-list" class="level2" data-number="17.6">
+<h2 data-number="17.6" class="anchored" data-anchor-id="searching-in-a-list"><span class="header-section-number">17.6</span> Searching in a List</h2>
+<p>Beyond just adding and removing data from our list, we often need to find or check for the existence of certain elements in our list. Java’s List ADT provides several methods for such search operations. Let’s dive into these operations using our familiar list:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<section id="checking-if-an-element-exists-in-the-list" class="level3" data-number="17.6.1">
+<h3 data-number="17.6.1" class="anchored" data-anchor-id="checking-if-an-element-exists-in-the-list"><span class="header-section-number">17.6.1</span> Checking If an Element Exists in the List</h3>
+<p>Sometimes, all we need to know is whether a certain element exists in our list. The <code>contains(Object o)</code> method serves this purpose, returning <code>true</code> if this list contains the specified element, and <code>false</code> otherwise:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> contains <span class="op">=</span> listObject<span class="op">.</span><span class="fu">contains</span><span class="op">(</span>objectToCheck<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="checking-if-all-elements-of-another-collection-exist-in-the-list" class="level3" data-number="17.6.2">
+<h3 data-number="17.6.2" class="anchored" data-anchor-id="checking-if-all-elements-of-another-collection-exist-in-the-list"><span class="header-section-number">17.6.2</span> Checking If All Elements of Another Collection Exist in the List</h3>
+<p>If you have a collection of elements and you want to check whether all these elements exist in your list, you can use the <code>containsAll(Collection&lt;?&gt; c)</code> method. It returns <code>true</code> if the list contains all of the elements of the specified collection:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> containsAll <span class="op">=</span> listObject<span class="op">.</span><span class="fu">containsAll</span><span class="op">(</span>anotherCollection<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="finding-the-index-of-an-element" class="level3" data-number="17.6.3">
+<h3 data-number="17.6.3" class="anchored" data-anchor-id="finding-the-index-of-an-element"><span class="header-section-number">17.6.3</span> Finding the Index of an Element</h3>
+<p>If you want to find the position of a certain element in your list, Java provides the <code>indexOf(Object o)</code> method. This method returns the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> index <span class="op">=</span> listObject<span class="op">.</span><span class="fu">indexOf</span><span class="op">(</span>objectToFind<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="finding-the-last-index-of-an-element" class="level3" data-number="17.6.4">
+<h3 data-number="17.6.4" class="anchored" data-anchor-id="finding-the-last-index-of-an-element"><span class="header-section-number">17.6.4</span> Finding the Last Index of an Element</h3>
+<p>In a list with duplicate elements, you might be interested in finding the last occurrence of an element. In this case, you can use the <code>lastIndexOf(Object o)</code> method, which returns the index of the last occurrence of the specified element in this list, or -1 if this list does not contain the element:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> lastIndex <span class="op">=</span> listObject<span class="op">.</span><span class="fu">lastIndexOf</span><span class="op">(</span>objectToFind<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="summary-of-search-operations" class="level3" data-number="17.6.5">
+<h3 data-number="17.6.5" class="anchored" data-anchor-id="summary-of-search-operations"><span class="header-section-number">17.6.5</span> Summary of Search Operations</h3>
+<p>Here is a summary of the search operations available in the <code>java.util.List</code> ADT:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Modifier and Type</th>
+<th>Method and Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#contains(java.lang.Object)">contains(Object o)</a> Returns true if this list contains the specified element.</td>
+</tr>
+<tr class="even">
+<td>boolean</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#containsAll(java.util.Collection)">containsAll(Collection&lt;?&gt; c)</a> Returns true if this list contains all of the elements of the specified collection.</td>
+</tr>
+<tr class="odd">
+<td>int</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#indexOf(java.lang.Object)">indexOf(Object o)</a> Returns the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element.</td>
+</tr>
+<tr class="even">
+<td>int</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#lastIndexOf(java.lang.Object)">lastIndexOf(Object o)</a> Returns the index of the last occurrence of the specified element in this list, or -1 if this list does not contain the element.</td>
+</tr>
+</tbody>
+</table>
+<p>Search operations are a fundamental part of manipulating lists. They allow us to locate and verify the presence of data, enhancing our ability to interact with our list and derive meaningful results.</p>
+</section>
+</section>
+<section id="miscellaneous-operations-on-a-list" class="level2" data-number="17.7">
+<h2 data-number="17.7" class="anchored" data-anchor-id="miscellaneous-operations-on-a-list"><span class="header-section-number">17.7</span> Miscellaneous Operations on a List</h2>
+<p>In addition to adding, removing, and searching elements in our list, Java’s List ADT provides a variety of other useful operations. These allow us to manipulate and inquire our list in a more sophisticated manner.</p>
+<section id="accessing-an-element" class="level3" data-number="17.7.1">
+<h3 data-number="17.7.1" class="anchored" data-anchor-id="accessing-an-element"><span class="header-section-number">17.7.1</span> Accessing an Element</h3>
+<p>Sometimes, we need to retrieve the element at a specific position in our list without removing it. The <code>get(int index)</code> method provides this functionality, returning the element at the specified position:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>E element <span class="op">=</span> listObject<span class="op">.</span><span class="fu">get</span><span class="op">(</span>index<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="modifying-an-element" class="level3" data-number="17.7.2">
+<h3 data-number="17.7.2" class="anchored" data-anchor-id="modifying-an-element"><span class="header-section-number">17.7.2</span> Modifying an Element</h3>
+<p>What if we need to change an element at a specific position? Java provides the <code>set(int index, E element)</code> method. This method replaces the element at the specified position in this list with the specified element:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>listObject<span class="op">.</span><span class="fu">set</span><span class="op">(</span>index<span class="op">,</span> newElement<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="determining-the-size-of-the-list" class="level3" data-number="17.7.3">
+<h3 data-number="17.7.3" class="anchored" data-anchor-id="determining-the-size-of-the-list"><span class="header-section-number">17.7.3</span> Determining the Size of the List</h3>
+<p>When working with lists, it’s often necessary to know the number of elements present. The <code>size()</code> method returns the number of elements in this list:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> size <span class="op">=</span> listObject<span class="op">.</span><span class="fu">size</span><span class="op">();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="converting-the-list-to-an-array" class="level3" data-number="17.7.4">
+<h3 data-number="17.7.4" class="anchored" data-anchor-id="converting-the-list-to-an-array"><span class="header-section-number">17.7.4</span> Converting the List to an Array</h3>
+<p>On occasion, we may need to convert our list into an array. The <code>toArray()</code> method fulfills this purpose, returning an array containing all the elements in this list in proper sequence:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Object</span><span class="op">[]</span> array <span class="op">=</span> listObject<span class="op">.</span><span class="fu">toArray</span><span class="op">();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="summary-of-miscellaneous-operations" class="level3" data-number="17.7.5">
+<h3 data-number="17.7.5" class="anchored" data-anchor-id="summary-of-miscellaneous-operations"><span class="header-section-number">17.7.5</span> Summary of Miscellaneous Operations</h3>
+<p>Here is a summary of the miscellaneous operations available in the <code>java.util.List</code> ADT:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Modifier and Type</th>
+<th>Method and Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html">E</a></td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#get(int)">get(int index)</a> Returns the element at the specified position in this list.</td>
+</tr>
+<tr class="even">
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html">E</a></td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#set(int,%20E)">set(int index, E element)</a> Replaces the element at the specified position in this list with the specified element (optional operation).</td>
+</tr>
+<tr class="odd">
+<td>int</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#size()">size()</a> Returns the number of elements in this list.</td>
+</tr>
+<tr class="even">
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html">Object</a>[]</td>
+<td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/List.html#toArray()">toArray()</a> Returns an array containing all of the elements in this list in proper sequence (from first to last element).</td>
+</tr>
+</tbody>
+</table>
+<p>These miscellaneous operations on a list help us to manipulate and utilize our lists effectively. In the subsequent sections, we will delve deeper into different types of lists and how these operations can be applied differently. Stay tuned!</p>
+</section>
+</section>
+<section id="summary-and-conclusion" class="level2" data-number="17.8">
+<h2 data-number="17.8" class="anchored" data-anchor-id="summary-and-conclusion"><span class="header-section-number">17.8</span> Summary and Conclusion</h2>
+<p>This chapter aimed to offer a comprehensive understanding of operations that can be performed on lists using the Java programming language. It introduced key manipulations including adding, removing, and searching for elements in a list, as well as several other useful list operations.</p>
+<p>We began by delving into the process of adding elements to a list, where we considered various insertion methods such as appending, prepending, and inserting at a specific index. We also explored the ability to add all elements from another list into the current list. These addition operations provide flexibility and adaptability in managing data in our list as required by the program.</p>
+<p>Next, we moved on to the concept of removing elements from a list. We investigated removing elements at specific indices, removing the first occurrence of an element, and removing all elements from a list or all elements present in another list. These removal operations are just as vital in data management, providing diverse ways to regulate the contents of our list.</p>
+<p>Subsequently, we analyzed search operations within a list. These operations are crucial in data retrieval, determining the existence and position of data elements in our list. Methods like <code>contains(Object o)</code>, <code>containsAll(Collection&lt;?&gt; c)</code>, <code>indexOf(Object o)</code>, and <code>lastIndexOf(Object o)</code> were discussed in depth.</p>
+<p>Furthermore, we examined miscellaneous operations that provide additional functionality in our list. These include accessing and modifying elements at specific indices, determining the size of the list, and converting the list into an array.</p>
+<p>Throughout our exploration, we highlighted the significant role of Abstract Data Types (ADTs). By standardizing the operations that can be performed on a list, the List ADT allows us to focus on what we want to accomplish without concerning ourselves with the underlying implementation details. This abstraction brings forth code consistency, reliability, and the potential for seamless integration of different list implementations.</p>
+<p>In conclusion, understanding and utilizing list operations in Java is fundamental for effective data management in programming. The breadth of operations available affords us immense flexibility in manipulating lists to align with our program’s requirements. As we proceed in this course, we will delve deeper into the different types of lists and their unique characteristics, all the while, leveraging the power and versatility of the List ADT.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./12_collections_of_data_intro.html" class="pagination-link" aria-label="Collections of Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./14_implementing_arraylists.html" class="pagination-link" aria-label="Implementing Array-backed Lists">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Implementing Array-backed Lists</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

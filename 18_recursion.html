@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>22&nbsp; Recursion – ITSC 2214 - Data Structures and Algorithms - Fall 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./19_binary_search.html" rel="next">
+<link href="./17_queue.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3fbf620316015237a6991a5ebc2a9eb0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./18_recursion.html">Recursion</a></li><li class="breadcrumb-item"><a href="./18_recursion.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ITSC 2214 - Data Structures and Algorithms - Fall 2023</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Programming Labs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/00_installing_req_software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Installing Required Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/01_using_autograder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Using the Autograder</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/02_1l_java_ide_practice-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">1L. Java and IDE Practice - 1</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">On Computers and Computing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro_to_cs_dsa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Background on Computer Science and Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_general_purpose_computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modern General-Purpose, Programmable Computers</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Java Generics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_1_compilers_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Java Compiler and Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Algorithmic Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_algorithmic_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Algorithmic Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unit Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_unit_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Unit Testing and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_writing_junit_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Writing JUnit Tests and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_mutation_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Mutation Testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_list_of_mutators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">List of Mutators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Sorting and Searching</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_sorting_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to Sorting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_comparable_comparator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Comparable and Comparator</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_bubble_selection_insertion_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Bubble, Selection, and Insertion Sort</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_linear_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sequential Collections of Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_collections_of_data_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_operations_on_lists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_implementing_arraylists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Implementing Array-backed Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_implementing_linkedlists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Implementing Linked Lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Stacks and Queues</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_stack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stack Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_queue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Queue Data Structure</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Recursion</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_recursion.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_binary_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Trees and Graphs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Tree Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Graphs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hashing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_hashing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#writing-recursive-functions" id="toc-writing-recursive-functions" class="nav-link active" data-scroll-target="#writing-recursive-functions"><span class="header-section-number">22.1</span> Writing Recursive Functions</a>
+  <ul class="collapse">
+  <li><a href="#single-base-case-single-recursive-case" id="toc-single-base-case-single-recursive-case" class="nav-link" data-scroll-target="#single-base-case-single-recursive-case"><span class="header-section-number">22.1.1</span> Single Base Case, Single Recursive Case</a></li>
+  <li><a href="#multiple-base-cases" id="toc-multiple-base-cases" class="nav-link" data-scroll-target="#multiple-base-cases"><span class="header-section-number">22.1.2</span> Multiple Base Cases</a></li>
+  <li><a href="#multiple-recursive-cases" id="toc-multiple-recursive-cases" class="nav-link" data-scroll-target="#multiple-recursive-cases"><span class="header-section-number">22.1.3</span> Multiple Recursive Cases</a></li>
+  </ul></li>
+  <li><a href="#writing-advanced-recursive-functions" id="toc-writing-advanced-recursive-functions" class="nav-link" data-scroll-target="#writing-advanced-recursive-functions"><span class="header-section-number">22.2</span> Writing Advanced Recursive Functions</a>
+  <ul class="collapse">
+  <li><a href="#example-1-prime-number-determination" id="toc-example-1-prime-number-determination" class="nav-link" data-scroll-target="#example-1-prime-number-determination"><span class="header-section-number">22.2.1</span> Example 1: Prime Number Determination</a></li>
+  <li><a href="#example-2-subset-sum-problem" id="toc-example-2-subset-sum-problem" class="nav-link" data-scroll-target="#example-2-subset-sum-problem"><span class="header-section-number">22.2.2</span> Example 2: Subset Sum Problem</a></li>
+  <li><a href="#example-3-basketball-scoring-combinations" id="toc-example-3-basketball-scoring-combinations" class="nav-link" data-scroll-target="#example-3-basketball-scoring-combinations"><span class="header-section-number">22.2.3</span> Example 3: Basketball Scoring Combinations</a></li>
+  </ul></li>
+  <li><a href="#tracing-recursive-code" id="toc-tracing-recursive-code" class="nav-link" data-scroll-target="#tracing-recursive-code"><span class="header-section-number">22.3</span> Tracing Recursive Code</a></li>
+  <li><a href="#practice-exercises" id="toc-practice-exercises" class="nav-link" data-scroll-target="#practice-exercises"><span class="header-section-number">22.4</span> Practice Exercises</a>
+  <ul class="collapse">
+  <li><a href="#exercise-1-factorial-function" id="toc-exercise-1-factorial-function" class="nav-link" data-scroll-target="#exercise-1-factorial-function"><span class="header-section-number">22.4.1</span> Exercise 1: Factorial Function</a></li>
+  <li><a href="#exercise-2-fibonacci-series" id="toc-exercise-2-fibonacci-series" class="nav-link" data-scroll-target="#exercise-2-fibonacci-series"><span class="header-section-number">22.4.2</span> Exercise 2: Fibonacci Series</a></li>
+  <li><a href="#exercise-3-sum-of-array-elements" id="toc-exercise-3-sum-of-array-elements" class="nav-link" data-scroll-target="#exercise-3-sum-of-array-elements"><span class="header-section-number">22.4.3</span> Exercise 3: Sum of Array Elements</a></li>
+  </ul></li>
+  <li><a href="#solution-walkthrough-factorial-function" id="toc-solution-walkthrough-factorial-function" class="nav-link" data-scroll-target="#solution-walkthrough-factorial-function"><span class="header-section-number">22.5</span> Solution Walkthrough: Factorial Function</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./18_recursion.html">Recursion</a></li><li class="breadcrumb-item"><a href="./18_recursion.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Recursion is a computational technique in which a function refers to itself in its own definition to solve a problem. The essence of creating recursive functions is ensuring that the recursive call addresses a smaller version of the initial problem. This strategy enables the efficient and elegant decomposition of complex problems into more manageable sub-problems.</p>
+<p>Let’s consider some key characteristics of recursive functions:</p>
+<ul>
+<li><strong>Base cases</strong> must exist in any recursive function. These are simple scenarios of the problem that can be solved directly without necessitating a recursive call. Base cases are vital to avoid infinite recursion, a situation where the function endlessly calls itself without termination.</li>
+<li>The <strong>recursive case</strong> comprises a call to the same function but on a smaller scale of the original problem. The arguments passed on during this recursive call should progressively approach the base case.</li>
+<li>Data flows through the recursive calls via function parameters and return values. Parameters help in propagating information forward through the recursive calls until reaching the base case. Conversely, return values relay information back from the base case.</li>
+</ul>
+<p>Some Advantages of Recursion -</p>
+<ul>
+<li>Recursive solutions often embody elegance and simplicity that make them easier to understand than their iterative counterparts. The code tends to naturally mirror the structure of the problem.</li>
+<li>Some problems are inherently recursive, such as navigating tree data structures. Here, the tree is a common type of recursive data structure where each node links to smaller subtrees. We will learn more about trees in the next module, but this characteristic makes them ideally suited to recursive approaches.</li>
+<li>Recursive code is typically more concise than equivalent iterative code.</li>
+</ul>
+<p>Some Disadvantages of Recursion -</p>
+<ul>
+<li>Recursive calls come with overheads, such as stacking parameters, return addresses, and local variables during each invocation. This additional resource consumption often makes iterative solutions more efficient.</li>
+<li>Recursive code can pose debugging and tracing challenges. Understanding the program flow often involves mentally “unraveling” each recursive call.</li>
+<li>Deeply recursive algorithms risk causing stack overflow exceptions if the recursion depth exceeds the stack’s capacity.</li>
+</ul>
+<p>Some Examples of Recursive Problems -</p>
+<ul>
+<li>Manipulation of recursive data structures like trees and linked lists. These structures contain smaller instances of themselves, making recursion a natural fit for processing them.</li>
+<li>Certain sorting algorithms, such as quicksort and merge sort, implement recursion.</li>
+<li>Mathematical problems, including the computation of factorials, Fibonacci numbers, and so on, often rely on recursive methods.</li>
+<li>Advanced computational paradigms like divide-and-conquer, backtracking, and dynamic programming frequently use recursion.</li>
+</ul>
+<section id="writing-recursive-functions" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="writing-recursive-functions"><span class="header-section-number">22.1</span> Writing Recursive Functions</h2>
+<p>Understanding and implementing recursive functions often necessitates thinking of the broader problem in terms of smaller, similar instances. If you can decompose the main problem into subproblems that echo the original, you’re in a position to use recursion.</p>
+<p>Follow these general steps when designing a recursive function:</p>
+<ol type="1">
+<li><strong>Identify the base case(s)</strong>: Determine the simplest version of the problem that can be resolved directly without invoking recursion. This serves as the recursion’s termination point.</li>
+<li><strong>Reduce the problem</strong>: Consider how the main problem can be diminished to a smaller but similar subproblem.</li>
+<li><strong>Invoke the recursive call</strong>: Initiate the recursive call on the smaller subproblem, passing any necessary parameters.</li>
+<li><strong>Construct the solution</strong>: Utilize the result of the recursive call to assemble the solution for the original problem.</li>
+<li><strong>Return the result</strong>: Once the solution is obtained, return the result.</li>
+</ol>
+<p>Let’s delve into examples of recursive functions that exhibit diverse structures:</p>
+<section id="single-base-case-single-recursive-case" class="level3" data-number="22.1.1">
+<h3 data-number="22.1.1" class="anchored" data-anchor-id="single-base-case-single-recursive-case"><span class="header-section-number">22.1.1</span> Single Base Case, Single Recursive Case</h3>
+<p>This is the most straightforward recursive structure featuring a solitary base case and a single recursive call on a reduced subproblem.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Calculate factorial of n</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">factorial</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Base case</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Recursive call</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> n <span class="op">*</span> <span class="fu">factorial</span><span class="op">(</span>n<span class="op">-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the above code, the base case is when <code>n</code> is zero, and the recursive call is made on <code>n-1</code> (a smaller instance of the original problem).</p>
+</section>
+<section id="multiple-base-cases" class="level3" data-number="22.1.2">
+<h3 data-number="22.1.2" class="anchored" data-anchor-id="multiple-base-cases"><span class="header-section-number">22.1.2</span> Multiple Base Cases</h3>
+<p>Some problems might need multiple base cases to accommodate different elementary variants of the problem:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Count ways to climb n steps </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Can climb 1 or 2 steps at a time</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">countWays</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Base cases</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Recursive calls</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">countWays</span><span class="op">(</span>n<span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu">countWays</span><span class="op">(</span>n<span class="op">-</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here, there are two base cases (<code>n == 1</code> and <code>n == 2</code>), reflecting the two possible ways of ascending a short staircase.</p>
+</section>
+<section id="multiple-recursive-cases" class="level3" data-number="22.1.3">
+<h3 data-number="22.1.3" class="anchored" data-anchor-id="multiple-recursive-cases"><span class="header-section-number">22.1.3</span> Multiple Recursive Cases</h3>
+<p>More intricate problems might necessitate multiple recursive calls on diverse subproblems:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Fibonacci number</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">fib</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Base case</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> n<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Recursive calls</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">fib</span><span class="op">(</span>n<span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu">fib</span><span class="op">(</span>n<span class="op">-</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The Fibonacci sequence computation involves two recursive calls, each on a different subproblem (<code>n-1</code> and <code>n-2</code>).</p>
+</section>
+</section>
+<section id="writing-advanced-recursive-functions" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="writing-advanced-recursive-functions"><span class="header-section-number">22.2</span> Writing Advanced Recursive Functions</h2>
+<p>While some recursive functions feature only a single base case and a single recursive call, it’s often the case that a function may have multiple base cases, multiple recursive cases, or a combination of both.</p>
+<p>Here’s the general template for such a recursive function in Java:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span> base <span class="cf">case</span> <span class="dv">1</span> <span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// return some simple expression</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span> base <span class="cf">case</span> <span class="dv">2</span> <span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// return some simple expression</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">...</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span> recursive <span class="cf">case</span> <span class="dv">1</span> <span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// some work before </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// recursive call </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// some work after </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a> <span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="kw">...</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span> <span class="op">{</span> <span class="co">// last recursive case </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// some work before </span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// recursive call </span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">// some work after </span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a> <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Each base case returns a simple expression, whereas each recursive case performs some work before and after the recursive call.</p>
+<p>Let’s now explore some specific examples.</p>
+<section id="example-1-prime-number-determination" class="level3" data-number="22.2.1">
+<h3 data-number="22.2.1" class="anchored" data-anchor-id="example-1-prime-number-determination"><span class="header-section-number">22.2.1</span> Example 1: Prime Number Determination</h3>
+<p>Consider a function that checks whether a given integer <code>X</code> is a prime number. Here, <code>Y</code> is a helper variable acting as the divisor. When the function is initially invoked, <code>Y</code> is set to <code>X - 1</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> <span class="fu">prime</span><span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>y <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>x <span class="op">%</span> y <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">prime</span><span class="op">(</span>x<span class="op">,</span> y<span class="op">-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s understand how the <code>prime</code> function works. Remember, the purpose of this function is to check if a number <code>X</code> is prime.</p>
+<p>A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself. For instance, the first six prime numbers are 2, 3, 5, 7, 11, and 13.</p>
+<p>In our <code>prime</code> function, we recursively check if <code>X</code> can be evenly divided by any number from <code>X - 1</code> down to <code>2</code>. If <code>X</code> can be evenly divided by any such number (i.e., <code>x % y == 0</code> is <code>true</code> for some <code>y</code>), then <code>X</code> is not a prime number, and the function returns <code>false</code>.</p>
+<p>On the other hand, if <code>X</code> cannot be evenly divided by any such number (i.e., we’ve checked all <code>y</code> from <code>X - 1</code> down to <code>2</code> without finding an even divisor), then <code>X</code> is a prime number, and the function returns <code>true</code>.</p>
+<p>Let’s walk through the example of <code>prime(7, 6)</code>:</p>
+<ol type="1">
+<li>Since <code>y</code> is not <code>1</code>, and <code>7 % 6</code> does not equal <code>0</code>, we make the recursive call <code>prime(7, 5)</code>.</li>
+<li>Again, <code>y</code> is not <code>1</code>, and <code>7 % 5</code> does not equal <code>0</code>, so we make the recursive call <code>prime(7, 4)</code>.</li>
+<li>This pattern continues until we reach <code>prime(7, 2)</code>, which again does not evenly divide <code>7</code>, so we make the last recursive call <code>prime(7, 1)</code>.</li>
+<li>Now <code>y</code> is <code>1</code>, so we return <code>true</code>, unwinding the recursion and indicating that <code>7</code> is indeed a prime number.</li>
+</ol>
+<p>This function correctly identifies whether a number <code>X</code> is prime. As with all recursive functions, it is important to understand the base case(s) and how the recursive calls are working towards reaching them. The process of “winding” (making recursive calls) and “unwinding” (returning from recursive calls) is central to how recursion works.</p>
+</section>
+<section id="example-2-subset-sum-problem" class="level3" data-number="22.2.2">
+<h3 data-number="22.2.2" class="anchored" data-anchor-id="example-2-subset-sum-problem"><span class="header-section-number">22.2.2</span> Example 2: Subset Sum Problem</h3>
+<p>The following function, <code>isSubsetSum</code>, checks whether a subset of an integer array <code>set</code> can sum up to a given number <code>sum</code>. Here, <code>n</code> represents the number of array elements to consider. We don’t directly use <code>set.length</code> as recursive calls need to examine only part of the array.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> <span class="fu">isSubsetSum</span><span class="op">(</span><span class="dt">int</span> set<span class="op">[],</span> <span class="dt">int</span> n<span class="op">,</span> <span class="dt">int</span> sum<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>sum <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">((</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">(</span>sum <span class="op">!=</span> <span class="dv">0</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>set<span class="op">[</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">]</span> <span class="op">&gt;</span> sum<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">isSubsetSum</span><span class="op">(</span>set<span class="op">,</span> n <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> sum<span class="op">);</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">isSubsetSum</span><span class="op">(</span>set<span class="op">,</span> n <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> sum<span class="op">)</span> <span class="op">||</span> <span class="fu">isSubsetSum</span><span class="op">(</span>set<span class="op">,</span> n <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> sum <span class="op">-</span> set<span class="op">[</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">]);</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To understand how this function works, we need to consider the problem it’s trying to solve: checking if there is a subset of <code>set</code> that sums up to <code>sum</code>. It does this by recursively examining each element in <code>set</code> and checking two cases:</p>
+<ol type="1">
+<li>Is there a subset within the first <code>n - 1</code> elements of <code>set</code> that sums to <code>sum</code> (i.e., the current element is not included in the sum)?</li>
+<li>Is there a subset within the first <code>n - 1</code> elements that sums to <code>sum - set[n - 1]</code> (i.e., the current element is included in the sum)?</li>
+</ol>
+<p>Before checking these two cases, we have three base cases:</p>
+<ol type="1">
+<li>If <code>sum == 0</code>, the function returns <code>true</code>. This is because an empty set always sums to <code>0</code>.</li>
+<li>If <code>n == 0</code> (i.e., there are no more elements to consider) and <code>sum</code> is not zero, the function returns <code>false</code> as there are no more numbers to add up to <code>sum</code>.</li>
+<li>If the current element (i.e., <code>set[n - 1]</code>) is larger than <code>sum</code>, we cannot include this element in the sum, so we only check for a subset within the first <code>n - 1</code> elements that sum to <code>sum</code>.</li>
+</ol>
+<p>To illustrate this, let’s trace <code>isSubsetSum([3, 1, 5, 9, 12], 5, 9)</code>, which checks if there’s a subset of <code>[3, 1, 5, 9, 12]</code> that sums to <code>9</code>.</p>
+<p>The recursive tree will look like this:</p>
+<pre><code>isSubsetSum([3, 1, 5, 9, 12], 5, 9)
+|____ isSubsetSum([3, 1, 5, 9, 12], 4, 9) 
+|     |____ isSubsetSum([3, 1, 5, 9, 12], 3, 9) 
+|     |     |____ isSubsetSum([3, 1, 5, 9, 12], 2, 9)
+|     |     |     |____ isSubsetSum([3, 1, 5, 9, 12], 1, 9)  =&gt; False
+|     |     |     |____ isSubsetSum([3, 1, 5, 9, 12], 1, 6)  =&gt; False
+|     |     |____ isSubsetSum([3, 1, 5, 9, 12], 2, 4)
+|     |           |____ isSubsetSum([3, 1, 5, 9, 12], 1, 4) =&gt; False
+|     |           |____ isSubsetSum([3, 1, 5, 9, 12], 1, 3) =&gt; True
+|     |____ isSubsetSum([3, 1, 5, 9, 12], 3, 0) =&gt; True
+|____ isSubsetSum([3, 1, 5, 9, 12], 4, -3)  =&gt; False</code></pre>
+<p>So, the function will return <code>true</code> as there exists a subset (3, 1, 5) that sums up to <code>9</code>.</p>
+<p>By recursively breaking down the problem, <code>isSubsetSum</code> can effectively and efficiently find whether there’s a subset that matches the desired sum. This illustrates how recursive functions can solve complex problems that might be non-intuitive or hard to solve with iterative methods.</p>
+</section>
+<section id="example-3-basketball-scoring-combinations" class="level3" data-number="22.2.3">
+<h3 data-number="22.2.3" class="anchored" data-anchor-id="example-3-basketball-scoring-combinations"><span class="header-section-number">22.2.3</span> Example 3: Basketball Scoring Combinations</h3>
+<p>In this example, we create a function <code>paths</code> to calculate the number of ways to reach a given score in a basketball game, given that points can be accumulated in increments of 1, 2, or 3. If <code>n = 3</code>, for instance, <code>paths</code> will return 4, since there are four different ways to accumulate 3 points: <code>1+1+1</code>, <code>1+2</code>, <code>2+1</code>, and <code>3</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">paths</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">paths</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu">paths</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">2</span><span class="op">)</span> <span class="op">+</span> <span class="fu">paths</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">3</span><span class="op">);</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The function uses three base cases (<code>n == 1</code>, <code>n == 2</code>, <code>n == 3</code>) and three recursive calls, each corresponding to scoring 1, 2, or 3 points respectively. Let’s dive into how this function works. This recursive function is a little more complex than the previous factorial example because it has three base cases and makes three recursive calls. However, the principle is the same: we build up a complex calculation from simpler parts, and then start “unwinding” once we hit the base cases.</p>
+<p>The <code>paths</code> function takes an integer <code>n</code> as its argument and returns the number of possible ways to reach <code>n</code> points in a basketball game. This is a classic combinatorial problem: we’re essentially counting the number of unique combinations of 1s, 2s, and 3s that can add up to <code>n</code>.</p>
+<p>Let’s trace the function call <code>paths(4)</code> as an example:</p>
+<ul>
+<li>First, the function checks if <code>n</code> is 1, 2, or 3 — these are our base cases. If <code>n</code> is one of these numbers, the function can immediately return the result. But in our case, <code>n</code> is 4, so we proceed to the recursive part of the function.</li>
+<li>Now the function makes three recursive calls: <code>paths(n - 1)</code>, <code>paths(n - 2)</code>, and <code>paths(n - 3)</code>, or <code>paths(3)</code>, <code>paths(2)</code>, and <code>paths(1)</code>. These represent the three ways we could reach 4 points: by scoring a point when we had 3, by scoring 2 points when we had 2, or by scoring 3 points when we had 1.</li>
+<li>Each of these calls will in turn make their own recursive calls, until they eventually hit one of the base cases. At that point, the function will start returning values back up the call stack.</li>
+</ul>
+<p>So for <code>paths(4)</code>, we would have:</p>
+<ul>
+<li><code>paths(4) = paths(3) + paths(2) + paths(1)</code></li>
+<li><code>paths(3) = 4</code> (from the base case)</li>
+<li><code>paths(2) = 2</code> (from the base case)</li>
+<li><code>paths(1) = 1</code> (from the base case)</li>
+<li>Therefore, <code>paths(4) = 4 + 2 + 1 = 7</code></li>
+</ul>
+<p>So there are seven ways to reach a score of 4 points.</p>
+<p>This kind of tracing can help you understand how recursion builds up complex computations from simpler parts, and how the function’s call stack unwinds once it hits the base cases. Try applying this method of tracing to other recursive functions to get a feel for how they work.</p>
+<p>Remember to take the time to understand how each of these functions work. Recursion can seem complex at first, but with practice, it becomes a powerful tool in your programming arsenal.</p>
+</section>
+</section>
+<section id="tracing-recursive-code" class="level2" data-number="22.3">
+<h2 data-number="22.3" class="anchored" data-anchor-id="tracing-recursive-code"><span class="header-section-number">22.3</span> Tracing Recursive Code</h2>
+<p>While creating recursive functions, it is beneficial to approach the task in a top-down manner. Trust that the recursive call will correctly solve the subproblem, and then use that result, as you would with any other function, to solve the original problem.</p>
+<p>However, when analyzing or tracing a recursive function, you do need to understand how the function operates. Tracing a few recursive functions helps you grasp the behavior of recursion. With experience, you won’t need to trace through every detail. Your understanding of recursion will gradually solidify, and your confidence will grow.</p>
+<p>Recursive calls operate in two phases: the “winding” phase, where information is passed from one recursive call to the next, and the “unwinding” phase, where return values are passed back. These phases are sometimes overlooked, but they are essential to understanding recursion.</p>
+<p>In the winding phase, any parameter passed through the recursive call travels forward until the base case is reached. In the unwinding phase, the function’s return value (if any) travels backward to the calling function.</p>
+<p>Let’s illustrate this with an example: a recursive function to compute the factorial of a number.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">factorial</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span>  <span class="co">// base case</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> n <span class="op">*</span> <span class="fu">factorial</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">);</span>  <span class="co">// recursive case</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this case, the information (the decremented value of <code>n</code>) flows forward during the winding phase, and the computed factorial flows backward during the unwinding phase.</p>
+<p>A recursive function can also pass multiple parameters forward. For instance, a function that recursively sums the values in an array might pass the array and the current index in the winding phase, and return the cumulative sum during the unwinding phase.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">arraySum</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span>  <span class="co">// base case</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> arr<span class="op">[</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+</span> <span class="fu">arraySum</span><span class="op">(</span>arr<span class="op">,</span> n <span class="op">-</span> <span class="dv">1</span><span class="op">);</span>  <span class="co">// recursive case</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this case, the array and the index (<code>n - 1</code>) are passed forward in the winding phase, while the summed value so far is passed back during the unwinding phase.</p>
+<p>To better understand the idea of recursion, consider it as a domino effect where each recursive call is like tipping over a domino. These rules can guide your thinking:</p>
+<ol type="1">
+<li><p>Just like the first domino has to be tipped manually, the base case solution in recursion is computed non-recursively.</p></li>
+<li><p>Before any given domino can fall, all preceding dominos must have been tipped over. Similarly, before any recursive call can complete, all deeper recursive calls must complete.</p></li>
+</ol>
+<p>Through this process of tracing and understanding, recursion becomes a powerful tool in problem-solving.</p>
+</section>
+<section id="practice-exercises" class="level2" data-number="22.4">
+<h2 data-number="22.4" class="anchored" data-anchor-id="practice-exercises"><span class="header-section-number">22.4</span> Practice Exercises</h2>
+<p>Now that we’ve laid out the theory of recursion and tracing recursive calls, let’s get some hands-on practice with some exercises. Remember, the more you practice, the better you’ll understand how recursion works.</p>
+<section id="exercise-1-factorial-function" class="level3" data-number="22.4.1">
+<h3 data-number="22.4.1" class="anchored" data-anchor-id="exercise-1-factorial-function"><span class="header-section-number">22.4.1</span> Exercise 1: Factorial Function</h3>
+<p>Consider the recursive function for calculating the factorial of a number:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">factorial</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> n <span class="op">*</span> <span class="fu">factorial</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Task:</strong> Trace the recursive calls made when <code>factorial(4)</code> is called.</p>
+</section>
+<section id="exercise-2-fibonacci-series" class="level3" data-number="22.4.2">
+<h3 data-number="22.4.2" class="anchored" data-anchor-id="exercise-2-fibonacci-series"><span class="header-section-number">22.4.2</span> Exercise 2: Fibonacci Series</h3>
+<p>Consider the recursive function for generating the Fibonacci series:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">fibonacci</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> n<span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">fibonacci</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu">fibonacci</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Task:</strong> Trace the recursive calls made when <code>fibonacci(5)</code> is called. Pay close attention to how the same sub-problems are solved multiple times.</p>
+</section>
+<section id="exercise-3-sum-of-array-elements" class="level3" data-number="22.4.3">
+<h3 data-number="22.4.3" class="anchored" data-anchor-id="exercise-3-sum-of-array-elements"><span class="header-section-number">22.4.3</span> Exercise 3: Sum of Array Elements</h3>
+<p>Consider the recursive function for finding the sum of all elements in an array:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">sumArray</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">sumArray</span><span class="op">(</span>arr<span class="op">,</span> n<span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">+</span> arr<span class="op">[</span>n<span class="op">-</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Task:</strong> Given the array <code>{1, 2, 3, 4, 5}</code>, trace the recursive calls made when <code>sumArray(arr, 5)</code> is called.</p>
+<p>Take your time working through these exercises and understand how each recursive call is made. After you’ve completed them, try creating your own recursive functions and tracing through their calls.</p>
+<p>If you’re still finding it difficult to understand how the tracing is done, don’t hesitate to ask for help. Recursion is a difficult concept to grasp initially, but with practice and patience, it’ll become much clearer.</p>
+</section>
+</section>
+<section id="solution-walkthrough-factorial-function" class="level2" data-number="22.5">
+<h2 data-number="22.5" class="anchored" data-anchor-id="solution-walkthrough-factorial-function"><span class="header-section-number">22.5</span> Solution Walkthrough: Factorial Function</h2>
+<p>Let’s trace the recursive calls made when we calculate <code>factorial(4)</code> using our recursive factorial function. Here’s the function again for reference:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">factorial</span><span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> n <span class="op">*</span> <span class="fu">factorial</span><span class="op">(</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When we call <code>factorial(4)</code>, we’re not at the base case (<code>n == 0</code>), so we go to the else clause. Here, we calculate <code>4 * factorial(4 - 1)</code>, or <code>4 * factorial(3)</code>. Now, we need to calculate <code>factorial(3)</code> before we can continue. This process repeats for each recursive call:</p>
+<ul>
+<li><code>factorial(4) = 4 * factorial(3)</code></li>
+<li><code>factorial(3) = 3 * factorial(2)</code></li>
+<li><code>factorial(2) = 2 * factorial(1)</code></li>
+<li><code>factorial(1) = 1 * factorial(0)</code></li>
+</ul>
+<p>Once we reach <code>factorial(0)</code>, we’ve hit our base case, and the function returns <code>1</code>:</p>
+<ul>
+<li><code>factorial(0) = 1</code></li>
+</ul>
+<p>Now we can start unwinding the stack of calls:</p>
+<ul>
+<li><code>factorial(1) = 1 * 1 = 1</code></li>
+<li><code>factorial(2) = 2 * 1 = 2</code></li>
+<li><code>factorial(3) = 3 * 2 = 6</code></li>
+<li><code>factorial(4) = 4 * 6 = 24</code></li>
+</ul>
+<p>So, <code>factorial(4)</code> returns <code>24</code>. You can see how each recursive call builds on the previous one, and the base case provides the starting point for the calculation to unwind.</p>
+<p>This same approach can be applied to other recursive functions to understand how they work. Try it out with the remaining exercises to practice tracing recursive calls.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./17_queue.html" class="pagination-link" aria-label="Queue Data Structure">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Queue Data Structure</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./19_binary_search.html" class="pagination-link" aria-label="Binary Search">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

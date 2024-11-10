@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>23&nbsp; Binary Search – ITSC 2214 - Data Structures and Algorithms - Fall 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./20_trees.html" rel="next">
+<link href="./18_recursion.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3fbf620316015237a6991a5ebc2a9eb0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./18_recursion.html">Recursion</a></li><li class="breadcrumb-item"><a href="./19_binary_search.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ITSC 2214 - Data Structures and Algorithms - Fall 2023</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Programming Labs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/00_installing_req_software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Installing Required Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/01_using_autograder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Using the Autograder</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/02_1l_java_ide_practice-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">1L. Java and IDE Practice - 1</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">On Computers and Computing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro_to_cs_dsa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Background on Computer Science and Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_general_purpose_computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modern General-Purpose, Programmable Computers</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Java Generics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_1_compilers_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Java Compiler and Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Algorithmic Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_algorithmic_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Algorithmic Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unit Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_unit_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Unit Testing and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_writing_junit_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Writing JUnit Tests and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_mutation_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Mutation Testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_list_of_mutators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">List of Mutators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Sorting and Searching</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_sorting_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to Sorting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_comparable_comparator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Comparable and Comparator</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_bubble_selection_insertion_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Bubble, Selection, and Insertion Sort</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_linear_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sequential Collections of Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_collections_of_data_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_operations_on_lists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_implementing_arraylists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Implementing Array-backed Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_implementing_linkedlists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Implementing Linked Lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Stacks and Queues</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_stack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stack Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_queue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Queue Data Structure</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Recursion</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_recursion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_binary_search.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Trees and Graphs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Tree Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Graphs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hashing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_hashing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#recursive-linear-search" id="toc-recursive-linear-search" class="nav-link active" data-scroll-target="#recursive-linear-search"><span class="header-section-number">23.1</span> Recursive Linear Search</a></li>
+  <li><a href="#optimizing-linear-search" id="toc-optimizing-linear-search" class="nav-link" data-scroll-target="#optimizing-linear-search"><span class="header-section-number">23.2</span> Optimizing Linear Search</a></li>
+  <li><a href="#divide-and-conquer" id="toc-divide-and-conquer" class="nav-link" data-scroll-target="#divide-and-conquer"><span class="header-section-number">23.3</span> Divide and Conquer</a></li>
+  <li><a href="#even-faster-drasticallyfastersearch" id="toc-even-faster-drasticallyfastersearch" class="nav-link" data-scroll-target="#even-faster-drasticallyfastersearch"><span class="header-section-number">23.4</span> Even faster <code>drasticallyFasterSearch</code></a></li>
+  <li><a href="#unveiling-binary-search" id="toc-unveiling-binary-search" class="nav-link" data-scroll-target="#unveiling-binary-search"><span class="header-section-number">23.5</span> Unveiling Binary Search</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./18_recursion.html">Recursion</a></li><li class="breadcrumb-item"><a href="./19_binary_search.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="recursive-linear-search" class="level2" data-number="23.1">
+<h2 data-number="23.1" class="anchored" data-anchor-id="recursive-linear-search"><span class="header-section-number">23.1</span> Recursive Linear Search</h2>
+<p>Let’s imagine the following scenario: You’re in a well-organized library, each shelf categorized by the author’s last name in alphabetical order from A to Z. You’re tasked to find a book by your favorite author, say, ‘Margaret Atwood’.</p>
+<p>So, you start at ‘A’ and proceed book by book, author by author, until you eventually find the book by Atwood. This, in essence, is a prime example of the linear search algorithm. Simple, right?</p>
+<p>Let’s formalize this process with Java:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">linearSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> key<span class="op">){</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i<span class="op">=</span><span class="dv">0</span><span class="op">;</span>i<span class="op">&lt;</span>arr<span class="op">.</span><span class="fu">length</span><span class="op">;</span>i<span class="op">++){</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>arr<span class="op">[</span>i<span class="op">]</span> <span class="op">==</span> key<span class="op">){</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> i<span class="op">;</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This method receives an array <code>arr</code> and a key <code>key</code>. It uses a loop to traverse the array, checking if the current element is equal to the searched key. If it is, it returns the current index <code>i</code>. If it doesn’t find the key in the entire array, it returns -1.</p>
+<p>We start the search at the beginning of the array, just like we started at the ‘A’ section in our library, and examine each element just like we looked at each book. When we find a match, we stop searching, just like we did when we found our Atwood’s book.</p>
+<p>Despite its simplicity, the linear search algorithm isn’t very efficient. For example, let’s say the library decided to include all authors worldwide. With the linear search strategy, you might end up examining books by millions of authors before you reach Margaret Atwood!</p>
+<p>This brings us to our problem – How can we make this search more efficient?</p>
+<p>Since our last chapter was on recursion, let’s try to solve this problem using recursion. We’ll call our method <code>linearSearchRecursive</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">linearSearchRecursive</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> key<span class="op">,</span> <span class="dt">int</span> index<span class="op">){</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>index <span class="op">&gt;=</span> arr<span class="op">.</span><span class="fu">length</span><span class="op">){</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>arr<span class="op">[</span>index<span class="op">]</span> <span class="op">==</span> key<span class="op">){</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> index<span class="op">;</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span><span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">linearSearchRecursive</span><span class="op">(</span>arr<span class="op">,</span> key<span class="op">,</span> index<span class="op">+</span><span class="dv">1</span><span class="op">);</span> </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>linearSearchRecursive</code> method is a recursive function that performs a linear search on an array of integers. A linear search is a simple algorithm that checks each element of the array in order until it finds the target value or reaches the end of the array. The method takes three parameters: <code>arr</code>, which is the array to be searched, <code>key</code>, which is the value to be found, and <code>index</code>, which is the current position in the array.</p>
+<p>The method has three cases:</p>
+<ul>
+<li>The base case 1: If <code>index</code> is equal to or greater than the length of the array, it means that the end of the array has been reached and the key was not found. In this case, the method returns <code>-1</code> to indicate that the search was unsuccessful.</li>
+<li>The base case 2: If the element at <code>arr[index]</code> is equal to <code>key</code>, it means that the key has been found at the current position. In this case, the method returns <code>index</code> to indicate the location of the key in the array.</li>
+<li>The recursive case: If neither of the base cases are true, it means that the key has not been found yet and there are more elements to check. In this case, the method makes a recursive call to itself with the same array and key, but with an incremented index (<code>index+1</code>). This way, the method moves forward in the array until it either finds the key or reaches the end.</li>
+</ul>
+<p>The data flows through the recursive calls via the parameters and return values. The parameters (<code>arr</code>, <code>key</code>, and <code>index</code>) help in propagating information forward through the recursive calls until reaching one of the base cases. The return values (<code>-1</code> or <code>index</code>) relay information back from the base case to the original caller.</p>
+<p>Let’s illustrate this with an example: Suppose we want to search for <code>5</code> in the array <code>{3, 1, 4, 2, 5}</code> using <code>linearSearchRecursive</code>. We start by calling <code>linearSearchRecursive(arr, 5, 0)</code>, where <code>arr</code> is <code>{3, 1, 4, 2, 5}</code>, <code>key</code> is <code>5</code>, and <code>index</code> is <code>0</code>. The recursive tree will look like this:</p>
+<pre><code>linearSearchRecursive(arr, 5, 0)
+|____ linearSearchRecursive(arr, 5, 1)
+      |____ linearSearchRecursive(arr, 5, 2)
+            |____ linearSearchRecursive(arr, 5, 3)
+                  |____ linearSearchRecursive(arr, 5, 4) =&gt; returns 4</code></pre>
+<p>At each recursive call, we check if we have reached one of the base cases. If not, we make another recursive call with an incremented index. When we reach <code>linearSearchRecursive(arr, 5, 4)</code>, we find that <code>arr[4]</code> is equal to <code>key</code>, so we return <code>4</code>. This value is then passed back up the call stack until it reaches the original caller. So, <code>linearSearchRecursive(arr, 5, 0)</code> returns <code>4</code>, indicating that <code>5</code> is found at index <code>4</code> in the array.</p>
+</section>
+<section id="optimizing-linear-search" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="optimizing-linear-search"><span class="header-section-number">23.2</span> Optimizing Linear Search</h2>
+<p>Our recursive linear search algorithm successfully finds a given element within an array. However, in each recursive call, we reduce our search space by just one element. It’s akin to taking one step at a time when we could be leaping. Wouldn’t it be nice if we could shrink this search space by more than a single element at each step?</p>
+<p>Let’s imagine again that we’re in our library from earlier, but this time, we have a partner. You start at ‘A’ and your partner starts at ‘Z’. Now you’re moving towards each other, each drawing closer to ‘M’, where Atwood’s books are likely to reside. If either of you find the book, you signal the other, and the process hinges to a stop.</p>
+<p>Let’s translate this idea into code:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">optimizedLinearSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> key<span class="op">){</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>left<span class="op">&gt;</span>right<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>arr<span class="op">[</span>left<span class="op">]</span> <span class="op">==</span> key<span class="op">){</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> left<span class="op">;</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>arr<span class="op">[</span>right<span class="op">]</span> <span class="op">==</span> key<span class="op">){</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> right<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">optimizedLinearSearch</span><span class="op">(</span>arr<span class="op">,</span> left <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> right <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key<span class="op">);</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>optimizedLinearSearch</code> method is another recursive function that performs a linear search on an array of integers, but with some optimizations. The method takes four parameters: <code>arr</code>, which is the array to be searched, <code>left</code>, which is the leftmost index of the subarray to be searched, <code>right</code>, which is the rightmost index of the subarray to be searched, and <code>key</code>, which is the value to be found.</p>
+<p>The method has three cases:</p>
+<ul>
+<li>The base case 1: If <code>left</code> is greater than <code>right</code>, it means that the subarray is empty and the key was not found. In this case, the method returns <code>-1</code> to indicate that the search was unsuccessful.</li>
+<li>The base case 2: If the element at <code>arr[left]</code> or <code>arr[right]</code> is equal to <code>key</code>, it means that the key has been found at one of the ends of the subarray. In this case, the method returns <code>left</code> or <code>right</code> to indicate the location of the key in the array.</li>
+<li>The recursive case: If neither of the base cases are true, it means that the key has not been found yet and there are more elements to check. In this case, the method makes a recursive call to itself with the same array and key, but with a smaller subarray (<code>left + 1</code> to <code>right - 1</code>). This way, the method eliminates two elements from the search space at each recursive call until it either finds the key or reaches an empty subarray.</li>
+</ul>
+<p>The data flows through the recursive calls via the parameters and return values. The parameters (<code>arr</code>, <code>left</code>, <code>right</code>, and <code>key</code>) help in propagating information forward through the recursive calls until reaching one of the base cases. The return values (<code>-1</code>, <code>left</code>, or <code>right</code>) relay information back from the base case to the original caller.</p>
+<p>The optimization in this method comes from checking both ends of the subarray at each recursive call, instead of just one element as in <code>linearSearchRecursive</code>. This reduces the number of recursive calls needed to find the key or reach an empty subarray. For example, if we want to search for <code>5</code> in the array <code>{3, 1, 4, 2, 5}</code> using <code>optimizedLinearSearch</code>, we start by calling <code>optimizedLinearSearch(arr, 0, 4, 5)</code>, where <code>arr</code> is <code>{3, 1, 4, 2, 5}</code>, <code>left</code> is <code>0</code>, <code>right</code> is <code>4</code>, and <code>key</code> is <code>5</code>. The recursive tree will look like this:</p>
+<pre><code>optimizedLinearSearch(arr, 0, 4, 5)
+|____ optimizedLinearSearch(arr, 1, 3, 5)
+      |____ optimizedLinearSearch(arr, 2, 2, 5) =&gt; returns -1</code></pre>
+<p>At each recursive call, we check if we have reached one of the base cases. If not, we make another recursive call with a smaller subarray. When we reach <code>optimizedLinearSearch(arr, 2, 2, 5)</code>, we find that neither <code>arr[2]</code> nor <code>arr[2]</code> is equal to <code>key</code>, and that <code>left &gt; right</code>. So we return <code>-1</code>. This value is then passed back up the call stack until it reaches the original caller. So, <code>optimizedLinearSearch(arr, 0, 4, 5)</code> returns <code>-1</code>, indicating that <code>5</code> is not found in the array.</p>
+<p>Note that this method works correctly only if there are no duplicates in the array. If there are duplicates, it may return a different index than expected or miss some occurrences of the key. For example, if we want to search for <code>4</code> in the array <code>{3, 4, 4, 2}</code>, using <code>optimizedLinearSearch(arr, 0, 3, 4)</code>, we will get <code>-1</code> as a result instead of <code>1</code> or <code>2</code>. This is because both ends of the subarray are eliminated at each recursive call until an empty subarray is reached.</p>
+<p>The worst case complexity analysis of both snippets is as follows:</p>
+<ul>
+<li>The <code>linearSearchRecursive</code> method has a worst-case complexity of <strong>O(n)</strong>, where <strong>n</strong> is the length of the array. This is because in the worst case, the key is not present in the array or is the last element of the array, and the method has to check every element of the array until it reaches the end. The number of recursive calls is equal to <strong>n</strong> in this case.</li>
+<li>The <code>optimizedLinearSearch</code> method has a worst-case complexity of <strong>O(n/2)</strong> - because in the worst case, the key is not present in the array or is somewhere in the middle of the array, and the method has to check half of the elements of the array until it reaches an empty subarray - which ends up being also <strong>O(n)</strong> in Big-O notation.</li>
+</ul>
+<p>So it looks like the worst-case scenario hasn’t vastly improved. We’d still potentially have to traverse half the array size if the element resides in the middle. In the worst-case scenario, the time complexity remains O(n).</p>
+<p>This leads us to a realization: minor tweaks to our approach may not provide the drastic improvement we hope for. Is there some drastic change we can make to eliminate substantial amounts of data from our search space, not just one or two elements, with every recursive call?</p>
+</section>
+<section id="divide-and-conquer" class="level2" data-number="23.3">
+<h2 data-number="23.3" class="anchored" data-anchor-id="divide-and-conquer"><span class="header-section-number">23.3</span> Divide and Conquer</h2>
+<p>When faced with a complex problem, one of the most effective strategies is often to break it down into smaller, more manageable parts. This is the essence of the ‘divide and conquer’ strategy. We divide the problem into several sub-problems that are similar to the original but smaller in size. We conquer the sub-problems by solving them recursively. Finally, we combine the solutions of the sub-problems to solve the original problem.</p>
+<p>The divide and conquer strategy is especially effective when the sub-problems can be solved independently and the solutions can be combined efficiently. In the context of searching, we can apply this strategy by dividing the search space into smaller parts and searching each part separately. If we can eliminate large parts of the search space at each step, we can find the target value much faster.</p>
+<p>Let’s see how we can apply this to Search, and our original problem of looking for books in a library!</p>
+<p>The journey to our favorite author’s book in the library hasn’t been as fast as we initially desired. Checking every book, or even every other book, can still be cumbersome in a large library.</p>
+<p>So, let’s revisit our library metaphor and imagine a different scenario. Now, you have an idea. Instead of searching from ‘A’ to ‘Z’ linearly, you begin your search in the middle of the library, around ‘M.’ If Atwood falls in the latter half, ignore everything from ‘A to L.’ And voila! Half the library gets eliminated instantly.</p>
+<p>But in order for this to work, we need to make an assumption – the library is sorted alphabetically. If it isn’t, we’ll have to sort it first, which is a whole other problem. But if it is, we can apply the divide and conquer strategy to our search.</p>
+<p>Now let’s put it into practice by creating a new method called <code>drasticallyFasterSearch</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> key<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> mid <span class="op">=</span> left <span class="op">+</span> <span class="op">(</span>right <span class="op">-</span> left<span class="op">)</span> <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">==</span> key<span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> mid<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">&gt;</span> key<span class="op">)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">optimizedLinearSearch</span><span class="op">(</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>          java<span class="op">.</span><span class="fu">utils</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">copyOfRange</span><span class="op">(</span>arr<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">),</span> <span class="dv">0</span><span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">optimizedLinearSearch</span><span class="op">(</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>          java<span class="op">.</span><span class="fu">utils</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">copyOfRange</span><span class="op">(</span>arr<span class="op">,</span> mid <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> right<span class="op">),</span> <span class="dv">0</span><span class="op">,</span> right <span class="op">-</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>drasticallyFasterSearch</code> method is a hybrid function that combines our earlier <code>optimizedLinearSearch</code> to our new Divide and Conquer strategy. The method takes four parameters: <code>arr</code>, which is the array to be searched, <code>left</code>, which is the leftmost index of the subarray to be searched, <code>right</code>, which is the rightmost index of the subarray to be searched, and <code>key</code>, which is the value to be found.</p>
+<p>The method has three cases:</p>
+<ul>
+<li>The base case: If the element at the middle of the subarray (<code>arr[mid]</code>) is equal to <code>key</code>, it means that the key has been found at that position. In this case, the method returns <code>mid</code> to indicate the location of the key in the array.</li>
+<li>The recursive case 1: If the element at the middle of the subarray (<code>arr[mid]</code>) is greater than <code>key</code>, it means that the key must be in the left half of the subarray. In this case, the method makes a recursive call to <code>optimizedLinearSearch</code> with a smaller subarray (<code>arr[0]</code> to <code>arr[mid-1]</code>). This way, the method eliminates half of the elements from the search space and then applies optimized linear search on the remaining elements.</li>
+<li>The recursive case 2: If the element at the middle of the subarray (<code>arr[mid]</code>) is less than <code>key</code>, it means that the key must be in the right half of the subarray. In this case, the method makes a recursive call to <code>optimizedLinearSearch</code> with a smaller subarray (<code>arr[mid+1]</code> to <code>arr[right]</code>). This way, the method eliminates half of the elements from the search space and then applies optimized linear search on the remaining elements.</li>
+</ul>
+<p>The data flows through the recursive calls via the parameters and return values. The parameters (<code>arr</code>, <code>left</code>, <code>right</code>, and <code>key</code>) help in propagating information forward through the recursive calls until reaching one of the base cases. The return values (<code>mid</code>, <code>-1</code>, <code>left</code>, or <code>right</code>) relay information back from the base case to the original caller.</p>
+<p>Let’s illustrate this with an example: Suppose we want to search for <code>5</code> in the sorted array <code>{1, 2, 3, 4, 5}</code> using <code>drasticallyFasterSearch</code>. We start by calling <code>drasticallyFasterSearch(arr, 0, 4, 5)</code>, where <code>arr</code> is <code>{1, 2, 3, 4, 5}</code>, <code>left</code> is <code>0</code>, <code>right</code> is <code>4</code>, and <code>key</code> is <code>5</code>. The recursive tree will look like this:</p>
+<pre><code>drasticallyFasterSearch(arr, 0, 4, 5)
+|____ drasticallyFasterSearch(arr, 3, 4, 5)
+      |____ optimizedLinearSearch(arr[3..4], 0 ,1 ,5) =&gt; returns 1</code></pre>
+<p>At each recursive call, we check if we have reached one of the base cases. If not, we make another recursive call with a smaller subarray. When we reach <code>optimizedLinearSearch(arr[3..4], 0 ,1 ,5)</code>, we find that <code>arr[4]</code> is equal to <code>key</code>, so we return <code>1</code>. This value is then added to <code>left</code> (which is <code>3</code>) and passed back up the call stack until it reaches the original caller. So, <code>drasticallyFasterSearch(arr, 0 ,4 ,5)</code> returns <code>(3 + 1) = 4</code>, indicating that <code>5</code> is found at index <code>4</code> in the array.</p>
+</section>
+<section id="even-faster-drasticallyfastersearch" class="level2" data-number="23.4">
+<h2 data-number="23.4" class="anchored" data-anchor-id="even-faster-drasticallyfastersearch"><span class="header-section-number">23.4</span> Even faster <code>drasticallyFasterSearch</code></h2>
+<p>Building on our previous exploration, we can see a pattern emerging. We are using our <code>drasticallyFasterSearch</code> to divide our problem, but when it comes to conquering, we are falling back to <code>optimizedLinearSearch</code>. This means we are not fully utilizing the strength of our divide and conquer approach. We have an opportunity for optimization here: what if, instead of resorting to linear search, we applied the same divide and conquer strategy again? This observation leads us to the Binary Search algorithm, a more efficient way to search sorted arrays, which would look like this:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> key<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> mid <span class="op">=</span> left <span class="op">+</span> <span class="op">(</span>right <span class="op">-</span> left<span class="op">)</span> <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">==</span> key<span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> mid<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">&gt;</span> key<span class="op">)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>          java<span class="op">.</span><span class="fu">utils</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">copyOfRange</span><span class="op">(</span>arr<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">),</span> <span class="dv">0</span><span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>          java<span class="op">.</span><span class="fu">utils</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">copyOfRange</span><span class="op">(</span>arr<span class="op">,</span> mid <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> right<span class="op">),</span> <span class="dv">0</span><span class="op">,</span> right <span class="op">-</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>But would this actually work? We need to use what we learnt about writing recursive functions to find out - what are the base cases? What are the recursive cases? How does the data flow through the recursive calls?</p>
+<blockquote class="blockquote">
+<p>The analysis of the <code>drasticallyFasterSearch</code> method is left as an exercise for the reader.</p>
+</blockquote>
+<p>One fatal flaw with the <code>drasticallyFasterSearch</code> function, as it is currently written, is that there is only one base case - when we find the element and return the <code>mid</code> index. If the element we’re searching for is not in the array, the function will enter into an infinite loop because it lacks a base case to handle this situation.</p>
+<p>So, we need an additional base case to handle the scenario where the element is not in the array. This needs to be a condition that detects if we’ve run out of elements in the array that we haven’t yet searched.</p>
+<p>This is where the skill of tracing recursive functions comes in handy. We can trace the function to see what happens when we run out of elements to search. Let’s trace the function for the example we used earlier: searching for <code>5</code> in the sorted array <code>{1, 2, 3, 4, 5}</code> results in the following recursive call sequence:</p>
+<pre><code>drasticallyFasterSearch(arr, 0, 4, 5)
+|____ drasticallyFasterSearch(arr, 3, 4, 5)
+      |____ drasticallyFasterSearch(arr, 4, 4, 5) 
+            =&gt; returns 4</code></pre>
+<p>But what happens if the number we’re searching for isn’t in the array? What if we’re looking for <code>6</code> in the same array?</p>
+<pre><code>drasticallyFasterSearch(arr, 0, 4, 6)
+|____ drasticallyFasterSearch(arr, 3, 4, 6)
+      |____ drasticallyFasterSearch(arr, 4, 4, 6)
+            |____ drasticallyFasterSearch(arr, 5, 4, 6)</code></pre>
+<p>This last recursive call, <code>drasticallyFasterSearch(arr, 5, 4, 6)</code> is problematic because it makes no sense to start at an index higher than our end index. This means we’ve exhausted all potential elements in our search.</p>
+<p>This suggests that we need an additional base case to handle when our <code>left</code> index exceeds our <code>right</code> index. This makes sense because there is no reason for <code>left</code> to be on the right of <code>right</code>! So, we should modify our search method to be:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> key<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>right <span class="op">&lt;</span> left<span class="op">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> mid <span class="op">=</span> left <span class="op">+</span> <span class="op">(</span>right <span class="op">-</span> left<span class="op">)</span> <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">==</span> key<span class="op">)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> mid<span class="op">;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">&gt;</span> key<span class="op">)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>          java<span class="op">.</span><span class="fu">utils</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">copyOfRange</span><span class="op">(</span>arr<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">),</span> <span class="dv">0</span><span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>          java<span class="op">.</span><span class="fu">utils</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">copyOfRange</span><span class="op">(</span>arr<span class="op">,</span> mid <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> right<span class="op">),</span> <span class="dv">0</span><span class="op">,</span> right <span class="op">-</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we can see that when <code>right</code> becomes less than <code>left</code>, the function will correctly return <code>-1</code>, signaling that our intended key isn’t present. Note that in the case where <code>left</code> equals <code>right</code>, we still want to check the <code>arr[mid]</code>, so <code>right &lt; left</code>, not <code>right &lt;= left</code>, is our base case.</p>
+<p>As we apply the divide and conquer methodology here, our drasticallyFasterSearch method is now a working implementation of the Binary Search algorithm. In each recursive call, we cut our search space in half, drastically reducing the number of elements searched. For a list of length n, in the worst-case, we’ll make roughly log(n) recursive calls, scaling our runtime far better than a linear search would.</p>
+<p>Indeed, this is a powerful tool for searching sorted data. By fully utilizing divide and conquer, we’ve been able to drastically speed up our search. This emphasizes the importance of understanding the fundamentals of recursion and problem decompositions as key building blocks in algorithm and data structure design.</p>
+<p>As the reader (or student!) progresses, they may find more elegant ways to implement this algorithm, or variations of it, which solve complex problems in different contexts. Here is a variation of the this dearch algorithm that is more efficient and doesn’t require copying the array at each recursive call:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> key<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>right <span class="op">&gt;=</span> left<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> mid <span class="op">=</span> left <span class="op">+</span> <span class="op">(</span>right <span class="op">-</span> left<span class="op">)</span> <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">==</span> key<span class="op">)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> mid<span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">&gt;</span> key<span class="op">)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span>arr<span class="op">,</span> left<span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key<span class="op">);</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="fu">drasticallyFasterSearch</span><span class="op">(</span>arr<span class="op">,</span> mid <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> right<span class="op">,</span> key<span class="op">);</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="unveiling-binary-search" class="level2" data-number="23.5">
+<h2 data-number="23.5" class="anchored" data-anchor-id="unveiling-binary-search"><span class="header-section-number">23.5</span> Unveiling Binary Search</h2>
+<p>The name “Binary Search” comes from the fact that this method divides the search space into two (binary) at each step of the algorithm. It is a fundamental technique used in computer science and a cornerstone in algorithm design.</p>
+<p>The final implementation of the Binary Search algorithm is as follows:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">binarySearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> arr<span class="op">,</span> <span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> key<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>right <span class="op">&gt;=</span> left<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> mid <span class="op">=</span> left <span class="op">+</span> <span class="op">(</span>right <span class="op">-</span> left<span class="op">)</span> <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">==</span> key<span class="op">)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> mid<span class="op">;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>arr<span class="op">[</span>mid<span class="op">]</span> <span class="op">&gt;</span> key<span class="op">)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="fu">binarySearch</span><span class="op">(</span>arr<span class="op">,</span> left<span class="op">,</span> mid <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> key<span class="op">);</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="fu">binarySearch</span><span class="op">(</span>arr<span class="op">,</span> mid <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> right<span class="op">,</span> key<span class="op">);</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By rethinking our approach and exploiting the sorted nature of our data, we devised a strategy that significantly reduces the time spent searching. This concludes the core of Binary Search, demonstrating how powerful a shift in perspective can be in problem-solving.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./18_recursion.html" class="pagination-link" aria-label="Recursion">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./20_trees.html" class="pagination-link" aria-label="Tree Data Structure">
+        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Tree Data Structure</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

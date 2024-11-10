@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>16&nbsp; Collections of Data – ITSC 2214 - Data Structures and Algorithms - Fall 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./13_operations_on_lists.html" rel="next">
+<link href="./11_linear_search.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3fbf620316015237a6991a5ebc2a9eb0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12_collections_of_data_intro.html">Sequential Collections of Data</a></li><li class="breadcrumb-item"><a href="./12_collections_of_data_intro.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ITSC 2214 - Data Structures and Algorithms - Fall 2023</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Programming Labs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/00_installing_req_software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Installing Required Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/01_using_autograder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Using the Autograder</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/02_1l_java_ide_practice-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">1L. Java and IDE Practice - 1</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">On Computers and Computing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro_to_cs_dsa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Background on Computer Science and Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_general_purpose_computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modern General-Purpose, Programmable Computers</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Java Generics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_1_compilers_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Java Compiler and Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Algorithmic Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_algorithmic_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Algorithmic Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unit Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_unit_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Unit Testing and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_writing_junit_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Writing JUnit Tests and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_mutation_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Mutation Testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_list_of_mutators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">List of Mutators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Sorting and Searching</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_sorting_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to Sorting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_comparable_comparator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Comparable and Comparator</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_bubble_selection_insertion_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Bubble, Selection, and Insertion Sort</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_linear_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sequential Collections of Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_collections_of_data_intro.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_operations_on_lists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_implementing_arraylists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Implementing Array-backed Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_implementing_linkedlists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Implementing Linked Lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Stacks and Queues</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_stack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stack Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_queue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Queue Data Structure</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Recursion</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_recursion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_binary_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Trees and Graphs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Tree Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Graphs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hashing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_hashing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#active-memory-in-computers" id="toc-active-memory-in-computers" class="nav-link active" data-scroll-target="#active-memory-in-computers"><span class="header-section-number">16.1</span> (Active) Memory in Computers</a></li>
+  <li><a href="#the-concept-of-data-collections" id="toc-the-concept-of-data-collections" class="nav-link" data-scroll-target="#the-concept-of-data-collections"><span class="header-section-number">16.2</span> The Concept of Data Collections</a></li>
+  <li><a href="#types-of-collections-fixed-and-dynamic" id="toc-types-of-collections-fixed-and-dynamic" class="nav-link" data-scroll-target="#types-of-collections-fixed-and-dynamic"><span class="header-section-number">16.3</span> Types of Collections: Fixed and Dynamic</a></li>
+  <li><a href="#memory-layout-of-collections" id="toc-memory-layout-of-collections" class="nav-link" data-scroll-target="#memory-layout-of-collections"><span class="header-section-number">16.4</span> Memory Layout of Collections</a></li>
+  <li><a href="#tackling-dynamic-collections" id="toc-tackling-dynamic-collections" class="nav-link" data-scroll-target="#tackling-dynamic-collections"><span class="header-section-number">16.5</span> Tackling Dynamic Collections</a></li>
+  <li><a href="#memory-layout-and-program-performance" id="toc-memory-layout-and-program-performance" class="nav-link" data-scroll-target="#memory-layout-and-program-performance"><span class="header-section-number">16.6</span> Memory Layout and Program Performance</a></li>
+  <li><a href="#summary-and-conclusion" id="toc-summary-and-conclusion" class="nav-link" data-scroll-target="#summary-and-conclusion"><span class="header-section-number">16.7</span> Summary and Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12_collections_of_data_intro.html">Sequential Collections of Data</a></li><li class="breadcrumb-item"><a href="./12_collections_of_data_intro.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="active-memory-in-computers" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="active-memory-in-computers"><span class="header-section-number">16.1</span> (Active) Memory in Computers</h2>
+<p>To fully grasp the concept of data collections in Java, we must first lay a foundational understanding of memory in computing systems. It is helpful to visualize the computer’s memory as a vast grid, with each cell in the grid being capable of storing a certain number of bits. This simple grid becomes the underpinning infrastructure for data storage, holding variables that serve a multitude of functions in our programming ventures.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-memory-grid" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-memory-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 180.00 104.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 100)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-100 176,-100 176,4 -4,4"></polygon>
+<!-- a -->
+<g id="node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="black" points="8,-70 8,-92 21,-92 21,-70 8,-70"></polygon>
+<text text-anchor="start" x="11" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="21,-70 21,-92 34,-92 34,-70 21,-70"></polygon>
+<text text-anchor="start" x="24" y="-76.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="34,-70 34,-92 47,-92 47,-70 34,-70"></polygon>
+<text text-anchor="start" x="37" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="47,-70 47,-92 60,-92 60,-70 47,-70"></polygon>
+<text text-anchor="start" x="50" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="60,-70 60,-92 73,-92 73,-70 60,-70"></polygon>
+<text text-anchor="start" x="63" y="-76.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="73,-70 73,-92 86,-92 86,-70 73,-70"></polygon>
+<text text-anchor="start" x="76" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="86,-70 86,-92 99,-92 99,-70 86,-70"></polygon>
+<text text-anchor="start" x="89" y="-76.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="99,-70 99,-92 112,-92 112,-70 99,-70"></polygon>
+<text text-anchor="start" x="102" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="112,-70 112,-92 125,-92 125,-70 112,-70"></polygon>
+<text text-anchor="start" x="115" y="-76.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="125,-70 125,-92 138,-92 138,-70 125,-70"></polygon>
+<text text-anchor="start" x="128" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="138,-70 138,-92 151,-92 151,-70 138,-70"></polygon>
+<text text-anchor="start" x="141" y="-76.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="151,-70 151,-92 164,-92 164,-70 151,-70"></polygon>
+<text text-anchor="start" x="154" y="-76.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="8,-48 8,-70 21,-70 21,-48 8,-48"></polygon>
+<text text-anchor="start" x="11" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="21,-48 21,-70 34,-70 34,-48 21,-48"></polygon>
+<text text-anchor="start" x="24" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="34,-48 34,-70 47,-70 47,-48 34,-48"></polygon>
+<text text-anchor="start" x="37" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="47,-48 47,-70 60,-70 60,-48 47,-48"></polygon>
+<text text-anchor="start" x="50" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="60,-48 60,-70 73,-70 73,-48 60,-48"></polygon>
+<text text-anchor="start" x="63" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="73,-48 73,-70 86,-70 86,-48 73,-48"></polygon>
+<text text-anchor="start" x="76" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="86,-48 86,-70 99,-70 99,-48 86,-48"></polygon>
+<text text-anchor="start" x="89" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="99,-48 99,-70 112,-70 112,-48 99,-48"></polygon>
+<text text-anchor="start" x="102" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="112,-48 112,-70 125,-70 125,-48 112,-48"></polygon>
+<text text-anchor="start" x="115" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="125,-48 125,-70 138,-70 138,-48 125,-48"></polygon>
+<text text-anchor="start" x="128" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="138,-48 138,-70 151,-70 151,-48 138,-48"></polygon>
+<text text-anchor="start" x="141" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="151,-48 151,-70 164,-70 164,-48 151,-48"></polygon>
+<text text-anchor="start" x="154" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="8,-26 8,-48 21,-48 21,-26 8,-26"></polygon>
+<text text-anchor="start" x="11" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="21,-26 21,-48 34,-48 34,-26 21,-26"></polygon>
+<text text-anchor="start" x="24" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="34,-26 34,-48 47,-48 47,-26 34,-26"></polygon>
+<text text-anchor="start" x="37" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="47,-26 47,-48 60,-48 60,-26 47,-26"></polygon>
+<text text-anchor="start" x="50" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="60,-26 60,-48 73,-48 73,-26 60,-26"></polygon>
+<text text-anchor="start" x="63" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="73,-26 73,-48 86,-48 86,-26 73,-26"></polygon>
+<text text-anchor="start" x="76" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="86,-26 86,-48 99,-48 99,-26 86,-26"></polygon>
+<text text-anchor="start" x="89" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="99,-26 99,-48 112,-48 112,-26 99,-26"></polygon>
+<text text-anchor="start" x="102" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="112,-26 112,-48 125,-48 125,-26 112,-26"></polygon>
+<text text-anchor="start" x="115" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="125,-26 125,-48 138,-48 138,-26 125,-26"></polygon>
+<text text-anchor="start" x="128" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="138,-26 138,-48 151,-48 151,-26 138,-26"></polygon>
+<text text-anchor="start" x="141" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="151,-26 151,-48 164,-48 164,-26 151,-26"></polygon>
+<text text-anchor="start" x="154" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="8,-4 8,-26 21,-26 21,-4 8,-4"></polygon>
+<text text-anchor="start" x="11" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="21,-4 21,-26 34,-26 34,-4 21,-4"></polygon>
+<text text-anchor="start" x="24" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="34,-4 34,-26 47,-26 47,-4 34,-4"></polygon>
+<text text-anchor="start" x="37" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="47,-4 47,-26 60,-26 60,-4 47,-4"></polygon>
+<text text-anchor="start" x="50" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="60,-4 60,-26 73,-26 73,-4 60,-4"></polygon>
+<text text-anchor="start" x="63" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="73,-4 73,-26 86,-26 86,-4 73,-4"></polygon>
+<text text-anchor="start" x="76" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="86,-4 86,-26 99,-26 99,-4 86,-4"></polygon>
+<text text-anchor="start" x="89" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="99,-4 99,-26 112,-26 112,-4 99,-4"></polygon>
+<text text-anchor="start" x="102" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="112,-4 112,-26 125,-26 125,-4 112,-4"></polygon>
+<text text-anchor="start" x="115" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="125,-4 125,-26 138,-26 138,-4 125,-4"></polygon>
+<text text-anchor="start" x="128" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="138,-4 138,-26 151,-26 151,-4 138,-4"></polygon>
+<text text-anchor="start" x="141" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="none" stroke="black" points="151,-4 151,-26 164,-26 164,-4 151,-4"></polygon>
+<text text-anchor="start" x="154" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-memory-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.1: A diagram showing a grid of memory cells, each capable of storing a single bit.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-concept-of-data-collections" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="the-concept-of-data-collections"><span class="header-section-number">16.2</span> The Concept of Data Collections</h2>
+<p>In programming, the need often arises to handle groups of similar variables. These groups are what we refer to as data collections. A data collection is essentially an assembly of bits in the memory, representing a group of variables. For instance, you could have a collection of four 2-bit variables, which together would take up eight bits of memory. But the behavior of these collections can vary, particularly when considering size constraints.</p>
+</section>
+<section id="types-of-collections-fixed-and-dynamic" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="types-of-collections-fixed-and-dynamic"><span class="header-section-number">16.3</span> Types of Collections: Fixed and Dynamic</h2>
+<p>When analyzing the size of data collections, we encounter two main types: fixed (or static) and dynamic collections.</p>
+<p><strong>Fixed or Static Collections:</strong> As the name suggests, in a static collection, the number of variables is constant. This implies that the collection’s size is immutable, and the total memory occupancy remains consistent. An array of 10 integers is a perfect example of a static collection - regardless of the values stored in it, the array always contains ten integers.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-static-collection" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-static-collection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 180.00 88.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 84)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-84 176,-84 176,4 -4,4"></polygon>
+<!-- a -->
+<g id="node1" class="node">
+<title>a</title>
+<polygon fill="lightblue" stroke="transparent" points="8,-54 8,-76 60,-76 60,-54 8,-54"></polygon>
+<polygon fill="none" stroke="black" points="8,-54 8,-76 60,-76 60,-54 8,-54"></polygon>
+<text text-anchor="start" x="20.79" y="-60.4" font-family="Times,serif" font-size="14.00">Data</text>
+<polygon fill="lightblue" stroke="transparent" points="60,-54 60,-76 112,-76 112,-54 60,-54"></polygon>
+<polygon fill="none" stroke="black" points="60,-54 60,-76 112,-76 112,-54 60,-54"></polygon>
+<text text-anchor="start" x="72.79" y="-60.4" font-family="Times,serif" font-size="14.00">Data</text>
+<polygon fill="lightblue" stroke="transparent" points="112,-54 112,-76 164,-76 164,-54 112,-54"></polygon>
+<polygon fill="none" stroke="black" points="112,-54 112,-76 164,-76 164,-54 112,-54"></polygon>
+<text text-anchor="start" x="124.79" y="-60.4" font-family="Times,serif" font-size="14.00">Data</text>
+<polygon fill="none" stroke="black" points="8,-48 8,-54 164,-54 164,-48 8,-48"></polygon>
+<polygon fill="lightyellow" stroke="transparent" points="8,-26 8,-48 21,-48 21,-26 8,-26"></polygon>
+<polygon fill="none" stroke="black" points="8,-26 8,-48 21,-48 21,-26 8,-26"></polygon>
+<text text-anchor="start" x="11" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="21,-26 21,-48 34,-48 34,-26 21,-26"></polygon>
+<polygon fill="none" stroke="black" points="21,-26 21,-48 34,-48 34,-26 21,-26"></polygon>
+<text text-anchor="start" x="24" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="34,-26 34,-48 47,-48 47,-26 34,-26"></polygon>
+<polygon fill="none" stroke="black" points="34,-26 34,-48 47,-48 47,-26 34,-26"></polygon>
+<text text-anchor="start" x="37" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="47,-26 47,-48 60,-48 60,-26 47,-26"></polygon>
+<polygon fill="none" stroke="black" points="47,-26 47,-48 60,-48 60,-26 47,-26"></polygon>
+<text text-anchor="start" x="50" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="60,-26 60,-48 73,-48 73,-26 60,-26"></polygon>
+<polygon fill="none" stroke="black" points="60,-26 60,-48 73,-48 73,-26 60,-26"></polygon>
+<text text-anchor="start" x="63" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="73,-26 73,-48 86,-48 86,-26 73,-26"></polygon>
+<polygon fill="none" stroke="black" points="73,-26 73,-48 86,-48 86,-26 73,-26"></polygon>
+<text text-anchor="start" x="76" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="86,-26 86,-48 99,-48 99,-26 86,-26"></polygon>
+<polygon fill="none" stroke="black" points="86,-26 86,-48 99,-48 99,-26 86,-26"></polygon>
+<text text-anchor="start" x="89" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="99,-26 99,-48 112,-48 112,-26 99,-26"></polygon>
+<polygon fill="none" stroke="black" points="99,-26 99,-48 112,-48 112,-26 99,-26"></polygon>
+<text text-anchor="start" x="102" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="112,-26 112,-48 125,-48 125,-26 112,-26"></polygon>
+<polygon fill="none" stroke="black" points="112,-26 112,-48 125,-48 125,-26 112,-26"></polygon>
+<text text-anchor="start" x="115" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="125,-26 125,-48 138,-48 138,-26 125,-26"></polygon>
+<polygon fill="none" stroke="black" points="125,-26 125,-48 138,-48 138,-26 125,-26"></polygon>
+<text text-anchor="start" x="128" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="138,-26 138,-48 151,-48 151,-26 138,-26"></polygon>
+<polygon fill="none" stroke="black" points="138,-26 138,-48 151,-48 151,-26 138,-26"></polygon>
+<text text-anchor="start" x="141" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="151,-26 151,-48 164,-48 164,-26 151,-26"></polygon>
+<polygon fill="none" stroke="black" points="151,-26 151,-48 164,-48 164,-26 151,-26"></polygon>
+<text text-anchor="start" x="154" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="8,-4 8,-26 21,-26 21,-4 8,-4"></polygon>
+<polygon fill="none" stroke="black" points="8,-4 8,-26 21,-26 21,-4 8,-4"></polygon>
+<text text-anchor="start" x="11" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="21,-4 21,-26 34,-26 34,-4 21,-4"></polygon>
+<polygon fill="none" stroke="black" points="21,-4 21,-26 34,-26 34,-4 21,-4"></polygon>
+<text text-anchor="start" x="24" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="34,-4 34,-26 47,-26 47,-4 34,-4"></polygon>
+<polygon fill="none" stroke="black" points="34,-4 34,-26 47,-26 47,-4 34,-4"></polygon>
+<text text-anchor="start" x="37" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="47,-4 47,-26 60,-26 60,-4 47,-4"></polygon>
+<polygon fill="none" stroke="black" points="47,-4 47,-26 60,-26 60,-4 47,-4"></polygon>
+<text text-anchor="start" x="50" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="60,-4 60,-26 73,-26 73,-4 60,-4"></polygon>
+<polygon fill="none" stroke="black" points="60,-4 60,-26 73,-26 73,-4 60,-4"></polygon>
+<text text-anchor="start" x="63" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="73,-4 73,-26 86,-26 86,-4 73,-4"></polygon>
+<polygon fill="none" stroke="black" points="73,-4 73,-26 86,-26 86,-4 73,-4"></polygon>
+<text text-anchor="start" x="76" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="86,-4 86,-26 99,-26 99,-4 86,-4"></polygon>
+<polygon fill="none" stroke="black" points="86,-4 86,-26 99,-26 99,-4 86,-4"></polygon>
+<text text-anchor="start" x="89" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="99,-4 99,-26 112,-26 112,-4 99,-4"></polygon>
+<polygon fill="none" stroke="black" points="99,-4 99,-26 112,-26 112,-4 99,-4"></polygon>
+<text text-anchor="start" x="102" y="-10.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="white" stroke="transparent" points="112,-4 112,-26 125,-26 125,-4 112,-4"></polygon>
+<polygon fill="none" stroke="black" points="112,-4 112,-26 125,-26 125,-4 112,-4"></polygon>
+<text text-anchor="start" x="115" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="white" stroke="transparent" points="125,-4 125,-26 138,-26 138,-4 125,-4"></polygon>
+<polygon fill="none" stroke="black" points="125,-4 125,-26 138,-26 138,-4 125,-4"></polygon>
+<text text-anchor="start" x="128" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="white" stroke="transparent" points="138,-4 138,-26 151,-26 151,-4 138,-4"></polygon>
+<polygon fill="none" stroke="black" points="138,-4 138,-26 151,-26 151,-4 138,-4"></polygon>
+<text text-anchor="start" x="141" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="white" stroke="transparent" points="151,-4 151,-26 164,-26 164,-4 151,-4"></polygon>
+<polygon fill="none" stroke="black" points="151,-4 151,-26 164,-26 164,-4 151,-4"></polygon>
+<text text-anchor="start" x="154" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-static-collection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.2: A diagram showing a static collection of data where the five 4-bit variables are placed sequentially in memory.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Dynamic Collections:</strong> Dynamic collections differ from their static counterparts in that their sizes are subject to change over time. Consider, for example, a collection storing the names of your favorite musicians. As your taste in music evolves, so does this list, reflecting an expansion or contraction based on your preferences. Thus, it is a dynamic collection.</p>
+</section>
+<section id="memory-layout-of-collections" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="memory-layout-of-collections"><span class="header-section-number">16.4</span> Memory Layout of Collections</h2>
+<p>Let’s take a deeper look into how these collections are stored in memory. Note that the memory allocation of these collections can be influenced by factors such as the variables’ data type and size.</p>
+<p>A common approach to store a collection of two 4-bit numbers is sequentially, positioning them back-to-back. However, this is not the only strategy. Depending on the system’s memory management and data alignment methodologies, ‘padding’ could be introduced, which involves inserting extra bits between variables to align them properly in memory.</p>
+<p>Regardless of these variations, a crucial consideration when working with collections is devising a mechanism to locate the next variable in the sequence. This task is straightforward for static collections due to the known size of each variable. But how about dynamic collections?</p>
+</section>
+<section id="tackling-dynamic-collections" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="tackling-dynamic-collections"><span class="header-section-number">16.5</span> Tackling Dynamic Collections</h2>
+<p>Dynamic collections present an interesting challenge due to their mutable size. One way to navigate this issue is by earmarking a portion of the memory to store the length of the collection. For instance, the first four bits could be utilized to denote the size of the collection.</p>
+<p>By adopting this method, we can efficiently locate subsequent data elements in our collection and discern the collection’s end point. Bear in mind that the data in collections doesn’t have to be stored adjacently. We can opt to pad each element with a fixed number of bits. As long as the padding size remains consistent, we can still locate the next piece of data.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-dynamic-padded-collection" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dynamic-padded-collection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 194.00 110.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 106)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-106 190,-106 190,4 -4,4"></polygon>
+<!-- a -->
+<g id="node1" class="node">
+<title>a</title>
+<polygon fill="lightblue" stroke="transparent" points="8,-76 8,-98 60,-98 60,-76 8,-76"></polygon>
+<polygon fill="none" stroke="black" points="8,-76 8,-98 60,-98 60,-76 8,-76"></polygon>
+<text text-anchor="start" x="14.17" y="-82.4" font-family="Times,serif" font-size="14.00">Length</text>
+<polygon fill="lightyellow" stroke="transparent" points="60,-76 60,-98 92,-98 92,-76 60,-76"></polygon>
+<polygon fill="none" stroke="black" points="60,-76 60,-98 92,-98 92,-76 60,-76"></polygon>
+<text text-anchor="start" x="62.79" y="-82.4" font-family="Times,serif" font-size="14.00">Data</text>
+<polygon fill="lightgreen" stroke="transparent" points="92,-76 92,-98 119,-98 119,-76 92,-76"></polygon>
+<polygon fill="none" stroke="black" points="92,-76 92,-98 119,-98 119,-76 92,-76"></polygon>
+<text text-anchor="start" x="95" y="-82.4" font-family="Times,serif" font-size="14.00">Pad</text>
+<polygon fill="lightyellow" stroke="transparent" points="119,-76 119,-98 151,-98 151,-76 119,-76"></polygon>
+<polygon fill="none" stroke="black" points="119,-76 119,-98 151,-98 151,-76 119,-76"></polygon>
+<text text-anchor="start" x="121.79" y="-82.4" font-family="Times,serif" font-size="14.00">Data</text>
+<polygon fill="lightgreen" stroke="transparent" points="151,-76 151,-98 178,-98 178,-76 151,-76"></polygon>
+<polygon fill="none" stroke="black" points="151,-76 151,-98 178,-98 178,-76 151,-76"></polygon>
+<text text-anchor="start" x="154" y="-82.4" font-family="Times,serif" font-size="14.00">Pad</text>
+<polygon fill="none" stroke="black" points="8,-70 8,-76 178,-76 178,-70 8,-70"></polygon>
+<polygon fill="lightblue" stroke="transparent" points="8,-48 8,-70 21,-70 21,-48 8,-48"></polygon>
+<polygon fill="none" stroke="black" points="8,-48 8,-70 21,-70 21,-48 8,-48"></polygon>
+<text text-anchor="start" x="11" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightblue" stroke="transparent" points="21,-48 21,-70 34,-70 34,-48 21,-48"></polygon>
+<polygon fill="none" stroke="black" points="21,-48 21,-70 34,-70 34,-48 21,-48"></polygon>
+<text text-anchor="start" x="24" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightblue" stroke="transparent" points="34,-48 34,-70 47,-70 47,-48 34,-48"></polygon>
+<polygon fill="none" stroke="black" points="34,-48 34,-70 47,-70 47,-48 34,-48"></polygon>
+<text text-anchor="start" x="37" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightblue" stroke="transparent" points="47,-48 47,-70 60,-70 60,-48 47,-48"></polygon>
+<polygon fill="none" stroke="black" points="47,-48 47,-70 60,-70 60,-48 47,-48"></polygon>
+<text text-anchor="start" x="50" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="60,-48 60,-70 76,-70 76,-48 60,-48"></polygon>
+<polygon fill="none" stroke="black" points="60,-48 60,-70 76,-70 76,-48 60,-48"></polygon>
+<text text-anchor="start" x="64.5" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="76,-48 76,-70 92,-70 92,-48 76,-48"></polygon>
+<polygon fill="none" stroke="black" points="76,-48 76,-70 92,-70 92,-48 76,-48"></polygon>
+<text text-anchor="start" x="80.5" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightgreen" stroke="transparent" points="92,-48 92,-70 105,-70 105,-48 92,-48"></polygon>
+<polygon fill="none" stroke="black" points="92,-48 92,-70 105,-70 105,-48 92,-48"></polygon>
+<text text-anchor="start" x="95" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightgreen" stroke="transparent" points="105,-48 105,-70 119,-70 119,-48 105,-48"></polygon>
+<polygon fill="none" stroke="black" points="105,-48 105,-70 119,-70 119,-48 105,-48"></polygon>
+<text text-anchor="start" x="108.5" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="119,-48 119,-70 135,-70 135,-48 119,-48"></polygon>
+<polygon fill="none" stroke="black" points="119,-48 119,-70 135,-70 135,-48 119,-48"></polygon>
+<text text-anchor="start" x="123.5" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="135,-48 135,-70 151,-70 151,-48 135,-48"></polygon>
+<polygon fill="none" stroke="black" points="135,-48 135,-70 151,-70 151,-48 135,-48"></polygon>
+<text text-anchor="start" x="139.5" y="-54.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightgreen" stroke="transparent" points="151,-48 151,-70 164,-70 164,-48 151,-48"></polygon>
+<polygon fill="none" stroke="black" points="151,-48 151,-70 164,-70 164,-48 151,-48"></polygon>
+<text text-anchor="start" x="154" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightgreen" stroke="transparent" points="164,-48 164,-70 178,-70 178,-48 164,-48"></polygon>
+<polygon fill="none" stroke="black" points="164,-48 164,-70 178,-70 178,-48 164,-48"></polygon>
+<text text-anchor="start" x="167.5" y="-54.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="8,-26 8,-48 21,-48 21,-26 8,-26"></polygon>
+<polygon fill="none" stroke="black" points="8,-26 8,-48 21,-48 21,-26 8,-26"></polygon>
+<text text-anchor="start" x="11" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="21,-26 21,-48 34,-48 34,-26 21,-26"></polygon>
+<polygon fill="none" stroke="black" points="21,-26 21,-48 34,-48 34,-26 21,-26"></polygon>
+<text text-anchor="start" x="24" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightgreen" stroke="transparent" points="34,-26 34,-48 47,-48 47,-26 34,-26"></polygon>
+<polygon fill="none" stroke="black" points="34,-26 34,-48 47,-48 47,-26 34,-26"></polygon>
+<text text-anchor="start" x="37" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightgreen" stroke="transparent" points="47,-26 47,-48 60,-48 60,-26 47,-26"></polygon>
+<polygon fill="none" stroke="black" points="47,-26 47,-48 60,-48 60,-26 47,-26"></polygon>
+<text text-anchor="start" x="50" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="60,-26 60,-48 76,-48 76,-26 60,-26"></polygon>
+<polygon fill="none" stroke="black" points="60,-26 60,-48 76,-48 76,-26 60,-26"></polygon>
+<text text-anchor="start" x="64.5" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="76,-26 76,-48 92,-48 92,-26 76,-26"></polygon>
+<polygon fill="none" stroke="black" points="76,-26 76,-48 92,-48 92,-26 76,-26"></polygon>
+<text text-anchor="start" x="80.5" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightgreen" stroke="transparent" points="92,-26 92,-48 105,-48 105,-26 92,-26"></polygon>
+<polygon fill="none" stroke="black" points="92,-26 92,-48 105,-48 105,-26 92,-26"></polygon>
+<text text-anchor="start" x="95" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightgreen" stroke="transparent" points="105,-26 105,-48 119,-48 119,-26 105,-26"></polygon>
+<polygon fill="none" stroke="black" points="105,-26 105,-48 119,-48 119,-26 105,-26"></polygon>
+<text text-anchor="start" x="108.5" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightyellow" stroke="transparent" points="119,-26 119,-48 135,-48 135,-26 119,-26"></polygon>
+<polygon fill="none" stroke="black" points="119,-26 119,-48 135,-48 135,-26 119,-26"></polygon>
+<text text-anchor="start" x="123.5" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightyellow" stroke="transparent" points="135,-26 135,-48 151,-48 151,-26 135,-26"></polygon>
+<polygon fill="none" stroke="black" points="135,-26 135,-48 151,-48 151,-26 135,-26"></polygon>
+<text text-anchor="start" x="139.5" y="-32.4" font-family="Times,serif" font-size="14.00">1</text>
+<polygon fill="lightgreen" stroke="transparent" points="151,-26 151,-48 164,-48 164,-26 151,-26"></polygon>
+<polygon fill="none" stroke="black" points="151,-26 151,-48 164,-48 164,-26 151,-26"></polygon>
+<text text-anchor="start" x="154" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="lightgreen" stroke="transparent" points="164,-26 164,-48 178,-48 178,-26 164,-26"></polygon>
+<polygon fill="none" stroke="black" points="164,-26 164,-48 178,-48 178,-26 164,-26"></polygon>
+<text text-anchor="start" x="167.5" y="-32.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="8,-4 8,-26 21,-26 21,-4 8,-4"></polygon>
+<text text-anchor="start" x="11" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="21,-4 21,-26 34,-26 34,-4 21,-4"></polygon>
+<text text-anchor="start" x="24" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="34,-4 34,-26 47,-26 47,-4 34,-4"></polygon>
+<text text-anchor="start" x="37" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="47,-4 47,-26 60,-26 60,-4 47,-4"></polygon>
+<text text-anchor="start" x="50" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="60,-4 60,-26 76,-26 76,-4 60,-4"></polygon>
+<text text-anchor="start" x="64.5" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="76,-4 76,-26 92,-26 92,-4 76,-4"></polygon>
+<text text-anchor="start" x="80.5" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="92,-4 92,-26 105,-26 105,-4 92,-4"></polygon>
+<text text-anchor="start" x="95" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="105,-4 105,-26 119,-26 119,-4 105,-4"></polygon>
+<text text-anchor="start" x="108.5" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="119,-4 119,-26 135,-26 135,-4 119,-4"></polygon>
+<text text-anchor="start" x="123.5" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="135,-4 135,-26 151,-26 151,-4 135,-4"></polygon>
+<text text-anchor="start" x="139.5" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="151,-4 151,-26 164,-26 164,-4 151,-4"></polygon>
+<text text-anchor="start" x="154" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+<polygon fill="none" stroke="black" points="164,-4 164,-26 178,-26 178,-4 164,-4"></polygon>
+<text text-anchor="start" x="167.5" y="-10.4" font-family="Times,serif" font-size="14.00">0</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dynamic-padded-collection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.3: A diagram showing a dynamic collection of data where the first 4 bits represent the length of the collection, and the next few bits are the collection of variables. Each variable will be separated by 2-bit padding.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="memory-layout-and-program-performance" class="level2" data-number="16.6">
+<h2 data-number="16.6" class="anchored" data-anchor-id="memory-layout-and-program-performance"><span class="header-section-number">16.6</span> Memory Layout and Program Performance</h2>
+<p>The manner in which data collections are stored in memory can have a significant impact on the performance of a program. For instance, accessing memory sequentially (in a pattern that matches the memory layout of the collection) allows the system to leverage cache lines, which are blocks of memory that are read into the CPU’s cache. Due to the way modern CPUs are designed, once a part of the memory is read, an entire cache line (usually 64 or 128 bytes) is loaded into the cache. Thus, sequential access often results in fewer cache misses, which improves the performance of your program.</p>
+<p>In contrast, random access to memory can lead to frequent cache misses, as each access may require loading a different cache line into the CPU cache, slowing down your program. Therefore, understanding the memory layout of your data collections and designing your program to access data in a manner that complements this layout can lead to significant performance improvements.</p>
+<p>So, as you delve deeper into the world of data collections, remember that your approach to handling memory can either elevate or hinder your program’s efficiency. The choice, as always, is in your hands!</p>
+</section>
+<section id="summary-and-conclusion" class="level2" data-number="16.7">
+<h2 data-number="16.7" class="anchored" data-anchor-id="summary-and-conclusion"><span class="header-section-number">16.7</span> Summary and Conclusion</h2>
+<p>This chapter provided a comprehensive overview of data collections in programming, focusing mainly on their storage in computer memory. It began by explaining the fundamental understanding of memory in computing systems, portraying it as a vast grid where each cell stores a certain number of bits. This concept helped set the groundwork for understanding how data collections, which are groups of similar variables, are stored in memory.</p>
+<p>The chapter then discussed two main types of data collections: fixed (static) and dynamic collections. While fixed collections have a constant number of variables and thus a constant memory size, dynamic collections have a variable size that can change over time. An illustration was given of both types to aid understanding.</p>
+<p>The memory layout of these collections was then delved into, noting that how these collections are stored in memory can be influenced by the variables’ data type and size. The chapter also explained the strategies for accessing variables in both static and dynamic collections.</p>
+<p>Moreover, the chapter emphasized the significant impact of the memory layout of data collections on program performance. Sequential memory access in line with the memory layout could leverage cache lines and enhance the program’s performance, while random access could lead to frequent cache misses and slow down the program.</p>
+<p>In conclusion, understanding data collections, how they are stored in memory, and how to access this data efficiently are critical aspects of programming. By considering these factors, programmers can significantly influence the performance of their programs. Thus, the mastery of data collections is not only essential for writing efficient code but is also a vital skill for optimizing the overall performance of a program.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./11_linear_search.html" class="pagination-link" aria-label="Linear Search">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Search</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./13_operations_on_lists.html" class="pagination-link" aria-label="Operations on Lists">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

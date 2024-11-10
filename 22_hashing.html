@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>26&nbsp; Hashing, Hash Tables, and Hash Maps – ITSC 2214 - Data Structures and Algorithms - Fall 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./21_graphs.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3fbf620316015237a6991a5ebc2a9eb0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./22_hashing.html">Hashing</a></li><li class="breadcrumb-item"><a href="./22_hashing.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ITSC 2214 - Data Structures and Algorithms - Fall 2023</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Programming Labs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/00_installing_req_software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Installing Required Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/01_using_autograder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Using the Autograder</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/02_1l_java_ide_practice-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">1L. Java and IDE Practice - 1</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">On Computers and Computing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro_to_cs_dsa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Background on Computer Science and Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_general_purpose_computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modern General-Purpose, Programmable Computers</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Java Generics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_1_compilers_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Java Compiler and Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Algorithmic Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_algorithmic_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Algorithmic Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unit Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_unit_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Unit Testing and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_writing_junit_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Writing JUnit Tests and Test-Driven Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_mutation_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Mutation Testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_list_of_mutators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">List of Mutators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Sorting and Searching</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_sorting_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to Sorting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_comparable_comparator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Comparable and Comparator</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_bubble_selection_insertion_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Bubble, Selection, and Insertion Sort</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_linear_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sequential Collections of Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_collections_of_data_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Collections of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_operations_on_lists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Operations on Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_implementing_arraylists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Implementing Array-backed Lists</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_implementing_linkedlists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Implementing Linked Lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Stacks and Queues</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_stack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stack Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_queue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Queue Data Structure</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Recursion</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_recursion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Recursion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_binary_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Binary Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Trees and Graphs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Tree Data Structure</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Graphs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hashing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_hashing.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#background-and-motivation" id="toc-background-and-motivation" class="nav-link active" data-scroll-target="#background-and-motivation"><span class="header-section-number">26.1</span> Background and Motivation</a>
+  <ul class="collapse">
+  <li><a href="#the-power-and-constraints-of-indexing" id="toc-the-power-and-constraints-of-indexing" class="nav-link" data-scroll-target="#the-power-and-constraints-of-indexing"><span class="header-section-number">26.1.1</span> The Power and Constraints of Indexing</a></li>
+  <li><a href="#the-challenge-of-non-numeric-indexing" id="toc-the-challenge-of-non-numeric-indexing" class="nav-link" data-scroll-target="#the-challenge-of-non-numeric-indexing"><span class="header-section-number">26.1.2</span> The Challenge of Non-numeric Indexing</a></li>
+  <li><a href="#mapping-strings-to-numbers-a-key-to-overcoming-the-constraint" id="toc-mapping-strings-to-numbers-a-key-to-overcoming-the-constraint" class="nav-link" data-scroll-target="#mapping-strings-to-numbers-a-key-to-overcoming-the-constraint"><span class="header-section-number">26.1.3</span> Mapping Strings to Numbers: A Key to Overcoming the Constraint</a></li>
+  <li><a href="#hashing-a-key-to-efficient-mapping" id="toc-hashing-a-key-to-efficient-mapping" class="nav-link" data-scroll-target="#hashing-a-key-to-efficient-mapping"><span class="header-section-number">26.1.4</span> Hashing: A Key to Efficient Mapping</a></li>
+  </ul></li>
+  <li><a href="#hash-functions" id="toc-hash-functions" class="nav-link" data-scroll-target="#hash-functions"><span class="header-section-number">26.2</span> Hash Functions</a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">26.2.1</span> Introduction</a></li>
+  <li><a href="#hashing" id="toc-hashing" class="nav-link" data-scroll-target="#hashing"><span class="header-section-number">26.2.2</span> Hashing</a></li>
+  <li><a href="#simple-hash-functions" id="toc-simple-hash-functions" class="nav-link" data-scroll-target="#simple-hash-functions"><span class="header-section-number">26.2.3</span> Simple Hash Functions</a></li>
+  <li><a href="#various-hash-functions-and-their-applications" id="toc-various-hash-functions-and-their-applications" class="nav-link" data-scroll-target="#various-hash-functions-and-their-applications"><span class="header-section-number">26.2.4</span> Various Hash Functions and Their Applications</a></li>
+  <li><a href="#comparing-different-hash-functions" id="toc-comparing-different-hash-functions" class="nav-link" data-scroll-target="#comparing-different-hash-functions"><span class="header-section-number">26.2.5</span> Comparing Different Hash Functions</a></li>
+  </ul></li>
+  <li><a href="#collision-resolution-in-hashing-chaining-and-open-addressing" id="toc-collision-resolution-in-hashing-chaining-and-open-addressing" class="nav-link" data-scroll-target="#collision-resolution-in-hashing-chaining-and-open-addressing"><span class="header-section-number">26.3</span> Collision Resolution in Hashing: Chaining and Open Addressing</a>
+  <ul class="collapse">
+  <li><a href="#hash-collisions" id="toc-hash-collisions" class="nav-link" data-scroll-target="#hash-collisions"><span class="header-section-number">26.3.1</span> Hash Collisions</a></li>
+  <li><a href="#chaining-in-hash-collisions" id="toc-chaining-in-hash-collisions" class="nav-link" data-scroll-target="#chaining-in-hash-collisions"><span class="header-section-number">26.3.2</span> Chaining in Hash Collisions</a></li>
+  <li><a href="#open-addressing-in-hash-collisions" id="toc-open-addressing-in-hash-collisions" class="nav-link" data-scroll-target="#open-addressing-in-hash-collisions"><span class="header-section-number">26.3.3</span> Open Addressing in Hash Collisions</a></li>
+  </ul></li>
+  <li><a href="#evaluating-complexity-and-load-factor-in-hash-tables" id="toc-evaluating-complexity-and-load-factor-in-hash-tables" class="nav-link" data-scroll-target="#evaluating-complexity-and-load-factor-in-hash-tables"><span class="header-section-number">26.4</span> Evaluating Complexity and Load Factor in Hash Tables</a>
+  <ul class="collapse">
+  <li><a href="#analyzing-time-complexity-in-hash-computation" id="toc-analyzing-time-complexity-in-hash-computation" class="nav-link" data-scroll-target="#analyzing-time-complexity-in-hash-computation"><span class="header-section-number">26.4.1</span> Analyzing Time Complexity in Hash Computation</a></li>
+  <li><a href="#investigating-time-complexity-in-list-traversal" id="toc-investigating-time-complexity-in-list-traversal" class="nav-link" data-scroll-target="#investigating-time-complexity-in-list-traversal"><span class="header-section-number">26.4.2</span> Investigating Time Complexity in List Traversal</a></li>
+  <li><a href="#understanding-the-load-factor" id="toc-understanding-the-load-factor" class="nav-link" data-scroll-target="#understanding-the-load-factor"><span class="header-section-number">26.4.3</span> Understanding the Load Factor</a></li>
+  <li><a href="#the-interplay-between-load-factor-and-complexity" id="toc-the-interplay-between-load-factor-and-complexity" class="nav-link" data-scroll-target="#the-interplay-between-load-factor-and-complexity"><span class="header-section-number">26.4.4</span> The Interplay Between Load Factor and Complexity</a></li>
+  </ul></li>
+  <li><a href="#rehashing" id="toc-rehashing" class="nav-link" data-scroll-target="#rehashing"><span class="header-section-number">26.5</span> Rehashing</a>
+  <ul class="collapse">
+  <li><a href="#the-need-for-rehashing" id="toc-the-need-for-rehashing" class="nav-link" data-scroll-target="#the-need-for-rehashing"><span class="header-section-number">26.5.1</span> The Need for Rehashing</a></li>
+  <li><a href="#the-mechanics-of-rehashing" id="toc-the-mechanics-of-rehashing" class="nav-link" data-scroll-target="#the-mechanics-of-rehashing"><span class="header-section-number">26.5.2</span> The Mechanics of Rehashing</a></li>
+  </ul></li>
+  <li><a href="#hash-tables-and-hash-maps" id="toc-hash-tables-and-hash-maps" class="nav-link" data-scroll-target="#hash-tables-and-hash-maps"><span class="header-section-number">26.6</span> Hash Tables and Hash Maps</a></li>
+  <li><a href="#hashmaps-in-java" id="toc-hashmaps-in-java" class="nav-link" data-scroll-target="#hashmaps-in-java"><span class="header-section-number">26.7</span> HashMaps in Java</a></li>
+  <li><a href="#hashtables-in-java" id="toc-hashtables-in-java" class="nav-link" data-scroll-target="#hashtables-in-java"><span class="header-section-number">26.8</span> HashTables in Java</a></li>
+  <li><a href="#hashsets-in-java" id="toc-hashsets-in-java" class="nav-link" data-scroll-target="#hashsets-in-java"><span class="header-section-number">26.9</span> HashSets in Java</a></li>
+  <li><a href="#hashcode-and-equals-in-java" id="toc-hashcode-and-equals-in-java" class="nav-link" data-scroll-target="#hashcode-and-equals-in-java"><span class="header-section-number">26.10</span> <code>hashCode</code> and <code>equals</code> in Java</a>
+  <ul class="collapse">
+  <li><a href="#understanding-hashcode" id="toc-understanding-hashcode" class="nav-link" data-scroll-target="#understanding-hashcode"><span class="header-section-number">26.10.1</span> Understanding <code>hashCode</code></a></li>
+  <li><a href="#overriding-the-hashcode-method" id="toc-overriding-the-hashcode-method" class="nav-link" data-scroll-target="#overriding-the-hashcode-method"><span class="header-section-number">26.10.2</span> Overriding the <code>hashCode</code> Method</a></li>
+  <li><a href="#hashcode-in-the-context-of-java-collections" id="toc-hashcode-in-the-context-of-java-collections" class="nav-link" data-scroll-target="#hashcode-in-the-context-of-java-collections"><span class="header-section-number">26.10.3</span> <code>hashCode</code> in the Context of Java Collections</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./22_hashing.html">Hashing</a></li><li class="breadcrumb-item"><a href="./22_hashing.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Hashing, Hash Tables, and Hash Maps</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="background-and-motivation" class="level2" data-number="26.1">
+<h2 data-number="26.1" class="anchored" data-anchor-id="background-and-motivation"><span class="header-section-number">26.1</span> Background and Motivation</h2>
+<section id="the-power-and-constraints-of-indexing" class="level3" data-number="26.1.1">
+<h3 data-number="26.1.1" class="anchored" data-anchor-id="the-power-and-constraints-of-indexing"><span class="header-section-number">26.1.1</span> The Power and Constraints of Indexing</h3>
+<p><strong>Indexing</strong> allows for direct access to individual elements within an array, using an integer as a specific reference, referred to as an ‘index’. When called with the same index, an array always returns the same element, provided the array itself hasn’t been altered. For instance, to retrieve the 12th element of an array <code>arr</code>, you would use <code>arr[11]</code>.</p>
+<p>Mathematically, the formula to find the memory address of an array element is given by:</p>
+<pre><code>baseAddress + (index * sizeOfElement)</code></pre>
+<p>While this concept is powerful and efficient, it encounters certain limitations when extended beyond its original design. Let’s delve into one of these constraints.</p>
+</section>
+<section id="the-challenge-of-non-numeric-indexing" class="level3" data-number="26.1.2">
+<h3 data-number="26.1.2" class="anchored" data-anchor-id="the-challenge-of-non-numeric-indexing"><span class="header-section-number">26.1.2</span> The Challenge of Non-numeric Indexing</h3>
+<p>Imagine a scenario where we want to access an array element using a string as an index, for example, <code>arr["dhruv"]</code>. What’s the issue here?</p>
+<p>The problem lies in the arithmetic: <code>baseAddress + ("dhruv" * sizeOfElement)</code> is not feasible because the index, “dhruv”, is not a numeric value. Without the ability to perform this operation, we’re unable to directly use strings as indices in an array.</p>
+</section>
+<section id="mapping-strings-to-numbers-a-key-to-overcoming-the-constraint" class="level3" data-number="26.1.3">
+<h3 data-number="26.1.3" class="anchored" data-anchor-id="mapping-strings-to-numbers-a-key-to-overcoming-the-constraint"><span class="header-section-number">26.1.3</span> Mapping Strings to Numbers: A Key to Overcoming the Constraint</h3>
+<p>Consider an array of strings where we map numeric indices to string values:</p>
+<pre><code>0 -&gt; "Alice"
+1 -&gt; "Bob"
+2 -&gt; "Charlie"</code></pre>
+<p>With an array allowing us to map a number to a string, could we use a similar mechanism to map strings to numbers? Absolutely!</p>
+<p>One approach involves a linear search for a string in the array, noting its index. For instance, let’s assume we find the string “Dhruv” at index 5:</p>
+<pre><code>0 -&gt; "Alice"
+1 -&gt; "Bob"
+2 -&gt; "Charlie"
+...
+5 -&gt; "Dhruv"</code></pre>
+<p>The index where we locate the string “Dhruv” (5, in this case) can serve as a key in another array, enabling access to data associated with “Dhruv”. Nevertheless, this method, while feasible, isn’t very efficient. Linear searching can become significantly slow when dealing with large datasets, begging the question - is there a better solution? We’ll explore the answer to this question in the upcoming sections.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-array-string-mapping" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-array-string-mapping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 278.00 205.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 201)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-201 274,-201 274,4 -4,4"></polygon>
+<!-- array -->
+<g id="node1" class="node">
+<title>array</title>
+<polygon fill="none" stroke="blue" points="99.2,-0.5 99.2,-124.5 170.8,-124.5 170.8,-0.5 99.2,-0.5"></polygon>
+<text text-anchor="middle" x="135" y="-107.9" font-family="Times,serif" font-size="14.00">0: Alice</text>
+<polyline fill="none" stroke="blue" points="99.2,-99.7 170.8,-99.7 "></polyline>
+<text text-anchor="middle" x="135" y="-83.1" font-family="Times,serif" font-size="14.00">1: Bob</text>
+<polyline fill="none" stroke="blue" points="99.2,-74.9 170.8,-74.9 "></polyline>
+<text text-anchor="middle" x="135" y="-58.3" font-family="Times,serif" font-size="14.00">2: Charlie</text>
+<polyline fill="none" stroke="blue" points="99.2,-50.1 170.8,-50.1 "></polyline>
+<text text-anchor="middle" x="135" y="-33.5" font-family="Times,serif" font-size="14.00">...</text>
+<polyline fill="none" stroke="blue" points="99.2,-25.3 170.8,-25.3 "></polyline>
+<text text-anchor="middle" x="135" y="-8.7" font-family="Times,serif" font-size="14.00">5: Dhruv</text>
+</g>
+<!-- 0 -->
+<g id="node2" class="node">
+<title>0</title>
+<text text-anchor="middle" x="27" y="-174.8" font-family="Times,serif" font-size="14.00" fill="darkgreen">0</text>
+</g>
+<!-- 0&#45;&#45;array -->
+<g id="edge1" class="edge">
+<title>0--array:0</title>
+<path fill="none" stroke="orange" d="M36,-160.79C47.54,-141.38 69.49,-112.5 98,-112.5"></path>
+</g>
+<!-- 1 -->
+<g id="node3" class="node">
+<title>1</title>
+<text text-anchor="middle" x="99" y="-174.8" font-family="Times,serif" font-size="14.00" fill="darkgreen">1</text>
+</g>
+<!-- 1&#45;&#45;array -->
+<g id="edge2" class="edge">
+<title>1--array:1</title>
+<path fill="none" stroke="orange" d="M92.1,-160.98C82.4,-134.76 68.93,-87.5 98,-87.5"></path>
+</g>
+<!-- 2 -->
+<g id="node4" class="node">
+<title>2</title>
+<text text-anchor="middle" x="171" y="-174.8" font-family="Times,serif" font-size="14.00" fill="darkgreen">2</text>
+</g>
+<!-- 2&#45;&#45;array -->
+<g id="edge3" class="edge">
+<title>2--array:2</title>
+<path fill="none" stroke="orange" d="M177.99,-160.96C190.27,-128.83 210.9,-62.5 172,-62.5"></path>
+</g>
+<!-- 5 -->
+<g id="node5" class="node">
+<title>5</title>
+<text text-anchor="middle" x="243" y="-174.8" font-family="Times,serif" font-size="14.00" fill="darkgreen">5</text>
+</g>
+<!-- 5&#45;&#45;array -->
+<g id="edge4" class="edge">
+<title>5--array:5</title>
+<path fill="none" stroke="orange" d="M243.3,-160.91C243.07,-118.63 236.09,-12.5 172,-12.5"></path>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-array-string-mapping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.1: Mapping strings to numbers using array indices. The index of an array corresponds to a specific string value, such as ‘Dhruv’ at index 5. Each box represents an array element.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hashing-a-key-to-efficient-mapping" class="level3" data-number="26.1.4">
+<h3 data-number="26.1.4" class="anchored" data-anchor-id="hashing-a-key-to-efficient-mapping"><span class="header-section-number">26.1.4</span> Hashing: A Key to Efficient Mapping</h3>
+<p>This brings us to <strong>hashing</strong>, an ingenious method that enables us to map non-numeric keys, such as strings, to numeric indices, achieving efficiency even with a large volume of data. At the core of this mechanism is a <strong>hash function</strong>, which transforms a given key into a number that serves as an index within an array.</p>
+<p>A <strong>hash function</strong> ingests a key and excretes an index, pointing to a location within the hash table’s array. An effective hash function should meet the following criteria:</p>
+<ul>
+<li><strong>Uniform distribution</strong>: The function should scatter keys evenly across the array, thereby reducing the likelihood of collisions (where multiple keys map to the same index).</li>
+<li><strong>Minimal collisions</strong>: It should minimize the occurrence of hash collisions.</li>
+<li><strong>Swift computation</strong>: The function should quickly compute the hash, thereby enabling rapid data insertion, retrieval, and deletion.</li>
+<li><strong>Deterministic output</strong>: The function should consistently produce the same output for a given input.</li>
+</ul>
+<p>Consider a rudimentary hash function that transforms the first character of a string into its ASCII code:</p>
+<pre class="plaintext"><code>hash("dhruv") = ASCII('d') = 100</code></pre>
+<p>The hash function yields 100, which we can utilize as an index in an array to store or retrieve data related to “dhruv”. This illustrates how hashing enables us to use strings (and other non-numeric keys) as indices, thus offering a practical solution to efficient mapping.</p>
+</section>
+</section>
+<section id="hash-functions" class="level2" data-number="26.2">
+<h2 data-number="26.2" class="anchored" data-anchor-id="hash-functions"><span class="header-section-number">26.2</span> Hash Functions</h2>
+<section id="introduction" class="level3" data-number="26.2.1">
+<h3 data-number="26.2.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">26.2.1</span> Introduction</h3>
+<p>In our earlier discussion, we accomplished mapping the string “D” to certain data, akin to mapping an index to specific data in an array. The resulting data structure, capable of mapping any string to any data, is termed a <strong>hash table</strong>. The function that conducts this mapping from strings to data is, as you’ve guessed, the <strong>hash function</strong>. The procedure of associating “D” to an index 3, where we locate the corresponding value, can be referred to as <strong>hashing</strong> “D”.</p>
+<p>As we step further into the realm of hashing, we’ll explore how it enables mapping any object (referred to as a ‘key’) to any other object (termed the ‘record’ or ‘value’). Picture your student ID as a key, while the record stores all relevant data about you attached to this ID.</p>
+<p><em>Figure 2: At this juncture, a diagram illustrating the concept of hash functions and their role in a hash table would be helpful. The diagram could visualize a hash function mapping different keys (string, numeric or otherwise) to different indices in an array (hash table), which in turn point to corresponding data or records.</em></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-hash-function" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hash-function-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 362.69 222.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 218.8)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-218.8 358.69,-218.8 358.69,4 -4,4"></polygon>
+<!-- hashTable -->
+<g id="node1" class="node">
+<title>hashTable</title>
+<polygon fill="none" stroke="black" points="88.28,-0.5 88.28,-124.5 241.72,-124.5 241.72,-0.5 88.28,-0.5"></polygon>
+<text text-anchor="middle" x="165" y="-107.9" font-family="Times,serif" font-size="14.00">Index 0:</text>
+<polyline fill="none" stroke="black" points="88.28,-99.7 241.72,-99.7 "></polyline>
+<text text-anchor="middle" x="165" y="-83.1" font-family="Times,serif" font-size="14.00">Index 1:</text>
+<polyline fill="none" stroke="black" points="88.28,-74.9 241.72,-74.9 "></polyline>
+<text text-anchor="middle" x="165" y="-58.3" font-family="Times,serif" font-size="14.00">Index 2:</text>
+<polyline fill="none" stroke="black" points="88.28,-50.1 241.72,-50.1 "></polyline>
+<text text-anchor="middle" x="165" y="-33.5" font-family="Times,serif" font-size="14.00">...</text>
+<polyline fill="none" stroke="black" points="88.28,-25.3 241.72,-25.3 "></polyline>
+<text text-anchor="middle" x="165" y="-8.7" font-family="Times,serif" font-size="14.00">Index 100: Dhruv's Data</text>
+</g>
+<!-- key1 -->
+<g id="node2" class="node">
+<title>key1</title>
+<polygon fill="none" stroke="black" points="0,-178.3 0,-214.3 54,-214.3 54,-178.3 0,-178.3"></polygon>
+<text text-anchor="middle" x="26.91" y="-192.1" font-family="Times,serif" font-size="14.00">Key 1</text>
+</g>
+<!-- key1&#45;&gt;hashTable -->
+<g id="edge1" class="edge">
+<title>key1-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M29.69,-177.92C32.06,-167.02 36.41,-153.17 44.19,-143 54.05,-130.12 66.62,-118.68 79.91,-108.77"></path>
+<polygon fill="black" stroke="black" points="82.16,-111.46 88.26,-102.8 78.09,-105.77 82.16,-111.46"></polygon>
+<text text-anchor="middle" x="79.41" y="-147.2" font-family="Times,serif" font-size="14.00">hash(Key 1)</text>
+</g>
+<!-- key2 -->
+<g id="node3" class="node">
+<title>key2</title>
+<polygon fill="none" stroke="black" points="92,-178.3 92,-214.3 146,-214.3 146,-178.3 92,-178.3"></polygon>
+<text text-anchor="middle" x="118.91" y="-192.1" font-family="Times,serif" font-size="14.00">Key 2</text>
+</g>
+<!-- key2&#45;&gt;hashTable -->
+<g id="edge2" class="edge">
+<title>key2-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M117.31,-178.04C116.81,-167.69 117.06,-154.39 120.19,-143 121,-140.04 121.95,-137.07 123,-134.12"></path>
+<polygon fill="black" stroke="black" points="126.29,-135.32 126.71,-124.73 119.78,-132.74 126.29,-135.32"></polygon>
+<text text-anchor="middle" x="154.41" y="-147.2" font-family="Times,serif" font-size="14.00">hash(Key 2)</text>
+</g>
+<!-- key3 -->
+<g id="node4" class="node">
+<title>key3</title>
+<polygon fill="none" stroke="black" points="184,-178.3 184,-214.3 238,-214.3 238,-178.3 184,-178.3"></polygon>
+<text text-anchor="middle" x="210.91" y="-192.1" font-family="Times,serif" font-size="14.00">Key 3</text>
+</g>
+<!-- key3&#45;&gt;hashTable -->
+<g id="edge3" class="edge">
+<title>key3-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M204.99,-178.07C200.98,-166.58 195.41,-150.63 189.7,-134.27"></path>
+<polygon fill="black" stroke="black" points="192.93,-132.92 186.33,-124.63 186.33,-135.22 192.93,-132.92"></polygon>
+<text text-anchor="middle" x="231.41" y="-147.2" font-family="Times,serif" font-size="14.00">hash(Key 3)</text>
+</g>
+<!-- dhruvKey -->
+<g id="node5" class="node">
+<title>dhruvKey</title>
+<polygon fill="none" stroke="black" points="260.79,-178.3 260.79,-214.3 345.21,-214.3 345.21,-178.3 260.79,-178.3"></polygon>
+<text text-anchor="middle" x="303" y="-192.1" font-family="Times,serif" font-size="14.00">Key: 'dhruv'</text>
+</g>
+<!-- dhruvKey&#45;&gt;hashTable -->
+<g id="edge4" class="edge">
+<title>dhruvKey-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M294.29,-178.21C288.32,-167.43 279.73,-153.6 270,-143 263.75,-136.2 256.86,-129.56 249.69,-123.21"></path>
+<polygon fill="black" stroke="black" points="251.68,-120.3 241.81,-116.44 247.11,-125.61 251.68,-120.3"></polygon>
+<text text-anchor="middle" x="318.35" y="-147.2" font-family="Times,serif" font-size="14.00">hash('dhruv')</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hash-function-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.2: Hash function mapping keys to indices in a hash table. Each key is hashed to a specific index, which points to the corresponding data or record.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hashing" class="level3" data-number="26.2.2">
+<h3 data-number="26.2.2" class="anchored" data-anchor-id="hashing"><span class="header-section-number">26.2.2</span> Hashing</h3>
+<p>We can conceptualize hashing as a mechanism for storing and retrieving records from a database, similar to an adept librarian who knows exactly where to fetch a book or where to replace it on the vast shelves. Given a search key value, hashing facilitates the insertion, deletion, and search for records. The speed and efficiency of these operations is remarkable when the hashing is properly implemented, often examining merely one or two records for each operation. This outperforms the average cost of <span class="math inline">\(O(log n)\)</span> required to execute a binary search on a sorted array of n records, or to conduct an operation on a binary search tree.</p>
+<p>Despite its simplicity in concept, the implementation of hashing can be surprisingly complex, requiring careful attention to every detail to ensure a correctly working system. A hash system stores records in an array known as a <strong>hash table</strong>, denoted as <code>HT</code> in our discussions. Hashing operates by computing a search key <code>K</code> to pinpoint the location in <code>HT</code> that houses the record with key <code>K</code>. This computation is performed by the <strong>hash function</strong>, denoted as <code>h</code>.</p>
+<p>Given that hashing schemes position records in the table based on the needs of the address calculation, records aren’t sorted by value. A position in the hash table is often referred to as a <strong>slot</strong>. The number of slots in the hash table <code>HT</code> is denoted by the variable <code>M</code>, with slots numbered from 0 to M−1. The ultimate aim of a hashing system is to ensure that for any key value <code>K</code> and a hash function <code>h</code>, <span class="math inline">\(i=h(K)\)</span> identifies a slot in the table such that <span class="math inline">\(0 \leq i &lt; M\)</span>, with the key of the record at <code>HT[i]</code> being equal to <code>K</code>.</p>
+<p>However, hashing isn’t the panacea for all applications. It stumbles in scenarios where multiple records with the same key value are allowed. Nor is it effective in addressing range searches, i.e., locating all records whose key values fall within a particular range. It also falters when it comes to finding the record with the minimum or maximum key value, or traversing the records in key order. Hashing excels at answering the question, ‘Which record, if any, has the key value K?’ It’s most appropriate for exact-match queries, and proves to be incredibly efficient when implemented correctly.</p>
+<p>Given the large range of key values, hashing generally takes records and stores them in a table with a relatively small number of slots. This inevitably leads to situations where a hash function maps two keys to the same slot, an event known as a <strong>collision</strong>.</p>
+<p>To illustrate, imagine a classroom of students. What is the likelihood that a pair of students share the same birthday (same day of the year, not necessarily the same year)? With 23 students and 365 “slots” or possible days for a birthday, the odds seem slim. However, as the number of students grows, so does the probability of a collision, i.e., two students sharing a birthday. A database utilizing hashing must be careful not to create a hash table so large it wastes space.</p>
+<p>An ideal hash function should distribute keys to slots such that every slot in the hash table has an equal probability of being filled, given the actual set of keys being used. Unfortunately, we typically have no control over the distribution of key values for the actual records in a given database or collection. Hence, the effectiveness of any particular hash function depends on the actual distribution of the keys used within the allowable key range.</p>
+<p>In some cases, incoming data are well distributed across their key range. For instance, if the input is a set of random numbers selected uniformly from the key range, any hash function that assigns the key range so that each slot in the hash table receives an equal share of the range will likely also distribute the input records uniformly within the table.</p>
+<p>However, there are numerous scenarios where incoming records are highly clustered or otherwise poorly distributed. It can be challenging to devise a hash function that successfully scatters the records throughout the table, especially if the input distribution is unknown in advance. For example, if the input is a collection of English words, the beginning letter will be poorly distributed. A dictionary of words mapped to their frequencies is often used in basic natural language processing algorithms.</p>
+<p>In summary, while any function can serve as a hash function (i.e., mapping a value to an index), not all can qualify as a good hash function. A function that constantly returns the index 0 is a hash function, albeit a subpar one as it maps everything to 0. A common hash function is the modulus operator. For instance, in <code>N</code>-sized hash tables, it’s common to use the modulus of <code>N</code> as a hash function. If <code>N</code> is <span class="math inline">\(20\)</span>, data for 113 will be hashed to index <span class="math inline">\(113 \% 20 = 13\)</span>.</p>
+<p>But what happens when multiple pieces of data map to the same index using the modulus operator? For instance, <span class="math inline">\(53 \% 20 = 13\)</span>, <span class="math inline">\(73 \% 20 = 13\)</span>, etc. The solution lies in the use of nested data structures, allowing us to store everything at index 13. We will explore this in more detail later.</p>
+</section>
+<section id="simple-hash-functions" class="level3" data-number="26.2.3">
+<h3 data-number="26.2.3" class="anchored" data-anchor-id="simple-hash-functions"><span class="header-section-number">26.2.3</span> Simple Hash Functions</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-hash-collision" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hash-collision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 247.94 609.60" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 605.6)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-605.6 243.94,-605.6 243.94,4 -4,4"></polygon>
+<g id="clust2" class="cluster">
+<title>cluster_1</title>
+<polygon fill="none" stroke="darkorange" points="29.75,-8 29.75,-155.4 168.75,-155.4 168.75,-8 29.75,-8"></polygon>
+<text text-anchor="middle" x="99.25" y="-138.8" font-family="Times,serif" font-size="14.00">Nested Data Structure</text>
+<text text-anchor="middle" x="99.25" y="-122" font-family="Times,serif" font-size="14.00">(Linked List)</text>
+</g>
+<g id="clust1" class="cluster">
+<title>cluster_0</title>
+<polygon fill="none" stroke="blue" points="21.75,-192.6 21.75,-412 121.75,-412 121.75,-192.6 21.75,-192.6"></polygon>
+<text text-anchor="middle" x="71.75" y="-395.4" font-family="Times,serif" font-size="14.00">Hash Table</text>
+</g>
+<!-- hashTable -->
+<g id="node1" class="node">
+<title>hashTable</title>
+<polygon fill="lightblue" stroke="black" points="29.5,-201.1 29.5,-378.7 113.99,-378.7 113.99,-201.1 29.5,-201.1"></polygon>
+<text text-anchor="middle" x="71.75" y="-358.5" font-family="Times,serif" font-size="18.00">Index 0:</text>
+<polyline fill="none" stroke="black" points="29.5,-349.1 113.99,-349.1 "></polyline>
+<text text-anchor="middle" x="71.75" y="-328.9" font-family="Times,serif" font-size="18.00">Index 1:</text>
+<polyline fill="none" stroke="black" points="29.5,-319.5 113.99,-319.5 "></polyline>
+<text text-anchor="middle" x="71.75" y="-299.3" font-family="Times,serif" font-size="18.00">...</text>
+<polyline fill="none" stroke="black" points="29.5,-289.9 113.99,-289.9 "></polyline>
+<text text-anchor="middle" x="71.75" y="-269.7" font-family="Times,serif" font-size="18.00">Index 13:</text>
+<polyline fill="none" stroke="black" points="29.5,-260.3 113.99,-260.3 "></polyline>
+<text text-anchor="middle" x="71.75" y="-240.1" font-family="Times,serif" font-size="18.00">...</text>
+<polyline fill="none" stroke="black" points="29.5,-230.7 113.99,-230.7 "></polyline>
+<text text-anchor="middle" x="71.75" y="-210.5" font-family="Times,serif" font-size="18.00">Index 19:</text>
+</g>
+<!-- nested -->
+<g id="node2" class="node">
+<title>nested</title>
+<polygon fill="lightsalmon" stroke="black" points="44.75,-16.5 44.75,-105.3 98.75,-105.3 98.75,-16.5 44.75,-16.5"></polygon>
+<text text-anchor="middle" x="71.75" y="-85.1" font-family="Times,serif" font-size="18.00">113</text>
+<polyline fill="none" stroke="black" points="44.75,-75.7 98.75,-75.7 "></polyline>
+<text text-anchor="middle" x="71.75" y="-55.5" font-family="Times,serif" font-size="18.00">53</text>
+<polyline fill="none" stroke="black" points="44.75,-46.1 98.75,-46.1 "></polyline>
+<text text-anchor="middle" x="71.75" y="-25.9" font-family="Times,serif" font-size="18.00">73</text>
+</g>
+<!-- hashTable&#45;&gt;nested -->
+<g id="edge3" class="edge">
+<title>hashTable:f13-&gt;nested</title>
+<path fill="none" stroke="black" d="M114.75,-274.9C180.01,-274.9 137.43,-177.64 102.96,-114.56"></path>
+<polygon fill="black" stroke="black" points="105.86,-112.57 97.95,-105.52 99.74,-115.96 105.86,-112.57"></polygon>
+<text text-anchor="middle" x="186.84" y="-168.2" font-family="Times,serif" font-size="16.00">store at index 13</text>
+</g>
+<!-- keys -->
+<g id="node3" class="node">
+<title>keys</title>
+<polygon fill="lightgreen" stroke="black" points="0,-565.1 0,-601.1 143.49,-601.1 143.49,-565.1 0,-565.1"></polygon>
+<text text-anchor="middle" x="71.75" y="-577.7" font-family="Times,serif" font-size="18.00">Keys: 113, 53, 73</text>
+</g>
+<!-- hashFunction -->
+<g id="node4" class="node">
+<title>hashFunction</title>
+<polygon fill="#eedd82" stroke="black" points="11,-457.7 11,-508.9 132.49,-508.9 132.49,-457.7 11,-457.7"></polygon>
+<text text-anchor="middle" x="71.75" y="-488.7" font-family="Times,serif" font-size="18.00">Hash Function</text>
+<text text-anchor="middle" x="71.75" y="-467.1" font-family="Times,serif" font-size="18.00">(% 20)</text>
+</g>
+<!-- keys&#45;&gt;hashFunction -->
+<g id="edge1" class="edge">
+<title>keys-&gt;hashFunction</title>
+<path fill="none" stroke="black" d="M71.75,-565.06C71.75,-552.53 71.75,-535.03 71.75,-519.54"></path>
+<polygon fill="black" stroke="black" points="75.25,-519.21 71.75,-509.21 68.25,-519.21 75.25,-519.21"></polygon>
+<text text-anchor="middle" x="89.52" y="-532.2" font-family="Times,serif" font-size="16.00">apply</text>
+</g>
+<!-- hashFunction&#45;&gt;hashTable -->
+<g id="edge2" class="edge">
+<title>hashFunction-&gt;hashTable:f13</title>
+<path fill="none" stroke="black" d="M87.08,-457.69C118.33,-405.55 181.78,-287.7 124.93,-275.86"></path>
+<polygon fill="black" stroke="black" points="125.03,-272.36 114.75,-274.9 124.37,-279.33 125.03,-272.36"></polygon>
+<text text-anchor="middle" x="158.41" y="-424.8" font-family="Times,serif" font-size="16.00">hash to index 13</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hash-collision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.3: An illustration of hash collision and its resolution using nested data structures. Multiple keys hash to the same index (13), triggering a collision. A nested data structure (linked list) at index 13 accommodates all these colliding keys.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s envision hashing as a real-world scenario. A teacher has a stack of students’ tests, and she wants to categorize them by the last digit of their respective student IDs. In this case, the “bucket” will be the bins labeled with numbers from 0 to 9, and the teacher will place each test paper in the bin that matches the last digit of the student’s ID. This process is analogous to a hash function, and the simple function in this example is equivalent to the modulo operation.</p>
+<p>Given a hash table of size 5, we can use this hash function to assign keys to the appropriate index:</p>
+<pre class="plaintext"><code>HashTable size: 5
+HashFunction: key % size
+
+Keys: 15, 28, 47, 10, 33
+
+Indices:
+15 % 5 = 0
+28 % 5 = 3
+47 % 5 = 2
+10 % 5 = 0
+33 % 5 = 3</code></pre>
+<p>This quick mapping of keys to indices highlights the simplicity and efficiency of a well-chosen hash function. However, not all hash functions are created equal, and their effectiveness can be dependent on the data they’re being applied to. Let’s explore a few other hash functions that are commonly used in different scenarios.</p>
+</section>
+<section id="various-hash-functions-and-their-applications" class="level3" data-number="26.2.4">
+<h3 data-number="26.2.4" class="anchored" data-anchor-id="various-hash-functions-and-their-applications"><span class="header-section-number">26.2.4</span> Various Hash Functions and Their Applications</h3>
+<section id="direct-hashing" class="level4" data-number="26.2.4.1">
+<h4 data-number="26.2.4.1" class="anchored" data-anchor-id="direct-hashing"><span class="header-section-number">26.2.4.1</span> Direct Hashing</h4>
+<p>Direct hashing is as straightforward as it gets. If we consider the item’s key as its index, this constitutes direct hashing. It’s like walking into a classroom and asking students to sit according to their roll numbers, which are unique to each student. So, a student with roll number 15 would sit at desk number 15.</p>
+<p>This simplicity, however, comes with its own limitations:</p>
+<ol type="1">
+<li>Keys must be non-negative integers.</li>
+<li>The size of the hash table must equal the maximum key value plus 1, which can lead to a large table and inefficient use of space if the keys are large.</li>
+</ol>
+</section>
+<section id="modulo-hash" class="level4" data-number="26.2.4.2">
+<h4 data-number="26.2.4.2" class="anchored" data-anchor-id="modulo-hash"><span class="header-section-number">26.2.4.2</span> Modulo Hash</h4>
+<p>The modulo hash function, as seen in our example above, utilizes the remainder of the key divided by the table size <code>M</code> to determine the index. It’s a simple and effective way to convert a larger key range into a manageable index range.</p>
+<pre class="plaintext"><code>h(K) = K % M</code></pre>
+</section>
+<section id="mid-square-hash" class="level4" data-number="26.2.4.3">
+<h4 data-number="26.2.4.3" class="anchored" data-anchor-id="mid-square-hash"><span class="header-section-number">26.2.4.3</span> Mid-Square Hash</h4>
+<p>Mid-square hashing takes a unique approach. The key is squared, and a portion of the resulting squared value is used as the index. This technique can be particularly useful when keys are not uniformly distributed.</p>
+<pre class="plaintext"><code>h(K) = middle_digits(K^2)</code></pre>
+</section>
+<section id="mid-square-hash-with-base-2" class="level4" data-number="26.2.4.4">
+<h4 data-number="26.2.4.4" class="anchored" data-anchor-id="mid-square-hash-with-base-2"><span class="header-section-number">26.2.4.4</span> Mid-Square Hash with Base 2</h4>
+<p>This variation of mid-square hashing squares the key and extracts the middle bits of the binary representation of the squared value as the index. This technique can be particularly useful for binary keys.</p>
+<pre class="plaintext"><code>h(K) = middle_bits(K^2)</code></pre>
+</section>
+<section id="multiplicative-string-hashing" class="level4" data-number="26.2.4.5">
+<h4 data-number="26.2.4.5" class="anchored" data-anchor-id="multiplicative-string-hashing"><span class="header-section-number">26.2.4.5</span> Multiplicative String Hashing</h4>
+<p>Multiplicative string hashing offers a way to handle string keys. It treats the characters in the string as numbers and combines them using multiplication and a constant. This approach can help achieve a good distribution of string keys in the hash table.</p>
+<pre class="plaintext"><code>h(K) = (c1 * a^(n-1) + c2 * a^(n-2) + ... + cn) % M</code></pre>
+<p>Here, <code>c1, c2, ..., cn</code> are the character codes of the string, <code>a</code> is a constant, <code>n</code> is the length of the string, and <code>M</code> is the size of the hash table.</p>
+<p>Applying our hash function (modulo 5) to the keys from the example above, we end up with a hash table represented in ASCII as follows:</p>
+<pre class="plaintext"><code>Index | Key
+-------------
+  0   | 15
+  1   | -
+  2   | 47
+  3   | 28
+  4   | -</code></pre>
+<p>Here, we observe that the keys 15 and 10, as well as 28 and 33, have resulted in collisions, as they both map to the same indices (0 and 3, respectively). The presence of collisions brings us to another important aspect of hashing: collision resolution strategies, which we will explore in the upcoming sections.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-hash-table" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hash-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 451.35 379.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 375.8)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-375.8 447.35,-375.8 447.35,4 -4,4"></polygon>
+<!-- hashTable -->
+<g id="node1" class="node">
+<title>hashTable</title>
+<polygon fill="none" stroke="#bf3eff" points="164.75,-0.5 164.75,-148.5 240.23,-148.5 240.23,-0.5 164.75,-0.5"></polygon>
+<text text-anchor="middle" x="202.49" y="-128.3" font-family="Times,serif" font-size="18.00">Index 0:</text>
+<polyline fill="none" stroke="#bf3eff" points="164.75,-118.9 240.23,-118.9 "></polyline>
+<text text-anchor="middle" x="202.49" y="-98.7" font-family="Times,serif" font-size="18.00">Index 1:</text>
+<polyline fill="none" stroke="#bf3eff" points="164.75,-89.3 240.23,-89.3 "></polyline>
+<text text-anchor="middle" x="202.49" y="-69.1" font-family="Times,serif" font-size="18.00">Index 2:</text>
+<polyline fill="none" stroke="#bf3eff" points="164.75,-59.7 240.23,-59.7 "></polyline>
+<text text-anchor="middle" x="202.49" y="-39.5" font-family="Times,serif" font-size="18.00">Index 3:</text>
+<polyline fill="none" stroke="#bf3eff" points="164.75,-30.1 240.23,-30.1 "></polyline>
+<text text-anchor="middle" x="202.49" y="-9.9" font-family="Times,serif" font-size="18.00">Index 4:</text>
+</g>
+<!-- keys1 -->
+<g id="node2" class="node">
+<title>keys1</title>
+<polygon fill="none" stroke="goldenrod" points="40.49,-312.1 40.49,-371.3 94.49,-371.3 94.49,-312.1 40.49,-312.1"></polygon>
+<text text-anchor="middle" x="67.49" y="-351.1" font-family="Times,serif" font-size="18.00">15</text>
+<polyline fill="none" stroke="goldenrod" points="40.49,-341.7 94.49,-341.7 "></polyline>
+<text text-anchor="middle" x="67.49" y="-321.5" font-family="Times,serif" font-size="18.00">10</text>
+</g>
+<!-- keys1&#45;&gt;hashTable -->
+<g id="edge5" class="edge">
+<title>keys1-&gt;hashTable</title>
+<path fill="none" stroke="#ff3030" d="M33.72,-305.53C11.13,-277.54 -11.42,-237.66 6.63,-204.2 38.29,-145.52 109.67,-109.23 156.95,-90.71"></path>
+<polygon fill="#ff3030" stroke="#ff3030" points="31.26,-308.04 40.37,-313.45 36.62,-303.54 31.26,-308.04"></polygon>
+<ellipse fill="#ff3030" stroke="#ff3030" cx="160.88" cy="-89.21" rx="4" ry="4"></ellipse>
+<text text-anchor="middle" x="73.92" y="-225.5" font-family="Times,serif" font-size="16.00" fill="#ff3030">collision (at index 0)</text>
+</g>
+<!-- hashFunction -->
+<g id="node5" class="node">
+<title>hashFunction</title>
+<polygon fill="none" stroke="#00868b" points="148.74,-204.7 148.74,-255.9 270.24,-255.9 270.24,-204.7 148.74,-204.7"></polygon>
+<text text-anchor="middle" x="209.49" y="-235.7" font-family="Times,serif" font-size="18.00">Hash Function</text>
+<text text-anchor="middle" x="209.49" y="-214.1" font-family="Times,serif" font-size="18.00">(% 5)</text>
+</g>
+<!-- keys1&#45;&gt;hashFunction -->
+<g id="edge1" class="edge">
+<title>keys1-&gt;hashFunction</title>
+<path fill="none" stroke="black" d="M94.53,-319.87C115.62,-303.62 145.25,-280.79 169.14,-262.39"></path>
+<polygon fill="black" stroke="black" points="171.54,-264.95 177.33,-256.08 167.27,-259.41 171.54,-264.95"></polygon>
+<text text-anchor="middle" x="169.26" y="-279.2" font-family="Times,serif" font-size="16.00">apply</text>
+</g>
+<!-- keys3 -->
+<g id="node3" class="node">
+<title>keys3</title>
+<polygon fill="none" stroke="goldenrod" points="266.49,-312.1 266.49,-371.3 320.49,-371.3 320.49,-312.1 266.49,-312.1"></polygon>
+<text text-anchor="middle" x="293.49" y="-351.1" font-family="Times,serif" font-size="18.00">28</text>
+<polyline fill="none" stroke="goldenrod" points="266.49,-341.7 320.49,-341.7 "></polyline>
+<text text-anchor="middle" x="293.49" y="-321.5" font-family="Times,serif" font-size="18.00">33</text>
+</g>
+<!-- keys3&#45;&gt;hashTable -->
+<g id="edge6" class="edge">
+<title>keys3-&gt;hashTable</title>
+<path fill="none" stroke="#ff3030" d="M303.65,-301.76C311.1,-265.36 317.03,-210.29 298.49,-167 287.77,-141.98 266.49,-120.56 246.67,-104.75"></path>
+<polygon fill="#ff3030" stroke="#ff3030" points="300.14,-301.45 301.42,-311.96 306.98,-302.94 300.14,-301.45"></polygon>
+<ellipse fill="#ff3030" stroke="#ff3030" cx="243.47" cy="-102.26" rx="4" ry="4"></ellipse>
+<text text-anchor="middle" x="376.92" y="-225.5" font-family="Times,serif" font-size="16.00" fill="#ff3030">collision (at index 3)</text>
+</g>
+<!-- keys3&#45;&gt;hashFunction -->
+<g id="edge2" class="edge">
+<title>keys3-&gt;hashFunction</title>
+<path fill="none" stroke="black" d="M271.42,-311.96C260.18,-297.32 246.47,-279.46 234.8,-264.27"></path>
+<polygon fill="black" stroke="black" points="237.43,-261.94 228.56,-256.14 231.87,-266.2 237.43,-261.94"></polygon>
+<text text-anchor="middle" x="274.26" y="-279.2" font-family="Times,serif" font-size="16.00">apply</text>
+</g>
+<!-- key2 -->
+<g id="node4" class="node">
+<title>key2</title>
+<polygon fill="none" stroke="goldenrod" points="175.49,-323.7 175.49,-359.7 229.49,-359.7 229.49,-323.7 175.49,-323.7"></polygon>
+<text text-anchor="middle" x="202.49" y="-336.3" font-family="Times,serif" font-size="18.00">47</text>
+</g>
+<!-- key2&#45;&gt;hashFunction -->
+<g id="edge3" class="edge">
+<title>key2-&gt;hashFunction</title>
+<path fill="none" stroke="black" d="M202.37,-323.5C202.39,-310.11 202.69,-291.05 203.94,-274.4 204.14,-271.83 204.38,-269.18 204.65,-266.52"></path>
+<polygon fill="black" stroke="black" points="208.15,-266.66 205.81,-256.32 201.2,-265.86 208.15,-266.66"></polygon>
+<text text-anchor="middle" x="222.26" y="-279.2" font-family="Times,serif" font-size="16.00">apply</text>
+</g>
+<!-- hashFunction&#45;&gt;hashTable -->
+<g id="edge4" class="edge">
+<title>hashFunction-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M205.38,-204.29C204.57,-198.38 203.83,-192.08 203.4,-186.2 202.73,-177.26 202.28,-167.91 201.98,-158.58"></path>
+<polygon fill="black" stroke="black" points="205.48,-158.41 201.72,-148.5 198.48,-158.59 205.48,-158.41"></polygon>
+<text text-anchor="middle" x="251.04" y="-171.8" font-family="Times,serif" font-size="16.00">hash to indices</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hash-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.4: Illustration of a hash table with keys and collisions. The keys 15 and 10, as well as 28 and 33, have collided, mapping to the same indices (0 and 3, respectively).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="comparing-different-hash-functions" class="level3" data-number="26.2.5">
+<h3 data-number="26.2.5" class="anchored" data-anchor-id="comparing-different-hash-functions"><span class="header-section-number">26.2.5</span> Comparing Different Hash Functions</h3>
+<p>Various hash functions exist, each offering a distinct balance between computational speed and uniform key distribution, thus leading to different degrees of collision occurrence. The effectiveness of a hash function can significantly influence the overall performance of a hash table.</p>
+<section id="efficiency-versus-complexity-trade-off" class="level4" data-number="26.2.5.1">
+<h4 data-number="26.2.5.1" class="anchored" data-anchor-id="efficiency-versus-complexity-trade-off"><span class="header-section-number">26.2.5.1</span> Efficiency versus Complexity Trade-off</h4>
+<p>For instance, a simple hash function, such as modulo operation, is computationally efficient but tends to distribute keys unevenly across the table. This non-uniform distribution increases the probability of collisions, resulting in deteriorated performance due to the need for collision resolution techniques.</p>
+<p>On the other hand, more sophisticated hash functions, including cryptographic hash functions, yield a more uniform distribution of keys across the table. However, their complexity leads to slower computation times, impacting the speed of operations.</p>
+<p>In real-world applications, the choice of a hash function is largely influenced by the specific demands of the task and the nature of the data being processed. The primary goal is to strike a balance between achieving a uniform key distribution, minimal collisions, fast computation, and deterministic output.</p>
+</section>
+</section>
+</section>
+<section id="collision-resolution-in-hashing-chaining-and-open-addressing" class="level2" data-number="26.3">
+<h2 data-number="26.3" class="anchored" data-anchor-id="collision-resolution-in-hashing-chaining-and-open-addressing"><span class="header-section-number">26.3</span> Collision Resolution in Hashing: Chaining and Open Addressing</h2>
+<section id="hash-collisions" class="level3" data-number="26.3.1">
+<h3 data-number="26.3.1" class="anchored" data-anchor-id="hash-collisions"><span class="header-section-number">26.3.1</span> Hash Collisions</h3>
+<p><strong>Hash collisions</strong>, a scenario where multiple keys map to the same index, are an inevitable outcome in hash tables due to the pigeonhole principle, which states that if there are more pigeons than pigeonholes, at least one pigeonhole must contain more than one pigeon. In the context of hashing, the keys represent pigeons, and the indices of the hash table are the pigeonholes. This analogy aptly describes how more keys than available indices will result in collisions. Such collisions can have a detrimental effect on the efficiency of hash table operations, increasing access times for insertions, deletions, and retrievals.</p>
+<p>Two prominent strategies for collision resolution include <strong>chaining</strong> and <strong>open addressing</strong>.</p>
+</section>
+<section id="chaining-in-hash-collisions" class="level3" data-number="26.3.2">
+<h3 data-number="26.3.2" class="anchored" data-anchor-id="chaining-in-hash-collisions"><span class="header-section-number">26.3.2</span> Chaining in Hash Collisions</h3>
+<p><strong>Chaining</strong> employs an auxiliary data structure, such as a linked list, at each index to accommodate multiple key-value pairs. This strategy effectively creates a ‘chain’ of entries at the index where a collision occurs.</p>
+<section id="process-for-insertion-search-and-deletion" class="level4" data-number="26.3.2.1">
+<h4 data-number="26.3.2.1" class="anchored" data-anchor-id="process-for-insertion-search-and-deletion"><span class="header-section-number">26.3.2.1</span> Process for Insertion, Search, and Deletion</h4>
+<p>The following steps outline the handling of key-value pairs during insertion, search, and deletion when using chaining:</p>
+<ol type="1">
+<li><p><strong>Insertion</strong>: The hash function calculates the index for the key. If the index is empty, a new data structure is initialized, and the key-value pair is inserted. In case of a non-empty index, the key-value pair is added to the existing data structure.</p></li>
+<li><p><strong>Search</strong>: Upon calculating the index using the hash function, if the index is empty, it indicates the absence of the key in the hash table. If not empty, the data structure at the index is searched to find the key.</p></li>
+<li><p><strong>Deletion</strong>: Similar to the search operation, the index is determined using the hash function. If the index is empty, it means the key does not exist in the hash table. If the index is non-empty, the data structure is searched to locate the key, which is then removed.</p></li>
+</ol>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-chaining" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chaining-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 428.06 460.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 456.8)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-456.8 424.06,-456.8 424.06,4 -4,4"></polygon>
+<!-- hashTable -->
+<g id="node1" class="node">
+<title>hashTable</title>
+<polygon fill="none" stroke="#bf3eff" points="97.26,-115.9 97.26,-263.9 172.74,-263.9 172.74,-115.9 97.26,-115.9"></polygon>
+<text text-anchor="middle" x="135" y="-243.7" font-family="Times,serif" font-size="18.00">Index 0:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-234.3 172.74,-234.3 "></polyline>
+<text text-anchor="middle" x="135" y="-214.1" font-family="Times,serif" font-size="18.00">Index 1:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-204.7 172.74,-204.7 "></polyline>
+<text text-anchor="middle" x="135" y="-184.5" font-family="Times,serif" font-size="18.00">Index 2:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-175.1 172.74,-175.1 "></polyline>
+<text text-anchor="middle" x="135" y="-154.9" font-family="Times,serif" font-size="18.00">Index 3:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-145.5 172.74,-145.5 "></polyline>
+<text text-anchor="middle" x="135" y="-125.3" font-family="Times,serif" font-size="18.00">Index 4:</text>
+</g>
+<!-- chain0 -->
+<g id="node7" class="node">
+<title>chain0</title>
+<path fill="none" stroke="#00868b" d="M13,-0.5C13,-0.5 43,-0.5 43,-0.5 49,-0.5 55,-6.5 55,-12.5 55,-12.5 55,-47.7 55,-47.7 55,-53.7 49,-59.7 43,-59.7 43,-59.7 13,-59.7 13,-59.7 7,-59.7 1,-53.7 1,-47.7 1,-47.7 1,-12.5 1,-12.5 1,-6.5 7,-0.5 13,-0.5"></path>
+<text text-anchor="middle" x="28" y="-39.5" font-family="Times,serif" font-size="18.00">15</text>
+<polyline fill="none" stroke="#00868b" points="1,-30.1 55,-30.1 "></polyline>
+<text text-anchor="middle" x="28" y="-9.9" font-family="Times,serif" font-size="18.00">10</text>
+</g>
+<!-- hashTable&#45;&gt;chain0 -->
+<g id="edge6" class="edge">
+<title>hashTable-&gt;chain0</title>
+<path fill="none" stroke="#ff3030" d="M88.76,-162.18C66.31,-146.46 41.52,-124.37 28.94,-97.4 24.75,-88.44 23.27,-78.02 23.15,-68.13"></path>
+<polygon fill="#ff3030" stroke="#ff3030" points="86.97,-165.19 97.22,-167.89 90.88,-159.39 86.97,-165.19"></polygon>
+<ellipse fill="#ff3030" stroke="#ff3030" cx="23.25" cy="-64" rx="4" ry="4"></ellipse>
+<text text-anchor="middle" x="124.53" y="-83" font-family="Times,serif" font-size="16.00" fill="#ff3030">collision resolved (at index 0)</text>
+</g>
+<!-- chain3 -->
+<g id="node8" class="node">
+<title>chain3</title>
+<path fill="none" stroke="#00868b" d="M227,-0.5C227,-0.5 257,-0.5 257,-0.5 263,-0.5 269,-6.5 269,-12.5 269,-12.5 269,-47.7 269,-47.7 269,-53.7 263,-59.7 257,-59.7 257,-59.7 227,-59.7 227,-59.7 221,-59.7 215,-53.7 215,-47.7 215,-47.7 215,-12.5 215,-12.5 215,-6.5 221,-0.5 227,-0.5"></path>
+<text text-anchor="middle" x="242" y="-39.5" font-family="Times,serif" font-size="18.00">28</text>
+<polyline fill="none" stroke="#00868b" points="215,-30.1 269,-30.1 "></polyline>
+<text text-anchor="middle" x="242" y="-9.9" font-family="Times,serif" font-size="18.00">33</text>
+</g>
+<!-- hashTable&#45;&gt;chain3 -->
+<g id="edge7" class="edge">
+<title>hashTable-&gt;chain3</title>
+<path fill="none" stroke="#ff3030" d="M180.2,-147.84C194.46,-133.05 209.28,-115.51 220,-97.4 225.36,-88.34 229.62,-77.8 232.9,-67.83"></path>
+<polygon fill="#ff3030" stroke="#ff3030" points="177.36,-145.73 172.82,-155.31 182.34,-150.65 177.36,-145.73"></polygon>
+<ellipse fill="#ff3030" stroke="#ff3030" cx="234.14" cy="-63.82" rx="4" ry="4"></ellipse>
+<text text-anchor="middle" x="324.53" y="-83" font-family="Times,serif" font-size="16.00" fill="#ff3030">collision resolved (at index 3)</text>
+</g>
+<!-- keys1 -->
+<g id="node2" class="node">
+<title>keys1</title>
+<polygon fill="none" stroke="goldenrod" points="0,-393.1 0,-452.3 54,-452.3 54,-393.1 0,-393.1"></polygon>
+<text text-anchor="middle" x="27" y="-432.1" font-family="Times,serif" font-size="18.00">15</text>
+<polyline fill="none" stroke="goldenrod" points="0,-422.7 54,-422.7 "></polyline>
+<text text-anchor="middle" x="27" y="-402.5" font-family="Times,serif" font-size="18.00">10</text>
+</g>
+<!-- hashProcess -->
+<g id="node6" class="node">
+<title>hashProcess</title>
+<ellipse fill="lightgrey" stroke="lightgrey" cx="135" cy="-337.6" rx="27" ry="18"></ellipse>
+</g>
+<!-- keys1&#45;&gt;hashProcess -->
+<g id="edge1" class="edge">
+<title>keys1-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M54.04,-399.67C57.05,-397.27 60.08,-394.87 63,-392.6 81.37,-378.3 102.75,-362.35 117.41,-351.52"></path>
+</g>
+<!-- keys3 -->
+<g id="node3" class="node">
+<title>keys3</title>
+<polygon fill="none" stroke="goldenrod" points="72,-393.1 72,-452.3 126,-452.3 126,-393.1 72,-393.1"></polygon>
+<text text-anchor="middle" x="99" y="-432.1" font-family="Times,serif" font-size="18.00">28</text>
+<polyline fill="none" stroke="goldenrod" points="72,-422.7 126,-422.7 "></polyline>
+<text text-anchor="middle" x="99" y="-402.5" font-family="Times,serif" font-size="18.00">33</text>
+</g>
+<!-- keys3&#45;&gt;hashProcess -->
+<g id="edge2" class="edge">
+<title>keys3-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M111.59,-392.64C117.03,-380.09 123.18,-365.88 127.82,-355.17"></path>
+</g>
+<!-- key2 -->
+<g id="node4" class="node">
+<title>key2</title>
+<polygon fill="none" stroke="goldenrod" points="144,-404.7 144,-440.7 198,-440.7 198,-404.7 144,-404.7"></polygon>
+<text text-anchor="middle" x="171" y="-417.3" font-family="Times,serif" font-size="18.00">47</text>
+</g>
+<!-- key2&#45;&gt;hashProcess -->
+<g id="edge3" class="edge">
+<title>key2-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M163.54,-404.48C157.28,-390.03 148.39,-369.51 142.2,-355.23"></path>
+</g>
+<!-- hashFunction -->
+<g id="node5" class="node">
+<title>hashFunction</title>
+<polygon fill="none" stroke="#00868b" points="216.25,-404.7 216.25,-440.7 337.75,-440.7 337.75,-404.7 216.25,-404.7"></polygon>
+<text text-anchor="middle" x="277" y="-417.3" font-family="Times,serif" font-size="18.00">Hash Function</text>
+</g>
+<!-- hashFunction&#45;&gt;hashProcess -->
+<g id="edge4" class="edge">
+<title>hashFunction-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M247.92,-404.68C220.17,-388.44 179.11,-364.41 154.9,-350.25"></path>
+</g>
+<!-- hashProcess&#45;&gt;hashTable -->
+<g id="edge5" class="edge">
+<title>hashProcess-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M135,-319.31C135,-307.66 135,-291.33 135,-274.21"></path>
+<polygon fill="black" stroke="black" points="138.5,-274.07 135,-264.07 131.5,-274.07 138.5,-274.07"></polygon>
+<text text-anchor="middle" x="182.55" y="-287.2" font-family="Times,serif" font-size="16.00">hash to indices</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chaining-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.5: Illustration of collision resolution using Chaining. Keys 15 and 10, and 28 and 33, have collided at indices 0 and 3, respectively, resulting in linked lists (chains) at those indices.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="advantages-and-disadvantages-of-chaining" class="level4" data-number="26.3.2.2">
+<h4 data-number="26.3.2.2" class="anchored" data-anchor-id="advantages-and-disadvantages-of-chaining"><span class="header-section-number">26.3.2.2</span> Advantages and Disadvantages of Chaining</h4>
+<p>Chaining presents several benefits and drawbacks:</p>
+<ul>
+<li><strong>Advantages</strong>:
+<ul>
+<li><strong>Ease of implementation</strong>: The use of pre-existing data structures, like linked lists, simplifies the implementation of chaining.</li>
+<li><strong>Dynamic size management</strong>: The data structure at each index can grow or shrink as necessary, enabling efficient space utilization.</li>
+</ul></li>
+<li><strong>Disadvantages</strong>:
+<ul>
+<li><strong>Increased space requirements</strong>: Chaining necessitates extra space to store the data structure at each index, contributing to memory overhead.</li>
+<li><strong>Variable access time</strong>: The time taken to access key-value pairs is contingent on the length of the data structure at the index, which can vary.</li>
+</ul></li>
+</ul>
+<p>Despite the memory overhead and potentially variable access times, chaining remains a widely used method for resolving hash collisions due to its simplicity and capacity to dynamically manage memory.</p>
+</section>
+</section>
+<section id="open-addressing-in-hash-collisions" class="level3" data-number="26.3.3">
+<h3 data-number="26.3.3" class="anchored" data-anchor-id="open-addressing-in-hash-collisions"><span class="header-section-number">26.3.3</span> Open Addressing in Hash Collisions</h3>
+<p><strong>Open addressing</strong> presents an alternative strategy for collision resolution. It entails finding a substitute index for a key-value pair if the original index is already occupied. This method employs a technique known as probing to find the next available index in the event of a collision. Common probing techniques include linear probing, quadratic probing, and double hashing.</p>
+<section id="probing-techniques" class="level4" data-number="26.3.3.1">
+<h4 data-number="26.3.3.1" class="anchored" data-anchor-id="probing-techniques"><span class="header-section-number">26.3.3.1</span> Probing Techniques</h4>
+<ol type="1">
+<li><strong>Linear probing</strong>: If a collision is encountered, the hash table is scanned sequentially (one index at a time) until an empty slot is discovered.</li>
+<li><strong>Quadratic probing</strong>: During a collision, the hash table is searched quadratically (by incrementing the index by the square of the probe number) until a vacant slot is identified.</li>
+<li><strong>Double hashing</strong>: In the event of a collision, a secondary hash function is utilized to determine a new index for the key-value pair. This process is repeated until an empty slot is found.</li>
+</ol>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-open-addressing" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-open-addressing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 345.75 437.60" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 433.6)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-433.6 341.75,-433.6 341.75,4 -4,4"></polygon>
+<!-- hashTable -->
+<g id="node1" class="node">
+<title>hashTable</title>
+<polygon fill="none" stroke="#bf3eff" points="97.26,-92.7 97.26,-240.7 172.74,-240.7 172.74,-92.7 97.26,-92.7"></polygon>
+<text text-anchor="middle" x="135" y="-220.5" font-family="Times,serif" font-size="18.00">Index 0:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-211.1 172.74,-211.1 "></polyline>
+<text text-anchor="middle" x="135" y="-190.9" font-family="Times,serif" font-size="18.00">Index 1:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-181.5 172.74,-181.5 "></polyline>
+<text text-anchor="middle" x="135" y="-161.3" font-family="Times,serif" font-size="18.00">Index 2:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-151.9 172.74,-151.9 "></polyline>
+<text text-anchor="middle" x="135" y="-131.7" font-family="Times,serif" font-size="18.00">Index 3:</text>
+<polyline fill="none" stroke="#bf3eff" points="97.26,-122.3 172.74,-122.3 "></polyline>
+<text text-anchor="middle" x="135" y="-102.1" font-family="Times,serif" font-size="18.00">Index 4:</text>
+</g>
+<!-- relocatedKey -->
+<g id="node7" class="node">
+<title>relocatedKey</title>
+<path fill="none" stroke="#ff3030" d="M120,-0.5C120,-0.5 150,-0.5 150,-0.5 156,-0.5 162,-6.5 162,-12.5 162,-12.5 162,-24.5 162,-24.5 162,-30.5 156,-36.5 150,-36.5 150,-36.5 120,-36.5 120,-36.5 114,-36.5 108,-30.5 108,-24.5 108,-24.5 108,-12.5 108,-12.5 108,-6.5 114,-0.5 120,-0.5"></path>
+<text text-anchor="middle" x="135" y="-13.1" font-family="Times,serif" font-size="18.00">33</text>
+</g>
+<!-- hashTable&#45;&gt;relocatedKey -->
+<g id="edge6" class="edge">
+<title>hashTable-&gt;relocatedKey</title>
+<path fill="none" stroke="#ff3030" d="M135,-82.3C135,-68.58 135,-55.35 135,-44.61"></path>
+<polygon fill="#ff3030" stroke="#ff3030" points="131.5,-82.6 135,-92.6 138.5,-82.6 131.5,-82.6"></polygon>
+<ellipse fill="#ff3030" stroke="#ff3030" cx="135" cy="-40.56" rx="4" ry="4"></ellipse>
+<text text-anchor="middle" x="230.53" y="-59.8" font-family="Times,serif" font-size="16.00" fill="#ff3030">collision resolved (at index 4)</text>
+</g>
+<!-- keys1 -->
+<g id="node2" class="node">
+<title>keys1</title>
+<polygon fill="none" stroke="goldenrod" points="0,-369.9 0,-429.1 54,-429.1 54,-369.9 0,-369.9"></polygon>
+<text text-anchor="middle" x="27" y="-408.9" font-family="Times,serif" font-size="18.00">15</text>
+<polyline fill="none" stroke="goldenrod" points="0,-399.5 54,-399.5 "></polyline>
+<text text-anchor="middle" x="27" y="-379.3" font-family="Times,serif" font-size="18.00">10</text>
+</g>
+<!-- hashProcess -->
+<g id="node6" class="node">
+<title>hashProcess</title>
+<ellipse fill="lightgrey" stroke="lightgrey" cx="135" cy="-314.4" rx="27" ry="18"></ellipse>
+</g>
+<!-- keys1&#45;&gt;hashProcess -->
+<g id="edge1" class="edge">
+<title>keys1-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M54.04,-376.47C57.05,-374.07 60.08,-371.67 63,-369.4 81.37,-355.1 102.75,-339.15 117.41,-328.32"></path>
+</g>
+<!-- keys2 -->
+<g id="node3" class="node">
+<title>keys2</title>
+<polygon fill="none" stroke="goldenrod" points="72,-369.9 72,-429.1 126,-429.1 126,-369.9 72,-369.9"></polygon>
+<text text-anchor="middle" x="99" y="-408.9" font-family="Times,serif" font-size="18.00">28</text>
+<polyline fill="none" stroke="goldenrod" points="72,-399.5 126,-399.5 "></polyline>
+<text text-anchor="middle" x="99" y="-379.3" font-family="Times,serif" font-size="18.00">33</text>
+</g>
+<!-- keys2&#45;&gt;hashProcess -->
+<g id="edge2" class="edge">
+<title>keys2-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M111.59,-369.44C117.03,-356.89 123.18,-342.68 127.82,-331.97"></path>
+</g>
+<!-- key2 -->
+<g id="node4" class="node">
+<title>key2</title>
+<polygon fill="none" stroke="goldenrod" points="144,-381.5 144,-417.5 198,-417.5 198,-381.5 144,-381.5"></polygon>
+<text text-anchor="middle" x="171" y="-394.1" font-family="Times,serif" font-size="18.00">47</text>
+</g>
+<!-- key2&#45;&gt;hashProcess -->
+<g id="edge3" class="edge">
+<title>key2-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M163.54,-381.28C157.28,-366.83 148.39,-346.31 142.2,-332.03"></path>
+</g>
+<!-- hashFunction -->
+<g id="node5" class="node">
+<title>hashFunction</title>
+<polygon fill="none" stroke="#00868b" points="216.25,-381.5 216.25,-417.5 337.75,-417.5 337.75,-381.5 216.25,-381.5"></polygon>
+<text text-anchor="middle" x="277" y="-394.1" font-family="Times,serif" font-size="18.00">Hash Function</text>
+</g>
+<!-- hashFunction&#45;&gt;hashProcess -->
+<g id="edge4" class="edge">
+<title>hashFunction-&gt;hashProcess</title>
+<path fill="none" stroke="black" d="M247.92,-381.48C220.17,-365.24 179.11,-341.21 154.9,-327.05"></path>
+</g>
+<!-- hashProcess&#45;&gt;hashTable -->
+<g id="edge5" class="edge">
+<title>hashProcess-&gt;hashTable</title>
+<path fill="none" stroke="black" d="M135,-296.11C135,-284.46 135,-268.13 135,-251.01"></path>
+<polygon fill="black" stroke="black" points="138.5,-250.87 135,-240.87 131.5,-250.87 138.5,-250.87"></polygon>
+<text text-anchor="middle" x="182.55" y="-264" font-family="Times,serif" font-size="16.00">hash to indices</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-open-addressing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.6: Illustration of collision resolution using Open Addressing. Here, key 33 has been relocated to index 4 due to a collision at index 3.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="insertion-search-and-deletion" class="level4" data-number="26.3.3.2">
+<h4 data-number="26.3.3.2" class="anchored" data-anchor-id="insertion-search-and-deletion"><span class="header-section-number">26.3.3.2</span> Insertion, Search, and Deletion</h4>
+<p>When interacting with a hash table operating under open addressing, three main operations emerge: insertion, search, and deletion. The performance of these operations deeply intertwines with the hash function and probing technique utilized:</p>
+<ol type="1">
+<li><p><strong>Insertion</strong>: To insert a key-value pair, begin by computing the hash function to determine the initial index. If the index remains unoccupied, place the key-value pair there. However, if a collision occurs and the index is occupied, leverage the probing technique to navigate the terrain of the hash table and locate an alternative index. There, you will find your new home for the key-value pair.</p></li>
+<li><p><strong>Search</strong>: To find a key, repeat the hashing process, leading to the first potential residence of the key-value pair. If an empty index greets you, the key does not exist in the hash table. If an occupied index is found, compare the stored key with the desired one. A match indicates a successful search; a mismatch compels the probing technique to guide you towards the next probable index. Repeat this process until the key reveals itself or an empty index signals the end of the journey.</p></li>
+<li><p><strong>Deletion</strong>: To remove a key-value pair, initiate the same hashing and searching process. If the key is located, excise the key-value pair and mark the index as a grave—a formerly occupied place. However, a solitary deletion might disrupt the balance of the hash table if the removed pair was part of a cluster, requiring continued probing to rectify the disarray.</p></li>
+</ol>
+</section>
+<section id="advantages-and-disadvantages" class="level4" data-number="26.3.3.3">
+<h4 data-number="26.3.3.3" class="anchored" data-anchor-id="advantages-and-disadvantages"><span class="header-section-number">26.3.3.3</span> Advantages and Disadvantages</h4>
+<p>Like all data structures, open addressing presents both advantages and disadvantages, a balance one must consider carefully:</p>
+<ul>
+<li><strong>Advantages</strong>:
+<ul>
+<li>Memory-Efficient: Open addressing demands no extra storage for additional data structures at each index, presenting a more frugal option.</li>
+<li>Defined Size: The static size of the hash table allows for predictable memory usage, a boon when memory resources are constrained.</li>
+</ul></li>
+<li><strong>Disadvantages</strong>:
+<ul>
+<li>Clustering Phenomenon: Certain probing techniques can induce clusters of key-value pairs, hindering efficient access.</li>
+<li>Deletion Dilemmas: The removal of key-value pairs can disrupt the structure, creating “holes” within clusters that must be addressed.</li>
+</ul></li>
+</ul>
+<p>While open addressing provides a viable alternative for resolving hash collisions and may outperform chaining in memory-constrained situations, it’s not the panacea for all use cases. One must consider clustering phenomena and deletion challenges, which could tip the scales unfavorably.</p>
+</section>
+</section>
+</section>
+<section id="evaluating-complexity-and-load-factor-in-hash-tables" class="level2" data-number="26.4">
+<h2 data-number="26.4" class="anchored" data-anchor-id="evaluating-complexity-and-load-factor-in-hash-tables"><span class="header-section-number">26.4</span> Evaluating Complexity and Load Factor in Hash Tables</h2>
+<p>In order to properly assess the complexity of hash functions and hash tables, it’s important to understand the time required to perform fundamental operations such as search, insertion, and deletion. These operations typically consist of two essential steps:</p>
+<ol type="1">
+<li>Computation of the hash function for the given key.</li>
+<li>Traversal of the list of key-value pairs at the computed index.</li>
+</ol>
+<section id="analyzing-time-complexity-in-hash-computation" class="level3" data-number="26.4.1">
+<h3 data-number="26.4.1" class="anchored" data-anchor-id="analyzing-time-complexity-in-hash-computation"><span class="header-section-number">26.4.1</span> Analyzing Time Complexity in Hash Computation</h3>
+<p>In the first step, the time complexity depends on both the key and the hash function used. Let’s take an example where the key is a string, such as “abcd”. In this case, the complexity of its hash function might depend on the length of the string. However, when we’re dealing with an exceptionally large number of entries <code>n</code> in the map, the length of the keys becomes almost negligible compared to <code>n</code>. Therefore, we can treat the computation of the hash function as a constant time operation, i.e., O(1).</p>
+</section>
+<section id="investigating-time-complexity-in-list-traversal" class="level3" data-number="26.4.2">
+<h3 data-number="26.4.2" class="anchored" data-anchor-id="investigating-time-complexity-in-list-traversal"><span class="header-section-number">26.4.2</span> Investigating Time Complexity in List Traversal</h3>
+<p>For the second step, which involves traversing the list of key-value pairs at the computed index, the time complexity can be quite variable. In the worst-case scenario, where all the <code>n</code> entries end up at the same index, the time complexity escalates to O(n). However, thanks to the substantial amount of research dedicated to designing hash functions that distribute keys uniformly in the array, this situation occurs very infrequently.</p>
+</section>
+<section id="understanding-the-load-factor" class="level3" data-number="26.4.3">
+<h3 data-number="26.4.3" class="anchored" data-anchor-id="understanding-the-load-factor"><span class="header-section-number">26.4.3</span> Understanding the Load Factor</h3>
+<p>The load factor, represented by the symbol λ, plays a pivotal role in the performance of our hash table. It’s defined as <code>n/b</code>, where <code>n</code> represents the number of entries and <code>b</code> stands for the size of the array. Hence, it refers to the average number of entries at each index:</p>
+<pre><code>λ = n/b</code></pre>
+<p>It’s crucial to keep this load factor low in order to limit the number of entries at a single index, thus keeping the complexity close to a constant, i.e., O(1).</p>
+</section>
+<section id="the-interplay-between-load-factor-and-complexity" class="level3" data-number="26.4.4">
+<h3 data-number="26.4.4" class="anchored" data-anchor-id="the-interplay-between-load-factor-and-complexity"><span class="header-section-number">26.4.4</span> The Interplay Between Load Factor and Complexity</h3>
+<p>In order to maintain the load factor within an acceptable range, we can resize the hash table when the load factor surpasses a certain predefined threshold. This action effectively helps to maintain the complexity of the hash table operations around O(1) by ensuring a uniform distribution of the keys across a larger array.</p>
+<p>In conclusion, a comprehensive understanding of the complexity and load factor of hash functions is key to designing efficient hash tables. By carefully selecting an appropriate hash function and managing the load factor, we can aim to achieve a near-constant time complexity for various operations in a hash table.</p>
+</section>
+</section>
+<section id="rehashing" class="level2" data-number="26.5">
+<h2 data-number="26.5" class="anchored" data-anchor-id="rehashing"><span class="header-section-number">26.5</span> Rehashing</h2>
+<p>Rehashing—quite literally, hashing anew—is a mechanism that helps manage the load factor when it swells beyond a certain threshold. This predefined value often defaults to 0.75. If the load factor rises above this threshold, the complexity of hash table operations increases, thereby prompting a need for rehashing.</p>
+<p>During rehashing, the size of the array (typically doubling) is augmented, and all existing values are rehashed, subsequently being placed into the new, more capacious array. This enlargement of the array helps in maintaining a lower load factor and thereby, lower complexity.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-rehashing" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rehashing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 293.61 470.22" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 466.22)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-466.22 289.61,-466.22 289.61,4 -4,4"></polygon>
+<!-- BeforeRehash -->
+<g id="node1" class="node">
+<title>BeforeRehash</title>
+<path fill="none" stroke="lightblue" d="M14.32,-425.72C14.32,-425.72 108.28,-425.72 108.28,-425.72 114.28,-425.72 120.28,-431.72 120.28,-437.72 120.28,-437.72 120.28,-449.72 120.28,-449.72 120.28,-455.72 114.28,-461.72 108.28,-461.72 108.28,-461.72 14.32,-461.72 14.32,-461.72 8.32,-461.72 2.32,-455.72 2.32,-449.72 2.32,-449.72 2.32,-437.72 2.32,-437.72 2.32,-431.72 8.32,-425.72 14.32,-425.72"></path>
+<text text-anchor="middle" x="61.3" y="-438.32" font-family="Times,serif" font-size="18.00">BeforeRehash</text>
+</g>
+<!-- rehashProcess -->
+<g id="node5" class="node">
+<title>rehashProcess</title>
+<ellipse fill="lightgrey" stroke="lightgrey" cx="126.3" cy="-355.41" rx="126.1" ry="32.62"></ellipse>
+<text text-anchor="middle" x="126.3" y="-360.21" font-family="Times,serif" font-size="16.00">Rehashing</text>
+<text text-anchor="middle" x="126.3" y="-341.01" font-family="Times,serif" font-size="16.00">(Resize and Redistribute)</text>
+</g>
+<!-- BeforeRehash&#45;&gt;rehashProcess -->
+<g id="edge1" class="edge">
+<title>BeforeRehash-&gt;rehashProcess</title>
+<path fill="none" stroke="black" d="M74.14,-425.67C82.28,-414.86 93.06,-400.55 102.7,-387.75"></path>
+</g>
+<!-- AfterRehash -->
+<g id="node2" class="node">
+<title>AfterRehash</title>
+<path fill="none" stroke="lightgreen" d="M149.82,-425.72C149.82,-425.72 232.78,-425.72 232.78,-425.72 238.78,-425.72 244.78,-431.72 244.78,-437.72 244.78,-437.72 244.78,-449.72 244.78,-449.72 244.78,-455.72 238.78,-461.72 232.78,-461.72 232.78,-461.72 149.82,-461.72 149.82,-461.72 143.82,-461.72 137.82,-455.72 137.82,-449.72 137.82,-449.72 137.82,-437.72 137.82,-437.72 137.82,-431.72 143.82,-425.72 149.82,-425.72"></path>
+<text text-anchor="middle" x="191.3" y="-438.32" font-family="Times,serif" font-size="18.00">AfterRehash</text>
+</g>
+<!-- AfterRehash&#45;&gt;rehashProcess -->
+<g id="edge2" class="edge">
+<title>AfterRehash-&gt;rehashProcess</title>
+<path fill="none" stroke="black" d="M178.46,-425.67C170.32,-414.86 159.55,-400.55 149.9,-387.75"></path>
+</g>
+<!-- BeforeEntries -->
+<g id="node3" class="node">
+<title>BeforeEntries</title>
+<polygon fill="none" stroke="goldenrod" points="30.3,-44.9 30.3,-222.5 84.3,-222.5 84.3,-44.9 30.3,-44.9"></polygon>
+<text text-anchor="middle" x="57.3" y="-202.3" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="30.3,-192.9 84.3,-192.9 "></polyline>
+<text text-anchor="middle" x="57.3" y="-172.7" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="30.3,-163.3 84.3,-163.3 "></polyline>
+<text text-anchor="middle" x="57.3" y="-143.1" font-family="Times,serif" font-size="18.00">K1</text>
+<polyline fill="none" stroke="goldenrod" points="30.3,-133.7 84.3,-133.7 "></polyline>
+<text text-anchor="middle" x="57.3" y="-113.5" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="30.3,-104.1 84.3,-104.1 "></polyline>
+<text text-anchor="middle" x="57.3" y="-83.9" font-family="Times,serif" font-size="18.00">K2</text>
+<polyline fill="none" stroke="goldenrod" points="30.3,-74.5 84.3,-74.5 "></polyline>
+<text text-anchor="middle" x="57.3" y="-54.3" font-family="Times,serif" font-size="18.00"> </text>
+</g>
+<!-- AfterEntries -->
+<g id="node4" class="node">
+<title>AfterEntries</title>
+<polygon fill="none" stroke="goldenrod" points="168.3,-0.5 168.3,-266.9 222.3,-266.9 222.3,-0.5 168.3,-0.5"></polygon>
+<text text-anchor="middle" x="195.3" y="-246.7" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-237.3 222.3,-237.3 "></polyline>
+<text text-anchor="middle" x="195.3" y="-217.1" font-family="Times,serif" font-size="18.00">K1</text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-207.7 222.3,-207.7 "></polyline>
+<text text-anchor="middle" x="195.3" y="-187.5" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-178.1 222.3,-178.1 "></polyline>
+<text text-anchor="middle" x="195.3" y="-157.9" font-family="Times,serif" font-size="18.00">K2</text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-148.5 222.3,-148.5 "></polyline>
+<text text-anchor="middle" x="195.3" y="-128.3" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-118.9 222.3,-118.9 "></polyline>
+<text text-anchor="middle" x="195.3" y="-98.7" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-89.3 222.3,-89.3 "></polyline>
+<text text-anchor="middle" x="195.3" y="-69.1" font-family="Times,serif" font-size="18.00"> </text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-59.7 222.3,-59.7 "></polyline>
+<text text-anchor="middle" x="195.3" y="-39.5" font-family="Times,serif" font-size="18.00">K3</text>
+<polyline fill="none" stroke="goldenrod" points="168.3,-30.1 222.3,-30.1 "></polyline>
+<text text-anchor="middle" x="195.3" y="-9.9" font-family="Times,serif" font-size="18.00"> </text>
+</g>
+<!-- rehashProcess&#45;&gt;BeforeEntries -->
+<g id="edge3" class="edge">
+<title>rehashProcess-&gt;BeforeEntries</title>
+<path fill="none" stroke="black" d="M74.72,-325.29C68.08,-319.32 62.22,-312.43 58.22,-304.6 47.08,-282.78 43.07,-257.24 42.74,-232.68"></path>
+<polygon fill="black" stroke="black" points="46.24,-232.62 42.8,-222.6 39.24,-232.58 46.24,-232.62"></polygon>
+<text text-anchor="middle" x="115.84" y="-290.2" font-family="Times,serif" font-size="16.00">Before Rehashing</text>
+</g>
+<!-- rehashProcess&#45;&gt;AfterEntries -->
+<g id="edge4" class="edge">
+<title>rehashProcess-&gt;AfterEntries</title>
+<path fill="none" stroke="black" d="M160.69,-323.71C165.62,-317.82 170.09,-311.37 173.3,-304.6 177.5,-295.73 180.99,-286.32 183.87,-276.67"></path>
+<polygon fill="black" stroke="black" points="187.27,-277.51 186.56,-266.94 180.52,-275.65 187.27,-277.51"></polygon>
+<text text-anchor="middle" x="232.95" y="-290.2" font-family="Times,serif" font-size="16.00">After Rehashing</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rehashing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.7: The process of rehashing in a hash table. Upon insertion of a new key, if the load factor crosses a certain threshold, the hash table increases its size and redistributes the keys uniformly across the new, larger array, maintaining an efficient time complexity.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="the-need-for-rehashing" class="level3" data-number="26.5.1">
+<h3 data-number="26.5.1" class="anchored" data-anchor-id="the-need-for-rehashing"><span class="header-section-number">26.5.1</span> The Need for Rehashing</h3>
+<p>As key-value pairs accumulate in the map, they contribute to an increasing load factor. As previously detailed, a rising load factor implies an escalating time complexity, which could potentially compromise the desirable time complexity of O(1). Consequently, to restore the balance, rehashing is employed, expanding the size of the <code>bucketArray</code> to dial down both the load factor and time complexity.</p>
+</section>
+<section id="the-mechanics-of-rehashing" class="level3" data-number="26.5.2">
+<h3 data-number="26.5.2" class="anchored" data-anchor-id="the-mechanics-of-rehashing"><span class="header-section-number">26.5.2</span> The Mechanics of Rehashing</h3>
+<p>Rehashing in a hash table typically unfolds as follows:</p>
+<ol type="1">
+<li>Monitor the load factor with each addition of a new entry to the map.</li>
+<li>If the load factor surpasses its predefined value (or defaults to 0.75 if not specified), initiate rehashing.</li>
+<li>As part of the rehashing process, construct a new array that’s double the size of the previous one and assign it as the new <code>bucketArray</code>.</li>
+<li>Iterate through each element in the former <code>bucketArray</code> and employ the <code>insert()</code> method for each, allowing it to find its place in the new, enlarged <code>bucketArray</code>.</li>
+</ol>
+<p>The diagram below offers a visual representation of this rehashing process:</p>
+<pre><code>Initial bucketArray (size = 4):
++---+---+---+---+
+|   | K1|   | K2|
++---+---+---+---+
+
+Upon insertion of a new key K3 (load factor &gt; 0.75):
+
+New bucketArray (size = 8):
++---+---+---+---+---+---+---+---+
+|   | K1|   | K2|   |   |   | K3|
++---+---+---+---+---+---+---+---+</code></pre>
+<p>By applying rehashing, a hash table can retain its desired time complexity of O(1) even as the element count increases. It’s noteworthy that rehashing, while an effective mechanism, can be a costly operation—especially if the hash table houses a large number of elements. Nevertheless, since rehashing is triggered infrequently and only when the load factor breaches a certain threshold, the amortized cost of rehashing remains low. This allows hash table operations to sustain their near-constant time complexity.</p>
+</section>
+</section>
+<section id="hash-tables-and-hash-maps" class="level2" data-number="26.6">
+<h2 data-number="26.6" class="anchored" data-anchor-id="hash-tables-and-hash-maps"><span class="header-section-number">26.6</span> Hash Tables and Hash Maps</h2>
+<p>It’s common for individuals, even computer science students and practitioners, to use the terms <strong>hash table</strong> and <strong>hash map</strong> interchangeably. However, these are distinct constructs in computing, each with its unique characteristics, capabilities, and preferred applications.</p>
+<p><strong>Hash tables</strong> and <strong>hash maps</strong>, while sharing similarities, diverge significantly in their operational mechanisms:</p>
+<ul>
+<li><p>A <strong>hash table</strong> implements direct hashing, necessitating that the key either be an integer or directly convertible to one, such as a string of numerals. This integer then serves as the determinant for the index in the hash table.</p></li>
+<li><p>A <strong>hash map</strong>, in contrast, embraces indirect hashing, where keys of any data type are permitted. This necessitates an auxiliary hash function that transforms the key into an index within the hash table.</p></li>
+</ul>
+<p>When making the choice between a hash table or a hash map, one must critically examine the problem domain, particularly the data type of the keys:</p>
+<ul>
+<li><p>In scenarios where keys are integers or easily translatable into integers, a <strong>hash table</strong> might be a more fitting solution. A case in point is when handling student IDs as keys; in such a context, a hash table would be ideal.</p></li>
+<li><p>If the keys, however, belong to other data types or resist easy conversion into integers, a <strong>hash map</strong> is often the superior choice. For instance, if you are dealing with strings like usernames or URLs as keys, a hash map tends to be the better fit.</p></li>
+</ul>
+</section>
+<section id="hashmaps-in-java" class="level2" data-number="26.7">
+<h2 data-number="26.7" class="anchored" data-anchor-id="hashmaps-in-java"><span class="header-section-number">26.7</span> HashMaps in Java</h2>
+<p>The <strong>HashMap</strong> class is a part of the Java Collection Framework and encapsulates the functionality of a hash table. As a key-value pair repository, each key within a HashMap is unique, and the ordering of keys is not maintained.</p>
+<p>Here’s how to utilize a HashMap in Java:</p>
+<ol type="1">
+<li><p><strong>Import the HashMap class</strong>: First, you must import the HashMap class from the <code>java.util</code> package to use it within your Java code:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">HashMap</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Instantiate a HashMap</strong>: To create a new HashMap instance, employ the following syntax:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">HashMap</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> myMap <span class="op">=</span> <span class="kw">new</span> <span class="bu">HashMap</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Inserting elements</strong>: To add key-value pairs to the HashMap, make use of the <code>put()</code> method:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>myMap<span class="op">.</span><span class="fu">put</span><span class="op">(</span><span class="st">"apple"</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>myMap<span class="op">.</span><span class="fu">put</span><span class="op">(</span><span class="st">"banana"</span><span class="op">,</span> <span class="dv">5</span><span class="op">);</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>myMap<span class="op">.</span><span class="fu">put</span><span class="op">(</span><span class="st">"orange"</span><span class="op">,</span> <span class="dv">2</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Retrieving elements</strong>: To fetch the value associated with a specific key, use the <code>get()</code> method:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> apples <span class="op">=</span> myMap<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">"apple"</span><span class="op">);</span> <span class="co">// returns 3</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> oranges <span class="op">=</span> myMap<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">"orange"</span><span class="op">);</span> <span class="co">// returns 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Removing elements</strong>: To delete a key-value pair from the HashMap, apply the <code>remove()</code> method:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>myMap<span class="op">.</span><span class="fu">remove</span><span class="op">(</span><span class="st">"banana"</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Verifying key existence</strong>: To verify whether a particular key resides within the HashMap, call the <code>containsKey()</code> method:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> hasApple <span class="op">=</span> myMap<span class="op">.</span><span class="fu">containsKey</span><span class="op">(</span><span class="st">"apple"</span><span class="op">);</span> <span class="co">// returns true</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> hasGrape <span class="op">=</span> myMap<span class="op">.</span><span class="fu">containsKey</span><span class="op">(</span><span class="st">"grape"</span><span class="op">);</span> <span class="co">// returns false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iterating over keys</strong>: To traverse the keys in a HashMap, you can utilize a for-each loop in conjunction with the <code>keySet()</code> method:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> fruit <span class="op">:</span> myMap<span class="op">.</span><span class="fu">keySet</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>fruit <span class="op">+</span> <span class="st">": "</span> <span class="op">+</span> myMap<span class="op">.</span><span class="fu">get</span><span class="op">(</span>fruit<span class="op">));</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iterating over values</strong>: If you wish to iterate over the values within a HashMap, a for-each loop alongside the <code>values()</code> method can be used:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">Integer</span> count <span class="op">:</span> myMap<span class="op">.</span><span class="fu">values</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>count<span class="op">);</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iterating over key-value pairs</strong>: To cycle through the key-value pairs in a HashMap, employ a for-each loop with the <code>entrySet()</code> method:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">HashMap</span><span class="op">.</span><span class="fu">Entry</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> entry <span class="op">:</span> myMap<span class="op">.</span><span class="fu">entrySet</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>entry<span class="op">.</span><span class="fu">getKey</span><span class="op">()</span> <span class="op">+</span> <span class="st">": "</span> <span class="op">+</span> entry<span class="op">.</span><span class="fu">getValue</span><span class="op">());</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>The HashMap proves to be a handy data structure when it comes to efficiently storing key-value pairs. With constant-time performance for common operations such as put, get, and remove, it emerges as an invaluable asset for a wide array of applications.</p>
+<p>This is an excellent first draft that is very detailed. I’ve noticed a few opportunities for improvement that will make your descriptions more consistent and add a bit more depth to your explanations.</p>
+</section>
+<section id="hashtables-in-java" class="level2" data-number="26.8">
+<h2 data-number="26.8" class="anchored" data-anchor-id="hashtables-in-java"><span class="header-section-number">26.8</span> HashTables in Java</h2>
+<p>In Java, a <strong>HashTable</strong> is a type of collection that adheres to the Map interface, utilizing a hash table for storage. It shares similarities with HashMap, however, it distinguishes itself through its inherent synchronization which confers thread-safety. The HashTable class stores unique keys and their corresponding values, much like HashMap, it does not maintain any ordering of these keys.</p>
+<p>Here is how one might put HashTable to use in Java:</p>
+<ol type="1">
+<li><p><strong>Importing the HashTable Class</strong>: The HashTable class can be integrated into your Java code via importing from the <code>java.util</code> package:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Hashtable</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Instantiating a HashTable</strong>: The creation of a new HashTable can be achieved with the following syntax:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Hashtable</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> myTable <span class="op">=</span> <span class="kw">new</span> <span class="bu">Hashtable</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Inserting Elements</strong>: Key-value pairs can be added to the HashTable using the <code>put()</code> method:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>myTable<span class="op">.</span><span class="fu">put</span><span class="op">(</span><span class="st">"apple"</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>myTable<span class="op">.</span><span class="fu">put</span><span class="op">(</span><span class="st">"banana"</span><span class="op">,</span> <span class="dv">5</span><span class="op">);</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>myTable<span class="op">.</span><span class="fu">put</span><span class="op">(</span><span class="st">"orange"</span><span class="op">,</span> <span class="dv">2</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Accessing Elements</strong>: The value associated with a specific key can be retrieved using the <code>get()</code> method:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> apples <span class="op">=</span> myTable<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">"apple"</span><span class="op">);</span> <span class="co">// 3</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> oranges <span class="op">=</span> myTable<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">"orange"</span><span class="op">);</span> <span class="co">// 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Deleting Elements</strong>: To expunge a key-value pair from the HashTable, make use of the <code>remove()</code> method:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>myTable<span class="op">.</span><span class="fu">remove</span><span class="op">(</span><span class="st">"banana"</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Key Existence Verification</strong>: To ascertain the existence of a key in the HashTable, the <code>containsKey()</code> method is handy:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> hasApple <span class="op">=</span> myTable<span class="op">.</span><span class="fu">containsKey</span><span class="op">(</span><span class="st">"apple"</span><span class="op">);</span> <span class="co">// true</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> hasGrape <span class="op">=</span> myTable<span class="op">.</span><span class="fu">containsKey</span><span class="op">(</span><span class="st">"grape"</span><span class="op">);</span> <span class="co">// false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iteration Over Keys</strong>: Iteration through the keys in a HashTable can be achieved with a for-each loop in conjunction with the <code>keySet()</code> method:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> fruit <span class="op">:</span> myTable<span class="op">.</span><span class="fu">keySet</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>fruit <span class="op">+</span> <span class="st">": "</span> <span class="op">+</span> myTable<span class="op">.</span><span class="fu">get</span><span class="op">(</span>fruit<span class="op">));</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iteration Over Values</strong>: To traverse through the values in a HashTable, a for-each loop combined with the <code>values()</code> method is efficient:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">Integer</span> count <span class="op">:</span> myTable<span class="op">.</span><span class="fu">values</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>count<span class="op">);</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iteration Over Key-Value Pairs</strong>: To iterate through the key-value pairs in a HashTable, the <code>entrySet()</code> method can be used in combination with a for-each loop:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">Hashtable</span><span class="op">.</span><span class="fu">Entry</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> entry <span class="op">:</span> myTable<span class="op">.</span><span class="fu">entrySet</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>entry<span class="op">.</span><span class="fu">getKey</span><span class="op">()</span> <span class="op">+</span> <span class="st">": "</span> <span class="op">+</span> entry<span class="op">.</span><span class="fu">getValue</span><span class="op">());</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>The HashTable class proves useful in scenarios where key-value pairs need to be stored with a requirement for thread-safe operations. However, due to the performance overhead resulting from synchronization, if thread safety isn’t a primary concern, a HashMap would generally be a more efficient alternative.</p>
+</section>
+<section id="hashsets-in-java" class="level2" data-number="26.9">
+<h2 data-number="26.9" class="anchored" data-anchor-id="hashsets-in-java"><span class="header-section-number">26.9</span> HashSets in Java</h2>
+<p>A <strong>HashSet</strong> in Java is a collection class implementing the Set interface, and leverages a hash table for its storage mechanism. Contrary to hash tables and hash maps, it doesn’t store key-value pairs. Instead, it stores unique elements only. These elements aren’t stored in any particular order, and the class doesn’t allow for duplicate values.</p>
+<p>The usage of a HashSet in Java can be illustrated as follows:</p>
+<ol type="1">
+<li><p><strong>Importing the HashSet Class</strong>: To integrate the HashSet class into your Java code, import it from the <code>java.util</code> package:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">HashSet</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Creating a HashSet</strong>: A new HashSet can be instantiated using the following syntax:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">HashSet</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> mySet <span class="op">=</span> <span class="kw">new</span> <span class="bu">HashSet</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Adding Elements</strong>: Elements can be added to the HashSet using the <code>add()</code> method:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mySet<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"apple"</span><span class="op">);</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>mySet<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"banana"</span><span class="op">);</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>mySet<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"orange"</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Removing Elements</strong>: To remove an element from the HashSet, employ the <code>remove()</code> method:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mySet<span class="op">.</span><span class="fu">remove</span><span class="op">(</span><span class="st">"banana"</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Element Existence Verification</strong>: To verify the existence of an element in the HashSet, the <code>contains()</code> method is quite useful:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> hasApple <span class="op">=</span> mySet<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="st">"apple"</span><span class="op">);</span> <span class="co">// true</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> hasGrape <span class="op">=</span> mySet<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="st">"grape"</span><span class="op">);</span> <span class="co">// false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Iteration Over Elements</strong>: To traverse the elements stored in a HashSet, a for-each loop is effective:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> fruit <span class="op">:</span> mySet<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>fruit<span class="op">);</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>The HashSet class is particularly beneficial when there’s a need to store a unique set of elements without any specific order. Given its provision of constant-time performance for frequent operations such as add, remove, and contains, it emerges as an efficient choice for a wide range of applications.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-data-structures-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-structures-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 573.77 337.40" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 333.4)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-333.4 569.77,-333.4 569.77,4 -4,4"></polygon>
+<!-- HashMap -->
+<g id="node1" class="node">
+<title>HashMap</title>
+<path fill="none" stroke="lightblue" d="M140.99,-269.7C140.99,-269.7 536.43,-269.7 536.43,-269.7 542.43,-269.7 548.43,-275.7 548.43,-281.7 548.43,-281.7 548.43,-316.9 548.43,-316.9 548.43,-322.9 542.43,-328.9 536.43,-328.9 536.43,-328.9 140.99,-328.9 140.99,-328.9 134.99,-328.9 128.99,-322.9 128.99,-316.9 128.99,-316.9 128.99,-281.7 128.99,-281.7 128.99,-275.7 134.99,-269.7 140.99,-269.7"></path>
+<text text-anchor="middle" x="171.98" y="-293.9" font-family="Times,serif" font-size="18.00">HashMap</text>
+<polyline fill="none" stroke="lightblue" points="214.98,-269.7 214.98,-328.9 "></polyline>
+<text text-anchor="middle" x="381.7" y="-308.7" font-family="Times,serif" font-size="18.00">Key-Value Pairs</text>
+<polyline fill="none" stroke="lightblue" points="214.98,-299.3 548.43,-299.3 "></polyline>
+<text text-anchor="middle" x="260.22" y="-279.1" font-family="Times,serif" font-size="18.00">Add: O(1)</text>
+<polyline fill="none" stroke="lightblue" points="305.46,-269.7 305.46,-299.3 "></polyline>
+<text text-anchor="middle" x="365.2" y="-279.1" font-family="Times,serif" font-size="18.00">Remove: O(1)</text>
+<polyline fill="none" stroke="lightblue" points="424.94,-269.7 424.94,-299.3 "></polyline>
+<text text-anchor="middle" x="486.68" y="-279.1" font-family="Times,serif" font-size="18.00">Contains: O(1)</text>
+</g>
+<!-- HashTable -->
+<g id="node2" class="node">
+<title>HashTable</title>
+<path fill="none" stroke="lightgreen" d="M12,-135.1C12,-135.1 415.42,-135.1 415.42,-135.1 421.42,-135.1 427.42,-141.1 427.42,-147.1 427.42,-147.1 427.42,-182.3 427.42,-182.3 427.42,-188.3 421.42,-194.3 415.42,-194.3 415.42,-194.3 12,-194.3 12,-194.3 6,-194.3 0,-188.3 0,-182.3 0,-182.3 0,-147.1 0,-147.1 0,-141.1 6,-135.1 12,-135.1"></path>
+<text text-anchor="middle" x="46.98" y="-159.3" font-family="Times,serif" font-size="18.00">HashTable</text>
+<polyline fill="none" stroke="lightgreen" points="93.97,-135.1 93.97,-194.3 "></polyline>
+<text text-anchor="middle" x="260.69" y="-174.1" font-family="Times,serif" font-size="18.00">Key-Value Pairs</text>
+<polyline fill="none" stroke="lightgreen" points="93.97,-164.7 427.42,-164.7 "></polyline>
+<text text-anchor="middle" x="139.21" y="-144.5" font-family="Times,serif" font-size="18.00">Add: O(1)</text>
+<polyline fill="none" stroke="lightgreen" points="184.46,-135.1 184.46,-164.7 "></polyline>
+<text text-anchor="middle" x="244.19" y="-144.5" font-family="Times,serif" font-size="18.00">Remove: O(1)</text>
+<polyline fill="none" stroke="lightgreen" points="303.93,-135.1 303.93,-164.7 "></polyline>
+<text text-anchor="middle" x="365.67" y="-144.5" font-family="Times,serif" font-size="18.00">Contains: O(1)</text>
+</g>
+<!-- HashMap&#45;&gt;HashTable -->
+<g id="edge1" class="edge">
+<title>HashMap-&gt;HashTable</title>
+<path fill="none" stroke="black" d="M311.59,-269.53C290.62,-247.29 261.73,-216.64 240.78,-194.42"></path>
+<text text-anchor="middle" x="332.37" y="-236.8" font-family="Times,serif" font-size="16.00">Thread-Safe</text>
+<text text-anchor="middle" x="332.37" y="-217.6" font-family="Times,serif" font-size="16.00">No Ordering</text>
+</g>
+<!-- HashSet -->
+<g id="node3" class="node">
+<title>HashSet</title>
+<path fill="none" stroke="gold" d="M145.99,-0.5C145.99,-0.5 531.43,-0.5 531.43,-0.5 537.43,-0.5 543.43,-6.5 543.43,-12.5 543.43,-12.5 543.43,-47.7 543.43,-47.7 543.43,-53.7 537.43,-59.7 531.43,-59.7 531.43,-59.7 145.99,-59.7 145.99,-59.7 139.99,-59.7 133.99,-53.7 133.99,-47.7 133.99,-47.7 133.99,-12.5 133.99,-12.5 133.99,-6.5 139.99,-0.5 145.99,-0.5"></path>
+<text text-anchor="middle" x="171.98" y="-24.7" font-family="Times,serif" font-size="18.00">HashSet</text>
+<polyline fill="none" stroke="gold" points="209.98,-0.5 209.98,-59.7 "></polyline>
+<text text-anchor="middle" x="376.71" y="-39.5" font-family="Times,serif" font-size="18.00">Unique Values</text>
+<polyline fill="none" stroke="gold" points="209.98,-30.1 543.43,-30.1 "></polyline>
+<text text-anchor="middle" x="255.22" y="-9.9" font-family="Times,serif" font-size="18.00">Add: O(1)</text>
+<polyline fill="none" stroke="gold" points="300.47,-0.5 300.47,-30.1 "></polyline>
+<text text-anchor="middle" x="360.21" y="-9.9" font-family="Times,serif" font-size="18.00">Remove: O(1)</text>
+<polyline fill="none" stroke="gold" points="419.94,-0.5 419.94,-30.1 "></polyline>
+<text text-anchor="middle" x="481.69" y="-9.9" font-family="Times,serif" font-size="18.00">Contains: O(1)</text>
+</g>
+<!-- HashTable&#45;&gt;HashSet -->
+<g id="edge2" class="edge">
+<title>HashTable-&gt;HashSet</title>
+<path fill="none" stroke="black" d="M240.83,-134.93C261.8,-112.69 290.69,-82.04 311.64,-59.82"></path>
+<text text-anchor="middle" x="356.58" y="-102.2" font-family="Times,serif" font-size="16.00">No Key-Value Pairs</text>
+<text text-anchor="middle" x="356.58" y="-83" font-family="Times,serif" font-size="16.00">No Ordering</text>
+</g>
+<!-- HashSet&#45;&gt;HashMap -->
+<g id="edge3" class="edge">
+<title>HashSet-&gt;HashMap</title>
+<path fill="none" stroke="black" d="M406.75,-59.76C413.95,-65.02 420.52,-71.14 425.71,-78.2 456.53,-120.15 455.97,-146.44 436.71,-194.8 424.76,-224.8 399.53,-251.11 377.66,-269.7"></path>
+<text text-anchor="middle" x="508.24" y="-169.5" font-family="Times,serif" font-size="16.00">Key-Value Pairs</text>
+<text text-anchor="middle" x="508.24" y="-150.3" font-family="Times,serif" font-size="16.00">No Thread-Safety</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-structures-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.8: Comparative Analysis of HashMap, HashTable, and HashSet. This diagram depicts the similarities and differences between HashMap, HashTable, and HashSet in terms of their structure and performance characteristics. It helps visualize how each of them stores data and their efficiency for common operations.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hashcode-and-equals-in-java" class="level2" data-number="26.10">
+<h2 data-number="26.10" class="anchored" data-anchor-id="hashcode-and-equals-in-java"><span class="header-section-number">26.10</span> <code>hashCode</code> and <code>equals</code> in Java</h2>
+<p>In the heart of Java’s Object Oriented structure, lies the <code>Object</code> class. It plays the role of the ultimate superclass for all Java classes. Within this class, two methods, <code>hashCode</code> and <code>equals</code>, form the fundamental basis for the interaction of objects in various Java collections. These methods interplay crucially in object comparison and are instrumental in the design and function of hash-based collections such as <code>HashSet</code>, <code>HashMap</code>, and <code>HashTable</code>.</p>
+<section id="understanding-hashcode" class="level3" data-number="26.10.1">
+<h3 data-number="26.10.1" class="anchored" data-anchor-id="understanding-hashcode"><span class="header-section-number">26.10.1</span> Understanding <code>hashCode</code></h3>
+<p>The <code>hashCode</code> method provides a means for generating hash codes, which are integers symbolizing the memory address of an object. The method signature is as follows:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span><span class="op">()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By default, the method returns a hash code derived from the object’s memory address. However, subclasses can override this behavior to offer custom hash code generation. For the efficient functioning of hash-based collections, and to maintain object-to-hashcode consistency, a well-defined <code>hashCode</code> method should adhere to these principles:</p>
+<ol type="1">
+<li>If <code>equals()</code> perceives two objects as equal, their hash codes must be identical.</li>
+<li>The inverse, however, isn’t true: objects with matching hash codes are not necessarily equal according to their <code>equals()</code> method.</li>
+<li>Unless data influencing the <code>equals()</code> method alters, the object’s hash code should remain consistent.</li>
+</ol>
+</section>
+<section id="overriding-the-hashcode-method" class="level3" data-number="26.10.2">
+<h3 data-number="26.10.2" class="anchored" data-anchor-id="overriding-the-hashcode-method"><span class="header-section-number">26.10.2</span> Overriding the <code>hashCode</code> Method</h3>
+<p>For custom classes, overriding <code>hashCode</code> becomes essential if the <code>equals()</code> method is also overridden. Ensuring that both these methods are in sync upholds the general <code>hashCode</code> contract, and thereby guarantees the smooth operation of hash-based data structures.</p>
+<p>Below is an instance of a custom <code>Person</code> class, which overrides both <code>equals()</code> and <code>hashCode()</code> methods:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Person <span class="op">{</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> age<span class="op">;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Constructor, getters, and setters</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span><span class="op">(</span><span class="bu">Object</span> obj<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="kw">this</span> <span class="op">==</span> obj<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>obj <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> <span class="fu">getClass</span><span class="op">()</span> <span class="op">!=</span> obj<span class="op">.</span><span class="fu">getClass</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>        Person person <span class="op">=</span> <span class="op">(</span>Person<span class="op">)</span> obj<span class="op">;</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> age <span class="op">==</span> person<span class="op">.</span><span class="fu">age</span> <span class="op">&amp;&amp;</span> Objects<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>name<span class="op">,</span> person<span class="op">.</span><span class="fu">name</span><span class="op">);</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Objects<span class="op">.</span><span class="fu">hash</span><span class="op">(</span>name<span class="op">,</span> age<span class="op">);</span></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here, the <code>equals()</code> method verifies if two <code>Person</code> objects share the same name and age. Meanwhile, the <code>hashCode()</code> method leverages the utility function <code>Objects.hash()</code>, which generates a hash code based on the name and age fields.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-hashCode-equals-relationship" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hashCode-equals-relationship-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 379.00 317.20" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 313.2)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-313.2 375,-313.2 375,4 -4,4"></polygon>
+<g id="clust1" class="cluster">
+<title>cluster_0</title>
+<polygon fill="none" stroke="black" points="8,-96.8 8,-301.2 207,-301.2 207,-96.8 8,-96.8"></polygon>
+<text text-anchor="middle" x="107.5" y="-284.6" font-family="Times,serif" font-size="14.00">Overriding hashCode and equals</text>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_1</title>
+<polygon fill="none" stroke="black" points="215,-8 215,-301.2 363,-301.2 363,-8 215,-8"></polygon>
+<text text-anchor="middle" x="289" y="-284.6" font-family="Times,serif" font-size="14.00">hashCode in HashSet</text>
+</g>
+<!-- Person1 -->
+<g id="node1" class="node">
+<title>Person1</title>
+<path fill="lightblue" stroke="#bf3eff" d="M57.55,-213.5C57.55,-213.5 156.45,-213.5 156.45,-213.5 162.45,-213.5 168.45,-219.5 168.45,-225.5 168.45,-225.5 168.45,-255.9 168.45,-255.9 168.45,-261.9 162.45,-267.9 156.45,-267.9 156.45,-267.9 57.55,-267.9 57.55,-267.9 51.55,-267.9 45.55,-261.9 45.55,-255.9 45.55,-255.9 45.55,-225.5 45.55,-225.5 45.55,-219.5 51.55,-213.5 57.55,-213.5"></path>
+<text text-anchor="middle" x="107" y="-249.5" font-family="Times,serif" font-size="16.00">Person</text>
+<polyline fill="none" stroke="#bf3eff" points="45.55,-240.7 168.45,-240.7 "></polyline>
+<text text-anchor="middle" x="79.39" y="-222.3" font-family="Times,serif" font-size="16.00">name=x</text>
+<polyline fill="none" stroke="#bf3eff" points="113.22,-213.5 113.22,-240.7 "></polyline>
+<text text-anchor="middle" x="140.84" y="-222.3" font-family="Times,serif" font-size="16.00">age=y</text>
+</g>
+<!-- Person2 -->
+<g id="node2" class="node">
+<title>Person2</title>
+<path fill="lightblue" stroke="#bf3eff" d="M57.55,-105.3C57.55,-105.3 156.45,-105.3 156.45,-105.3 162.45,-105.3 168.45,-111.3 168.45,-117.3 168.45,-117.3 168.45,-147.7 168.45,-147.7 168.45,-153.7 162.45,-159.7 156.45,-159.7 156.45,-159.7 57.55,-159.7 57.55,-159.7 51.55,-159.7 45.55,-153.7 45.55,-147.7 45.55,-147.7 45.55,-117.3 45.55,-117.3 45.55,-111.3 51.55,-105.3 57.55,-105.3"></path>
+<text text-anchor="middle" x="107" y="-141.3" font-family="Times,serif" font-size="16.00">Person</text>
+<polyline fill="none" stroke="#bf3eff" points="45.55,-132.5 168.45,-132.5 "></polyline>
+<text text-anchor="middle" x="79.39" y="-114.1" font-family="Times,serif" font-size="16.00">name=x</text>
+<polyline fill="none" stroke="#bf3eff" points="113.22,-105.3 113.22,-132.5 "></polyline>
+<text text-anchor="middle" x="140.84" y="-114.1" font-family="Times,serif" font-size="16.00">age=y</text>
+</g>
+<!-- Person1&#45;&gt;Person2 -->
+<g id="edge1" class="edge">
+<title>Person1-&gt;Person2</title>
+<path fill="none" stroke="black" d="M107,-213.45C107,-200.3 107,-184.17 107,-169.86"></path>
+<polygon fill="black" stroke="black" points="110.5,-169.82 107,-159.82 103.5,-169.82 110.5,-169.82"></polygon>
+<text text-anchor="middle" x="129.54" y="-182.4" font-family="Times,serif" font-size="14.00" fill="blue">equals()</text>
+</g>
+<!-- HashTable -->
+<g id="node3" class="node">
+<title>HashTable</title>
+<text text-anchor="middle" x="289" y="-29.2" font-family="Times,serif" font-size="16.00">HashSet Structure</text>
+</g>
+<!-- Person -->
+<g id="node4" class="node">
+<title>Person</title>
+<path fill="lightblue" stroke="#bf3eff" d="M234.55,-213.5C234.55,-213.5 333.45,-213.5 333.45,-213.5 339.45,-213.5 345.45,-219.5 345.45,-225.5 345.45,-225.5 345.45,-255.9 345.45,-255.9 345.45,-261.9 339.45,-267.9 333.45,-267.9 333.45,-267.9 234.55,-267.9 234.55,-267.9 228.55,-267.9 222.55,-261.9 222.55,-255.9 222.55,-255.9 222.55,-225.5 222.55,-225.5 222.55,-219.5 228.55,-213.5 234.55,-213.5"></path>
+<text text-anchor="middle" x="284" y="-249.5" font-family="Times,serif" font-size="16.00">Person</text>
+<polyline fill="none" stroke="#bf3eff" points="222.55,-240.7 345.45,-240.7 "></polyline>
+<text text-anchor="middle" x="256.39" y="-222.3" font-family="Times,serif" font-size="16.00">name=x</text>
+<polyline fill="none" stroke="#bf3eff" points="290.22,-213.5 290.22,-240.7 "></polyline>
+<text text-anchor="middle" x="317.84" y="-222.3" font-family="Times,serif" font-size="16.00">age=y</text>
+</g>
+<!-- Index -->
+<g id="node5" class="node">
+<title>Index</title>
+<path fill="lightyellow" stroke="#bf3eff" d="M249.45,-105.3C249.45,-105.3 304.55,-105.3 304.55,-105.3 310.55,-105.3 316.55,-111.3 316.55,-117.3 316.55,-117.3 316.55,-147.7 316.55,-147.7 316.55,-153.7 310.55,-159.7 304.55,-159.7 304.55,-159.7 249.45,-159.7 249.45,-159.7 243.45,-159.7 237.45,-153.7 237.45,-147.7 237.45,-147.7 237.45,-117.3 237.45,-117.3 237.45,-111.3 243.45,-105.3 249.45,-105.3"></path>
+<text text-anchor="middle" x="277" y="-141.3" font-family="Times,serif" font-size="16.00">Index</text>
+<polyline fill="none" stroke="#bf3eff" points="237.45,-132.5 316.55,-132.5 "></polyline>
+<text text-anchor="middle" x="277" y="-114.1" font-family="Times,serif" font-size="16.00">hashCode</text>
+</g>
+<!-- Person&#45;&gt;Index -->
+<g id="edge2" class="edge">
+<title>Person-&gt;Index</title>
+<path fill="none" stroke="black" d="M282.27,-213.45C281.4,-200.3 280.34,-184.17 279.4,-169.86"></path>
+<polygon fill="black" stroke="black" points="282.88,-169.57 278.73,-159.82 275.9,-170.03 282.88,-169.57"></polygon>
+<text text-anchor="middle" x="312.27" y="-182.4" font-family="Times,serif" font-size="14.00" fill="blue">hashCode()</text>
+</g>
+<!-- Index&#45;&gt;HashTable -->
+<g id="edge3" class="edge">
+<title>Index-&gt;HashTable</title>
+<path fill="none" stroke="black" d="M280.28,-105.13C281.93,-91.83 283.94,-75.72 285.61,-62.3"></path>
+<polygon fill="black" stroke="black" points="289.1,-62.57 286.86,-52.21 282.15,-61.7 289.1,-62.57"></polygon>
+<text text-anchor="middle" x="325.99" y="-74.2" font-family="Times,serif" font-size="14.00" fill="green">Stores at Index</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hashCode-equals-relationship-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.9: Understanding <code>hashCode</code> and <code>equals</code> in Java. The first part (top) of this diagram showcases the need for synchronizing <code>hashCode</code> and <code>equals</code> methods in custom classes. The second part (bottom) illuminates the role of <code>hashCode</code> in storing and retrieving objects in hash-based collections like HashSet.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hashcode-in-the-context-of-java-collections" class="level3" data-number="26.10.3">
+<h3 data-number="26.10.3" class="anchored" data-anchor-id="hashcode-in-the-context-of-java-collections"><span class="header-section-number">26.10.3</span> <code>hashCode</code> in the Context of Java Collections</h3>
+<p>In hash-based collections like <code>HashSet</code>, <code>HashMap</code>, and <code>HashTable</code>, the <code>hashCode</code> method takes center stage, boosting their performance through efficient storage and retrieval of objects based on hash codes.</p>
+<p>Maintaining an aptly implemented <code>hashCode</code> method for the objects being stored is paramount when working with these collections. Missteps could result in compromised performance or erroneous behavior.</p>
+<p>In essence, the <code>hashCode</code> method in Java, which stems from the <code>Object</code> class, provides a default blueprint for hash code generation. While creating custom classes, it is critical to override the <code>hashCode</code> method in sync with the <code>equals()</code> method. This symbiosis between the two methods ensures a seamless operation of hash-based data structures like <code>HashSet</code> and <code>HashMap</code>.</p>
+<p>While this section provides an understanding of <code>hashCode</code> and <code>equals</code> in Java, the next chapter will further delve into comparing objects in Java and the intricacies involved therein.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./21_graphs.html" class="pagination-link" aria-label="Graphs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Graphs</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
